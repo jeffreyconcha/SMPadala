@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="progressWheel">
+        <attr name="progressIndeterminate" format="boolean"/>
+        <attr name="barSpinCycleTime" format="integer"/>
+        <attr name="circleRadius" format="dimension"/>
+        <attr name="fillRadius" format="boolean"/>
+        <attr name="linearProgress" format="boolean"/>
+        <attr name="barColor" format="color"/>
+        <attr name="rimColor" format="color"/>
+        <attr name="rimWidth" format="dimension"/>
+        <attr name="spinSpeed" format="integer"/>
+        <attr name="circleColor" format="color"/>
+        <attr name="radius" format="dimension"/>
+        <attr name="barWidth" format="dimension"/>
+        <attr name="barHeight" format="dimension"/>
+        <attr name="delayMillis" format="dimension"/>
+        <attr name="contourColor" format="color"/>
+        <attr name="contourSize" format="float"/>
+        <attr name="text" format="string"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="progress" format="integer"/>
+        <attr name="max" format="integer"/>
+        <attr name="font" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="codePan">
+        <attr name="typeface" format="string"/>
+        <attr name="textColorPressed" format="color"/>
+        <attr name="textColorEnabled" format="color"/>
+        <attr name="textColorDisabled" format="color"/>
+        <attr name="backgroundPressed" format="reference"/>
+        <attr name="backgroundEnabled" format="reference"/>
+        <attr name="backgroundDisabled" format="reference"/>
+        <attr name="enableStatePressed" format="boolean"/>
+        <attr name="autoHideKeyboard" format="boolean"/>
+        <attr name="autoClearFocus" format="boolean"/>
+        <attr name="setScrollable" format="boolean"/>
+        <attr name="setSquare" format="boolean"/>
+        <attr name="reference" format="enum">
+            <enum name="dynamic" value="0"/>
+            <enum name="width" value="1"/>
+            <enum name="height" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="wheelView">
+        <attr name="src" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="circular">
+        <attr name="borderWidth" format="integer"/>
+    </declare-styleable>
+
+    <!--sample
+    <com.codepan.widget.ProgressWheel
+        android:id="@+id/progressLoadingDialog"
+        android:layout_width="@dimen/two_hundred"
+        android:layout_height="@dimen/two_hundred"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/fifteen"
+        android:background="@drawable/bg_progress_wheel"
+        progressWheel:barColor="@color/green"
+        progressWheel:rimColor="@color/transparent"
+        progressWheel:max="100"
+        progressWheel:progress="79"
+        progressWheel:progressIndeterminate="false"
+        progressWheel:barWidth="@dimen/ten"
+        progressWheel:circleRadius="@dimen/one_hundred"
+        progressWheel:contourColor="@color/transparent"
+        progressWheel:spinSpeed="@dimen/one"
+        progressWheel:text="79%"
+        progressWheel:textSize="@dimen/thirty"
+        progressWheel:textColor="@color/white"/>
+        -->
+
+</resources>

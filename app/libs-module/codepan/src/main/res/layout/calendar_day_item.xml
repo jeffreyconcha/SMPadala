@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvDay"
+        android:layout_width="@dimen/cal_text_dimen"
+        android:layout_height="@dimen/cal_text_dimen"
+        android:layout_centerInParent="true"
+        android:background="@drawable/state_oval_trans_dark"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/cal_day_active"
+        android:textSize="@dimen/cal_text_size"
+        codePan:typeface="@string/cal_day_font"/>
+
+</RelativeLayout>

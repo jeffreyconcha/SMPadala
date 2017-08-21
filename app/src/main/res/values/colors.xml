@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="theme_pri">#00A79D</color>
+    <color name="theme_sec">#8EC63F</color>
+    <color name="gray_pri">#505050</color>
+    <color name="gray_sec">#EDEDED</color>
+    <color name="gray_ter">#A7A7A7</color>
+    <color name="gray_qua">#6D6E71</color>
+    <color name="red_pri">#FA2311</color>
+</resources>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/rlCalendar"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_trans_sixty"
+    android:clickable="true"
+    android:padding="@dimen/ten">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/cal_background">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvTitleCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/ten"
+            android:text="@string/cal_title"
+            android:textColor="@color/cal_title"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/cal_title_font"/>
+
+        <View
+            android:id="@+id/vDividerCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/two"
+            android:layout_alignEnd="@+id/vpCalendar"
+            android:layout_alignLeft="@+id/vpCalendar"
+            android:layout_alignRight="@+id/vpCalendar"
+            android:layout_alignStart="@+id/vpCalendar"
+            android:layout_below="@+id/tvTitleCalendar"
+            android:background="@color/cal_divider"/>
+
+        <LinearLayout
+            android:id="@+id/llDateCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/vpCalendar"
+            android:layout_alignLeft="@+id/vpCalendar"
+            android:layout_alignRight="@+id/vpCalendar"
+            android:layout_alignStart="@+id/vpCalendar"
+            android:layout_below="@+id/vDividerCalendar"
+            android:background="@color/cal_date_background"
+            android:orientation="vertical"
+            android:padding="@dimen/ten">
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvYearCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2017"
+                android:textColor="@color/cal_date"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/cal_date_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvDateCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wed, Sept 28"
+                android:textColor="@color/cal_date"
+                android:textSize="@dimen/twenty_seven"
+                codePan:typeface="@string/cal_date_font"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlMonthYearCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/vpCalendar"
+            android:layout_alignLeft="@+id/vpCalendar"
+            android:layout_alignRight="@+id/vpCalendar"
+            android:layout_alignStart="@+id/vpCalendar"
+            android:layout_below="@+id/llDateCalendar"
+            android:layout_marginBottom="@dimen/eight"
+            android:background="@drawable/cal_header"
+            android:paddingBottom="@dimen/three"
+            android:paddingLeft="@dimen/one"
+            android:paddingRight="@dimen/one"
+            android:paddingTop="@dimen/three">
+
+            <FrameLayout
+                android:layout_width="@dimen/thirty_five"
+                android:layout_height="@dimen/thirty_five"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/ten"
+                android:layout_marginStart="@dimen/ten"
+                android:layout_marginTop="@dimen/five">
+
+                <ImageView
+                    android:layout_width="@dimen/eight"
+                    android:layout_height="@dimen/twelve"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_cal_prev"/>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnPreviousCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/state_oval_trans_dark"/>
+
+            </FrameLayout>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnMonthYearCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/five"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/seven"
+                android:paddingEnd="@dimen/fifteen"
+                android:paddingLeft="@dimen/fifteen"
+                android:paddingRight="@dimen/fifteen"
+                android:paddingStart="@dimen/fifteen"
+                android:paddingTop="@dimen/seven"
+                android:text="October, 2014"
+                android:textColor="@color/cal_month"
+                android:textSize="@dimen/eighteen"
+                codePan:enableStatePressed="true"
+                codePan:textColorEnabled="@color/cal_month"
+                codePan:textColorPressed="@color/cal_primary"
+                codePan:typeface="@string/cal_title_font"/>
+
+            <FrameLayout
+                android:layout_width="@dimen/thirty_five"
+                android:layout_height="@dimen/thirty_five"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/ten"
+                android:layout_marginRight="@dimen/ten"
+                android:layout_marginTop="@dimen/five">
+
+                <ImageView
+                    android:layout_width="@dimen/eight"
+                    android:layout_height="@dimen/twelve"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_cal_next"/>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnNextCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/state_oval_trans_dark"/>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llDayCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/vpCalendar"
+            android:layout_alignLeft="@+id/vpCalendar"
+            android:layout_alignRight="@+id/vpCalendar"
+            android:layout_alignStart="@+id/vpCalendar"
+            android:layout_below="@+id/rlMonthYearCalendar"
+            android:orientation="horizontal">
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_sunday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/cal_week_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_monday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/cal_week_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_tuesday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/cal_week_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_wednesday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/nineteen"
+                codePan:typeface="@string/cal_week_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_thursday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/cal_week_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_friday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/cal_week_font"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/cal_saturday"
+                android:textColor="@color/cal_week"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/cal_week_font"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vDividerInventoryDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cal_spacing"
+            android:layout_alignEnd="@+id/vpCalendar"
+            android:layout_alignLeft="@+id/vpCalendar"
+            android:layout_alignRight="@+id/vpCalendar"
+            android:layout_alignStart="@+id/vpCalendar"
+            android:layout_below="@+id/llDayCalendar"
+            android:layout_marginTop="@dimen/eight"
+            android:background="@color/cal_grid"/>
+
+        <com.codepan.calendar.widget.CalendarPager
+            android:id="@+id/vpCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vDividerInventoryDetails"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vpCalendar"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:padding="@dimen/ten">
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnCancelCalendar"
+                android:layout_width="@dimen/one_hundred"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_white_radius_three"
+                android:padding="@dimen/eight"
+                android:text="@string/cal_cancel"
+                android:textColor="@color/cal_cancel"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_bold"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnSaveCalendar"
+                android:layout_width="@dimen/one_hundred"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/five"
+                android:layout_marginStart="@dimen/five"
+                android:background="@drawable/state_rect_white_radius_three"
+                android:padding="@dimen/eight"
+                android:text="@string/cal_select"
+                android:textColor="@color/cal_save"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_bold"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

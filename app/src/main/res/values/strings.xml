@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">SMPadala</string>
+    <string name="menu">Menu</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="amount">Amount</string>
+    <string name="name">Name</string>
+    <string name="charge">Charge</string>
+    <string name="balance">Balance</string>
+    <string name="reference">Ref No.</string>
+    <string name="status">Status</string>
+    <string name="na">N/A</string>
+    <string name="pending">Pending</string>
+    <string name="claimed">Claimed</string>
+    <string name="permission_title">Permissions Required</string>
+    <string name="permission_message">Please enable the required permissions to continue.</string>
+</resources>

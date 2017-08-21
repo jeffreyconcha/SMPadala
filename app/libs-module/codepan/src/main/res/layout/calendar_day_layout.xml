@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridView
+    android:id="@+id/gvCalendarDay"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/cal_grid"
+    android:horizontalSpacing="@dimen/cal_spacing"
+    android:listSelector="@color/transparent"
+    android:numColumns="@integer/day_col"
+    android:paddingEnd="@dimen/cal_padding"
+    android:paddingLeft="@dimen/cal_padding"
+    android:paddingRight="@dimen/cal_padding"
+    android:paddingStart="@dimen/cal_padding"
+    android:scrollbars="none"
+    android:stretchMode="columnWidth"
+    android:verticalSpacing="@dimen/cal_spacing"/>

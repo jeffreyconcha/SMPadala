@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:codePan="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rlAlertToast"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/five"
+                android:paddingRight="@dimen/five">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvMessageAlertToast"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Toast message"
+        android:textSize="@dimen/fifteen"
+        android:textColor="#FFF"
+        android:gravity="center"
+        android:padding="@dimen/twelve"
+        android:background="@drawable/toast_background"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+</RelativeLayout>

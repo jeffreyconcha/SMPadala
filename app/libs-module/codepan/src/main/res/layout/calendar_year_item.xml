@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/state_rect_white_radius_three"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/cal_text"
+        android:textSize="@dimen/cal_text_size"
+        codePan:typeface="@string/cal_year_font"/>
+
+</RelativeLayout>

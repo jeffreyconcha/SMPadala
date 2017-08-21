@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="facebook">#3C5A98</color>
+
+    <color name="black_trans_sixty">#99000000</color>
+    <color name="black_trans_forty">#66000000</color>
+    <color name="black_trans_thirty">#4D000000</color>
+    <color name="black_trans_twenty">#33000000</color>
+    <color name="black_trans_ten">#19000000</color>
+
+    <color name="white_trans_twenty">#33FFFFFF</color>
+    <color name="white_trans_thirty">#4DFFFFFF</color>
+    <color name="white_trans_sixty">#99FFFFFF</color>
+    <color name="white_trans_eighty">#CCFFFFFF</color>
+    <color name="white_trans_ninety">#E6FFFFFF</color>
+
+    <color name="shadow_layer_one">#B2B4B3</color>
+    <color name="shadow_layer_two">#D2D3D5</color>
+
+</resources>

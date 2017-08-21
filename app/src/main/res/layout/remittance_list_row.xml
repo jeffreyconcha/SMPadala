@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/five"
+    android:paddingTop="@dimen/five">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvDateRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTimeRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvNameRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvChargeRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvAmountRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvBalanceRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvReferenceNoRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvStatusRemittance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+</LinearLayout>

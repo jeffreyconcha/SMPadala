@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bestfriend.smpadala.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rlHeaderMain"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/header"
+            android:background="@color/header">
+
+            <FrameLayout
+                android:id="@+id/flMenuMain"
+                android:layout_width="@dimen/forty_eight"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/eight"
+                        android:layout_height="@dimen/eight"
+                        android:src="@drawable/ic_menu"/>
+
+                    <com.codepan.widget.CodePanLabel
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/three"
+                        android:layout_marginStart="@dimen/three"
+                        android:text="@string/menu"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/nine"
+                        codePan:typeface="@string/proxima_nova_light"/>
+
+                </LinearLayout>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnMenuMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/state_rect_trans_dark"/>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_pri"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/five"
+            android:paddingTop="@dimen/five">
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:gravity="center"
+                android:text="@string/date"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:text="@string/time"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/charge"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/amount"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/balance"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/reference"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/status"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lvMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/divider"
+            android:dividerHeight="@dimen/one"
+            android:listSelector="@drawable/state_rect_trans_dark"
+            android:scrollbarSize="@dimen/scrollbar"
+            android:scrollbarThumbVertical="@color/scrollbar"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
