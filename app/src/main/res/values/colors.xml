@@ -2,6 +2,8 @@
 <resources>
     <color name="theme_pri">#00A79D</color>
     <color name="theme_sec">#8EC63F</color>
+    <color name="theme_ter">#14918B</color>
+    <color name="theme_qua">#8AC7C5</color>
     <color name="gray_pri">#505050</color>
     <color name="gray_sec">#EDEDED</color>
     <color name="gray_ter">#A7A7A7</color>

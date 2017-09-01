@@ -14,6 +14,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.bestfriend.adapter.RemittanceAdapter;
@@ -26,21 +30,25 @@ import com.bestfriend.model.RemittanceObj;
 import com.codepan.callback.Interface.OnPermissionGrantedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.widget.CodePanButton;
 
 import java.util.ArrayList;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
-public class MainActivity extends FragmentActivity implements OnInitializeCallback {
+public class MainActivity extends FragmentActivity implements OnInitializeCallback, OnClickListener {
 
     private OnPermissionGrantedCallback permissionGrantedCallback;
     private ArrayList<RemittanceObj> remittanceList;
     private LocalBroadcastManager broadcastManager;
     private FragmentTransaction transaction;
     private BroadcastReceiver receiver;
+    private LinearLayout llMenuMain;
+    private CodePanButton btnMenuMain;
     private RemittanceAdapter adapter;
     private FragmentManager manager;
     private boolean isInitialized;
+    private DrawerLayout dlMain;
     private SQLiteAdapter db;
     private ListView lvMain;
 
@@ -65,7 +73,13 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         this.manager = getSupportFragmentManager();
+        llMenuMain = (LinearLayout) findViewById(R.id.llMenuMain);
+        btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
+        dlMain = (DrawerLayout) findViewById(R.id.dlMain);
         lvMain = (ListView) findViewById(R.id.lvMain);
+        btnMenuMain.setOnClickListener(this);
+        int color = getResources().getColor(R.color.black_trans_twenty);
+        dlMain.setScrimColor(color);
         init(savedInstanceState);
     }
 
@@ -190,5 +204,19 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 }
             }
         };
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.btnMenuMain:
+                if(dlMain.isDrawerOpen(llMenuMain)) {
+                    dlMain.closeDrawer(llMenuMain);
+                }
+                else {
+                    dlMain.openDrawer(llMenuMain);
+                }
+                break;
+        }
     }
 }
