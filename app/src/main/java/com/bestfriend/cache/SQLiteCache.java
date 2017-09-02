@@ -34,6 +34,7 @@ public class SQLiteCache {
                     @Override
                     public void onUpgradeDatabase(SQLiteAdapter db, int ov, int nv) {
                         SMPadalaLib.createTables(db);
+                        SMPadalaLib.updateTables(db, ov, nv);
                     }
                 });
                 CACHE.put(name, db);

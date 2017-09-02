@@ -21,6 +21,7 @@ import com.bestfriend.callback.Interface.OnInitializeCallback;
 import com.bestfriend.constant.App;
 import com.bestfriend.constant.DialogTag;
 import com.bestfriend.constant.RequestCode;
+import com.bestfriend.core.SMPadalaLib;
 import com.codepan.callback.Interface.OnPermissionGrantedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;

@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/ivLogoSplash"
-            android:layout_width="@dimen/fifty_three"
-            android:layout_height="@dimen/fifty"
+            android:layout_width="@dimen/sixty"
+            android:layout_height="@dimen/sixty"
             android:src="@drawable/ic_logo"/>
 
         <com.codepan.widget.CodePanLabel

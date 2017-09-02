@@ -1,10 +1,15 @@
 package com.bestfriend.core;
 
+import android.util.Log;
+
 import com.bestfriend.model.CustomerObj;
 import com.bestfriend.model.RemittanceObj;
 import com.bestfriend.schema.Tables;
 import com.bestfriend.schema.Tables.TB;
+import com.codepan.database.Condition;
+import com.codepan.database.Condition.Operator;
 import com.codepan.database.SQLiteAdapter;
+import com.codepan.database.SQLiteQuery;
 
 import net.sqlcipher.Cursor;
 
@@ -12,15 +17,28 @@ import java.util.ArrayList;
 
 public class Data {
 
-    public static ArrayList<RemittanceObj> loadRemittance(SQLiteAdapter db) {
+    public static ArrayList<RemittanceObj> loadRemittance(SQLiteAdapter db, String search, String smDate,
+                                                          String start, int limit) {
         ArrayList<RemittanceObj> remittanceList = new ArrayList<>();
+        SQLiteQuery query = new SQLiteQuery();
+        if(smDate != null) {
+            query.add(new Condition("r.smDate", smDate));
+        }
+        if(search != null) {
+            query.add(new Condition("r.referenceNo", search, Operator.LIKE));
+        }
+        if(start != null) {
+            query.add(new Condition("r.ID", start, Operator.LESS_THAN));
+        }
+        String condition = query.hasConditions() ? " WHERE " + query.getConditions() + " " : "";
         String r = Tables.getName(TB.REMITTANCE);
         String c = Tables.getName(TB.CUSTOMER);
-        String query = "SELECT r.ID, r.dDate, r.dTime, r.smDate, r.smTime, r.charge, r.type, " +
+        String sql = "SELECT r.ID, r.dDate, r.dTime, r.smDate, r.smTime, r.charge, r.type, " +
                 "r.amount, r.referenceNo, r.balance, r.mobileNo, r.isClaimed, c.ID, c.name, " +
-                "c.photo, c.address, c.mobileNo FROM " + r + " h LEFT JOIN " + c + " c " +
-                "ON c.ID = d.customerID ORDER BY r.ID DESC";
-        Cursor cursor = db.read(query);
+                "c.photo, c.address, c.mobileNo FROM " + r + " r LEFT JOIN " + c + " c " +
+                "ON c.ID = r.customerID " + condition + "ORDER BY r.ID DESC LIMIT " + limit;
+        Log.e("DEPANOT", "" + sql);
+        Cursor cursor = db.read(sql);
         while(cursor.moveToNext()) {
             RemittanceObj remittance = new RemittanceObj();
             remittance.ID = cursor.getString(0);

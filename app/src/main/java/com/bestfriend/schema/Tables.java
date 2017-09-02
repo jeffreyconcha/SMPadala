@@ -16,7 +16,6 @@ public class Tables {
         switch(tb) {
             case CUSTOMER:
                 query.add(new Field("ID", true));
-                query.add(new Field("firstName", DataType.TEXT));
                 query.add(new Field("name", DataType.TEXT));
                 query.add(new Field("photo", DataType.TEXT));
                 query.add(new Field("address", DataType.TEXT));

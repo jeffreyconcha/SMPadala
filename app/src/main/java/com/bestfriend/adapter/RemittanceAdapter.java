@@ -63,21 +63,15 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
                 String date = CodePanUtils.getCalendarDate(obj.smDate, true, true);
                 holder.tvDateRemittance.setText(date);
             }
-            if(obj.smTime != null) {
-                String time = CodePanUtils.getNormalTime(obj.smTime, false);
-                holder.tvTimeRemittance.setText(time);
-            }
+            holder.tvTimeRemittance.setText(obj.smTime);
             CustomerObj receive = obj.customer;
             if(receive != null) {
                 holder.tvNameRemittance.setText(receive.name);
             }
-            String charge = "P" + nf.format(obj.charge);
-            String amount = "P" + nf.format(obj.amount);
-            holder.tvChargeRemittance.setText(charge);
-            holder.tvAmountRemittance.setText(amount);
+            holder.tvChargeRemittance.setText(nf.format(obj.charge));
+            holder.tvAmountRemittance.setText(nf.format(obj.amount));
             if(obj.hasBalance) {
-                String balance = "P" + nf.format(obj.balance);
-                holder.tvBalanceRemittance.setText(balance);
+                holder.tvBalanceRemittance.setText(nf.format(obj.balance));
             }
             else {
                 holder.tvBalanceRemittance.setText(R.string.pending);

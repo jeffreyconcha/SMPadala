@@ -15,7 +15,8 @@
     <string name="pending">Pending</string>
     <string name="claimed">Claimed</string>
     <string name="search">Search</string>
-    <string name="customer">Customer</string>
+    <string name="customers">Customers</string>
+    <string name="back_up_data">Back-up Data</string>
     <string name="permission_title">Permissions Required</string>
     <string name="permission_message">Please enable the required permissions to continue.</string>
 </resources>

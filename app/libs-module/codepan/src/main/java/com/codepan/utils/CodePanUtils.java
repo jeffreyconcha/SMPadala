@@ -1618,7 +1618,7 @@ public class CodePanUtils {
     }
 
     public static void alertToast(FragmentActivity activity, String message) {
-        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
+        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.fifty);
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.alert_toast_layout, (ViewGroup) activity.findViewById(R.id.rlAlertToast));
         CodePanLabel text = (CodePanLabel) layout.findViewById(R.id.tvMessageAlertToast);
@@ -1631,7 +1631,7 @@ public class CodePanUtils {
     }
 
     public static void alertToast(FragmentActivity activity, SpannableStringBuilder ssb) {
-        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
+        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.fifty);
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.alert_toast_layout, (ViewGroup) activity.findViewById(R.id.rlAlertToast));
         CodePanLabel text = (CodePanLabel) layout.findViewById(R.id.tvMessageAlertToast);
@@ -1644,7 +1644,7 @@ public class CodePanUtils {
     }
 
     public static void alertToast(FragmentActivity activity, SpannableStringBuilder ssb, int duration) {
-        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
+        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.fifty);
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.alert_toast_layout, (ViewGroup) activity.findViewById(R.id.rlAlertToast));
         CodePanLabel text = (CodePanLabel) layout.findViewById(R.id.tvMessageAlertToast);
@@ -1657,7 +1657,7 @@ public class CodePanUtils {
     }
 
     public static void alertToast(FragmentActivity activity, int res) {
-        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
+        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.fifty);
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.alert_toast_layout, (ViewGroup) activity.findViewById(R.id.rlAlertToast));
         CodePanLabel text = (CodePanLabel) layout.findViewById(R.id.tvMessageAlertToast);
@@ -1670,7 +1670,7 @@ public class CodePanUtils {
     }
 
     public static void alertToast(FragmentActivity activity, String message, int duration, ArrayList<SpannableMap> list, Typeface typeface) {
-        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
+        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.fifty);
         LayoutInflater inflater = activity.getLayoutInflater();
         View layout = inflater.inflate(R.layout.alert_toast_layout, (ViewGroup) activity.findViewById(R.id.rlAlertToast));
         CodePanLabel text = (CodePanLabel) layout.findViewById(R.id.tvMessageAlertToast);

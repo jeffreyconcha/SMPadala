@@ -1,11 +1,15 @@
 package com.bestfriend.core;
 
+import android.content.Context;
+
+import com.bestfriend.constant.App;
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.schema.Tables;
 import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.database.SQLiteQuery.DataType;
 import com.codepan.utils.CodePanUtils;
 
 import java.util.Arrays;
@@ -21,6 +25,16 @@ public class SMPadalaLib {
         for(TB tb : tableList) {
             String table = getName(tb);
             binder.createTable(table, create(tb));
+        }
+        binder.finish();
+    }
+
+    public static void updateTables(SQLiteAdapter db, int o, int n) {
+        SQLiteBinder binder = new SQLiteBinder(db);
+        String column = "customerID";
+        String table = Tables.getName(TB.REMITTANCE);
+        if(!db.isColumnExists(table, column)) {
+            binder.addColumn(table, DataType.INTEGER, column);
         }
         binder.finish();
     }
@@ -63,5 +77,9 @@ public class SMPadalaLib {
             binder.update(table, query, remittanceID);
         }
         return binder.finish();
+    }
+
+    public static boolean backUpData(Context context, boolean external) {
+        return CodePanUtils.extractDatabase(context, App.DB_BACKUP, App.DB, external);
     }
 }
