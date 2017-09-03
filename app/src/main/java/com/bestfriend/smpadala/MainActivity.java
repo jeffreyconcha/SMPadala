@@ -22,8 +22,11 @@ import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.bestfriend.adapter.RemittanceAdapter;
 import com.bestfriend.cache.SQLiteCache;
@@ -33,6 +36,7 @@ import com.bestfriend.constant.App;
 import com.bestfriend.constant.Key;
 import com.bestfriend.constant.Notification;
 import com.bestfriend.constant.ProcessName;
+import com.bestfriend.constant.RemittanceStatus;
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.constant.RequestCode;
 import com.bestfriend.core.Data;
@@ -40,10 +44,13 @@ import com.bestfriend.core.SMPadalaLib;
 import com.bestfriend.model.CustomerObj;
 import com.bestfriend.model.ReceiveObj;
 import com.bestfriend.model.RemittanceObj;
+import com.codepan.calendar.callback.Interface.OnPickDateCallback;
+import com.codepan.calendar.view.CalendarView;
 import com.codepan.callback.Interface.OnPermissionGrantedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
+import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 
 import java.util.ArrayList;
@@ -55,20 +62,26 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     private final int LIMIT = 200;
     private final long IDLE_TIME = 500;
 
-    private OnPermissionGrantedCallback permissionGrantedCallback;
+    private CodePanButton btnMenuMain, btnShowFilterMain, btnDateMain, btnTypeMain,
+            btnStatusMain, btnFilterMain, btnClearMain;
     private LinearLayout llMenuMain, llCustomersMain, llBackUpMain;
+    private OnPermissionGrantedCallback permissionGrantedCallback;
     private int visibleItem, totalItem, firstVisible;
     private ArrayList<RemittanceObj> remittanceList;
     private LocalBroadcastManager broadcastManager;
+    private String search, smDate, start, status;
+    private int type = RemittanceType.DEFAULT;
+    private CheckBox cbTypeMain, cbStatusMain;
     private FragmentTransaction transaction;
     private CodePanTextField etSearchMain;
     private boolean isInitialized, isEnd;
-    private String search, smDate, start;
+    private RelativeLayout rlFilterMain;
     private Handler inputFinishHandler;
     private BroadcastReceiver receiver;
-    private CodePanButton btnMenuMain;
     private RemittanceAdapter adapter;
+    private CodePanLabel tvDateMain;
     private FragmentManager manager;
+    private ImageView ivFilterMain;
     private DrawerLayout dlMain;
     private SQLiteAdapter db;
     private ListView lvMain;
@@ -79,6 +92,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         super.onStart();
         if(isInitialized) {
             registerReceiver();
+            loadRemittance(db);
         }
     }
 
@@ -102,16 +116,34 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         setContentView(R.layout.main_layout);
         this.manager = getSupportFragmentManager();
         this.inputFinishHandler = new Handler();
+        btnShowFilterMain = (CodePanButton) findViewById(R.id.btnShowFilterMain);
         llCustomersMain = (LinearLayout) findViewById(R.id.llCustomersMain);
         etSearchMain = (CodePanTextField) findViewById(R.id.etSearchMain);
+        btnStatusMain = (CodePanButton) findViewById(R.id.btnStatusMain);
+        rlFilterMain = (RelativeLayout) findViewById(R.id.rlFilterMain);
         llBackUpMain = (LinearLayout) findViewById(R.id.llBackUpMain);
         btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
+        btnDateMain = (CodePanButton) findViewById(R.id.btnDateMain);
+        btnTypeMain = (CodePanButton) findViewById(R.id.btnTypeMain);
+        btnFilterMain = (CodePanButton) findViewById(R.id.btnFilterMain);
+        btnClearMain = (CodePanButton) findViewById(R.id.btnClearMain);
+        ivFilterMain = (ImageView) findViewById(R.id.ivFilterMain);
         llMenuMain = (LinearLayout) findViewById(R.id.llMenuMain);
+        tvDateMain = (CodePanLabel) findViewById(R.id.tvDateMain);
+        cbStatusMain = (CheckBox) findViewById(R.id.cbStatusMain);
+        cbTypeMain = (CheckBox) findViewById(R.id.cbTypeMain);
         dlMain = (DrawerLayout) findViewById(R.id.dlMain);
         lvMain = (ListView) findViewById(R.id.lvMain);
+        btnShowFilterMain.setOnClickListener(this);
         btnMenuMain.setOnClickListener(this);
+        btnClearMain.setOnClickListener(this);
+        btnFilterMain.setOnClickListener(this);
+        btnDateMain.setOnClickListener(this);
+        btnTypeMain.setOnClickListener(this);
+        btnStatusMain.setOnClickListener(this);
         llBackUpMain.setOnClickListener(this);
         llCustomersMain.setOnClickListener(this);
+        rlFilterMain.setOnClickListener(this);
         int color = getResources().getColor(R.color.black_trans_twenty);
         dlMain.setScrimColor(color);
         lvMain.setOnItemClickListener(new OnItemClickListener() {
@@ -210,7 +242,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             @Override
             public void run() {
                 try {
-                    remittanceList = Data.loadRemittance(db, search, smDate, start, LIMIT);
+                    remittanceList = Data.loadRemittance(db, search, smDate, status, start, type, LIMIT);
                     if(remittanceList.size() < LIMIT) {
                         isEnd = true;
                         start = null;
@@ -245,7 +277,8 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             @Override
             public void run() {
                 try {
-                    ArrayList<RemittanceObj> additionalList = Data.loadRemittance(db, search, smDate, start, LIMIT);
+                    ArrayList<RemittanceObj> additionalList = Data.loadRemittance(db, search,
+                            smDate, status, start, type, LIMIT);
                     remittanceList.addAll(additionalList);
                     if(additionalList.size() < LIMIT) {
                         isEnd = true;
@@ -422,6 +455,60 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 transaction.add(R.id.rlMain, alert);
                 transaction.addToBackStack(null);
                 transaction.commit();
+                break;
+            case R.id.btnShowFilterMain:
+                if(rlFilterMain.getVisibility() == View.GONE) {
+                    CodePanUtils.fadeIn(rlFilterMain);
+                }
+                break;
+            case R.id.rlFilterMain:
+                if(rlFilterMain.getVisibility() == View.VISIBLE) {
+                    CodePanUtils.fadeOut(rlFilterMain);
+                }
+                break;
+            case R.id.btnDateMain:
+                CalendarView calendar = new CalendarView();
+                calendar.setOnPickDateCallback(new OnPickDateCallback() {
+                    @Override
+                    public void onPickDate(String date) {
+                        String cal = CodePanUtils.getCalendarDate(date, true, true);
+                        tvDateMain.setText(cal);
+                        smDate = date;
+                    }
+                });
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                        R.anim.fade_in, R.anim.fade_out);
+                transaction.add(R.id.rlMain, calendar);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+            case R.id.btnTypeMain:
+                cbTypeMain.setChecked(!cbTypeMain.isChecked());
+                break;
+            case R.id.btnStatusMain:
+                cbStatusMain.setChecked(!cbStatusMain.isChecked());
+                break;
+            case R.id.btnFilterMain:
+                CodePanUtils.fadeOut(rlFilterMain);
+                ivFilterMain.setVisibility(View.VISIBLE);
+                this.status = !cbStatusMain.isChecked() ? RemittanceStatus.PENDING : null;
+                this.type = !cbTypeMain.isChecked() ? RemittanceType.RECEIVE :
+                        RemittanceType.DEFAULT;
+                loadRemittance(db);
+                break;
+            case R.id.btnClearMain:
+                CodePanUtils.fadeOut(rlFilterMain);
+                ivFilterMain.setVisibility(View.GONE);
+                tvDateMain.setText(R.string.select_date);
+                cbTypeMain.setChecked(true);
+                cbStatusMain.setChecked(true);
+                etSearchMain.setText(null);
+                type = RemittanceType.DEFAULT;
+                smDate = null;
+                status = null;
+                search = null;
+                loadRemittance(db);
                 break;
         }
     }

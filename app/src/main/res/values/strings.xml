@@ -20,6 +20,11 @@
     <string name="receive">Receive</string>
     <string name="cancel">Cancel</string>
     <string name="search">Search</string>
+    <string name="select_date">Select Date</string>
+    <string name="show_transfers">Show Transfers</string>
+    <string name="show_claimed">Show Claimed</string>
+    <string name="clear">Clear</string>
+    <string name="filter">Filter</string>
     <string name="customers">Customers</string>
     <string name="back_up_data">Back-up Data</string>
     <string name="permission_title">Permissions Required</string>

@@ -2,6 +2,8 @@ package com.bestfriend.core;
 
 import android.util.Log;
 
+import com.bestfriend.constant.RemittanceStatus;
+import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.model.CustomerObj;
 import com.bestfriend.model.ReceiveObj;
 import com.bestfriend.model.RemittanceObj;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 public class Data {
 
     public static ArrayList<RemittanceObj> loadRemittance(SQLiteAdapter db, String search, String smDate,
-                                                          String start, int limit) {
+                                                          String status, String start, int type, int limit) {
         ArrayList<RemittanceObj> remittanceList = new ArrayList<>();
         SQLiteQuery query = new SQLiteQuery();
         if(smDate != null) {
@@ -27,6 +29,19 @@ public class Data {
         }
         if(search != null) {
             query.add(new Condition("h.referenceNo", search, Operator.LIKE));
+        }
+        if(status != null) {
+            switch(status) {
+                case RemittanceStatus.CLAIMED:
+                    query.add(new Condition("h.isClaimed", true));
+                    break;
+                case RemittanceStatus.PENDING:
+                    query.add(new Condition("h.isClaimed", false));
+                    break;
+            }
+        }
+        if(type != RemittanceType.DEFAULT) {
+            query.add(new Condition("h.type", type));
         }
         if(start != null) {
             query.add(new Condition("h.ID", start, Operator.LESS_THAN));

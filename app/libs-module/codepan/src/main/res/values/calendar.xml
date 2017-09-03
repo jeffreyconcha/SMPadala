@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cal_primary">#27AE60</color>
+    <color name="cal_primary">#00A79D</color>
     <color name="cal_text">#6D6E71</color>
     <color name="cal_header">@color/white</color>
     <color name="cal_title">@color/cal_text</color>
     <color name="cal_date">@color/cal_text</color>
     <color name="cal_month">@color/cal_text</color>
     <color name="cal_week">#B2B3B5</color>
-    <color name="cal_bg_selected">#3396D8</color>
-    <color name="cal_bg_pressed">#2376B8</color>
+    <color name="cal_bg_selected">@color/cal_primary</color>
+    <color name="cal_bg_pressed">#00978D</color>
     <color name="cal_day_active">@color/cal_text</color>
     <color name="cal_day_inactive">#B2B3B5</color>
     <color name="cal_day_selected">@color/white</color>
@@ -29,16 +29,16 @@
     <string name="cal_thursday">T</string>
     <string name="cal_friday">F</string>
     <string name="cal_saturday">S</string>
-    <string name="cal_title_font">@string/proxima_nova_bold</string>
-    <string name="cal_month_font">@string/proxima_nova_light</string>
-    <string name="cal_year_font">@string/proxima_nova_light</string>
-    <string name="cal_week_font">@string/proxima_nova_light</string>
-    <string name="cal_day_font">@string/proxima_nova_light</string>
-    <string name="cal_date_font">@string/proxima_nova_light</string>
-    <dimen name="cal_text_size">@dimen/eighteen</dimen>
-    <dimen name="cal_text_dimen">@dimen/thirty_two</dimen>
-    <dimen name="cal_padding">@dimen/five</dimen>
-    <dimen name="cal_spacing">@dimen/one</dimen>
+    <string name="cal_title_font">@string/helvetica_neue_mid</string>
+    <string name="cal_month_font">@string/helvetica_neue_light</string>
+    <string name="cal_year_font">@string/helvetica_neue_light</string>
+    <string name="cal_week_font">@string/helvetica_neue_light</string>
+    <string name="cal_day_font">@string/helvetica_neue_light</string>
+    <string name="cal_date_font">@string/helvetica_neue_light</string>
+    <dimen name="cal_text_size">@dimen/ten</dimen>
+    <dimen name="cal_text_dimen">@dimen/eighteen</dimen>
+    <dimen name="cal_padding">@dimen/four</dimen>
+    <dimen name="cal_spacing">@dimen/p_one</dimen>
     <integer name="day_col">7</integer>
     <integer name="day_row">6</integer>
     <integer name="month_col">4</integer>

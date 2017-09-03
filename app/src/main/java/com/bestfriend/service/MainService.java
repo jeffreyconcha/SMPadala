@@ -8,7 +8,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.bestfriend.cache.SQLiteCache;
 import com.bestfriend.constant.App;
@@ -56,39 +55,68 @@ public class MainService extends Service {
         final int type = intent.getIntExtra(Key.RECEIVER, 0);
         switch(type) {
             case Receiver.SMS_RECEIVER:
-                long timestamp = intent.getLongExtra(Key.TIMESTAMP, 0L);
-                String sender = intent.getStringExtra(Key.SENDER);
-                String message = intent.getStringExtra(Key.MESSAGE);
-                String smDate = CodePanUtils.getDate(timestamp);
-                String smTime = CodePanUtils.getTime(timestamp);
-                //if(sender != null && sender.equalsIgnoreCase(RemittanceKey.SENDER)) {
-                if(message != null) {
-                    if(message.contains(RemittanceKey.RECEIVE)) {
-                        String[] fields = message.split(" ");
-                        String amount = fields[4].replace("PHP", "").replace(",", "");
-                        String charge = fields[8].replace("PHP", "").replace(",", "");
-                        String mobileNo = fields[12].split("\\.")[0];
-                        String referenceNo = fields[17].split(":")[1];
-                        saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                charge, mobileNo, null, referenceNo);
-                    }
-                    else if(message.contains(RemittanceKey.TRANSFER)) {
-                        String[] fields = message.split(" ");
-                        String amount = fields[3].replace("PHP", "").replace(",", "");
-                        String charge = fields[7].replace("PHP", "").replace(",", "");
-                        String field = fields[13].replace("bal:PHP", "").replace(".Ref", "").replace(",", "");
-                        String balance = field.split(":")[0];
-                        String referenceNo = field.split(":")[1];
-                        saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                charge, null, balance, referenceNo);
-                    }
-                    else if(message.contains(RemittanceKey.BALANCE)) {
-                        String[] fields = message.split(" ");
-                        String balance = fields[1].replace("Bal:PHP", "").replace(",", "");
-                        updateBalance(db, balance);
+                try {
+                    long timestamp = intent.getLongExtra(Key.TIMESTAMP, 0L);
+                    String sender = intent.getStringExtra(Key.SENDER);
+                    String message = intent.getStringExtra(Key.MESSAGE);
+                    String smDate = CodePanUtils.getDate(timestamp);
+                    String smTime = CodePanUtils.getTime(timestamp);
+                    if(sender != null && (sender.equalsIgnoreCase(RemittanceKey.SENDER_SP) ||
+                            sender.equalsIgnoreCase(RemittanceKey.SENDER_SM))) {
+                        if(message != null) {
+                            if(message.contains(RemittanceKey.RECEIVE_SP)) {
+                                String[] fields = message.split(" ");
+                                String amount = fields[4].replace("PHP", "").replace(",", "");
+                                String charge = fields[8].replace("PHP", "").replace(",", "");
+                                String mobileNo = fields[12].split("\\.")[0];
+                                String referenceNo = fields[17].split(":")[1];
+                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
+                                        charge, mobileNo, null, referenceNo);
+                            }
+                            else if(message.contains(RemittanceKey.TRANSFER_SP)) {
+                                String[] fields = message.split(" ");
+                                String amount = fields[3].replace("PHP", "").replace(",", "");
+                                String charge = fields[7].replace("PHP", "").replace(",", "");
+                                String field = fields[13].replace("bal:PHP", "").replace(".Ref", "").replace(",", "");
+                                String balance = field.split(":")[0];
+                                String referenceNo = field.split(":")[1];
+                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+                                        charge, null, balance, referenceNo);
+                            }
+                            else if(message.contains(RemittanceKey.TRANSFER_SM)) {
+                                String[] fields = message.split(" ");
+                                String amount = fields[5].replace("PHP", "").replace(",", "");
+                                String balance = fields[18].replace("PHP", "").replace(",", "");
+                                if(balance.length() > 1) {
+                                    int lastIndex = balance.length() - 1;
+                                    char period = balance.charAt(lastIndex);
+                                    if(period == '.') {
+                                        balance = balance.substring(0, lastIndex - 1);
+                                    }
+                                }
+                                String referenceNo = fields[21];
+                                if(referenceNo.length() > 1) {
+                                    int lastIndex = referenceNo.length() - 1;
+                                    char period = referenceNo.charAt(lastIndex);
+                                    if(period == '.') {
+                                        referenceNo = referenceNo.substring(0, lastIndex - 1);
+                                    }
+                                }
+                                String charge = "0.00";
+                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+                                        charge, null, balance, referenceNo);
+                            }
+                            else if(message.contains(RemittanceKey.BALANCE)) {
+                                String[] fields = message.split(" ");
+                                String balance = fields[1].replace("Bal:PHP", "").replace(",", "");
+                                updateBalance(db, balance);
+                            }
+                        }
                     }
                 }
-                //}
+                catch(Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
