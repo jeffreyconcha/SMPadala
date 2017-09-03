@@ -4,7 +4,6 @@ public class RemittanceObj extends TransactionObj {
 
     public String smDate;
     public String smTime;
-    public String name;
     public String referenceNo;
     public String mobileNo;
     public float amount;
@@ -12,6 +11,6 @@ public class RemittanceObj extends TransactionObj {
     public float charge;
     public boolean isClaimed;
     public boolean hasBalance;
-    public CustomerObj customer;
+    public ReceiveObj receive;
     public int type;
 }

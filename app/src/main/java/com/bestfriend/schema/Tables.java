@@ -8,7 +8,8 @@ public class Tables {
 
     public enum TB {
         REMITTANCE,
-        CUSTOMER
+        CUSTOMER,
+        RECEIVE
     }
 
     public static SQLiteQuery create(TB tb) {
@@ -33,8 +34,14 @@ public class Tables {
                 query.add(new Field("referenceNo", DataType.TEXT));
                 query.add(new Field("balance", DataType.TEXT));
                 query.add(new Field("mobileNo", DataType.TEXT));
-                query.add(new Field("customerID", DataType.INTEGER));
                 query.add(new Field("isClaimed", 0));
+                break;
+            case RECEIVE:
+                query.add(new Field("ID", true));
+                query.add(new Field("dDate", DataType.TEXT));
+                query.add(new Field("dTime", DataType.TEXT));
+                query.add(new Field("customerID", DataType.INTEGER));
+                query.add(new Field("remittanceID", DataType.INTEGER));
                 break;
         }
         return query;
@@ -48,6 +55,9 @@ public class Tables {
                 break;
             case REMITTANCE:
                 name = "remittance_tb";
+                break;
+            case RECEIVE:
+                name = "receive_tb";
                 break;
         }
         return name;

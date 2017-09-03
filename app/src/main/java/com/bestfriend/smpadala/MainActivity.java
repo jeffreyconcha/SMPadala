@@ -20,11 +20,16 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.bestfriend.adapter.RemittanceAdapter;
+import com.bestfriend.cache.SQLiteCache;
 import com.bestfriend.callback.Interface.OnInitializeCallback;
+import com.bestfriend.callback.Interface.OnReceiveRemittanceCallback;
+import com.bestfriend.constant.App;
 import com.bestfriend.constant.Key;
 import com.bestfriend.constant.Notification;
 import com.bestfriend.constant.ProcessName;
@@ -32,6 +37,8 @@ import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.constant.RequestCode;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
+import com.bestfriend.model.CustomerObj;
+import com.bestfriend.model.ReceiveObj;
 import com.bestfriend.model.RemittanceObj;
 import com.codepan.callback.Interface.OnPermissionGrantedCallback;
 import com.codepan.database.SQLiteAdapter;
@@ -107,6 +114,46 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         llCustomersMain.setOnClickListener(this);
         int color = getResources().getColor(R.color.black_trans_twenty);
         dlMain.setScrimColor(color);
+        lvMain.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                final RemittanceObj remittance = remittanceList.get(i);
+                if(remittance.type == RemittanceType.RECEIVE) {
+                    if(!remittance.isClaimed) {
+                        ReceiveFragment receive = new ReceiveFragment();
+                        receive.setRemittance(remittance);
+                        receive.setOnReceiveRemittanceCallback(new OnReceiveRemittanceCallback() {
+                            @Override
+                            public void onReceiveRemittance(RemittanceObj obj) {
+                                remittanceList.set(i, obj);
+                                updateRemittance(true);
+                            }
+                        });
+                        transaction = manager.beginTransaction();
+                        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                                R.anim.fade_in, R.anim.fade_out);
+                        transaction.add(R.id.rlMain, receive);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
+                    else {
+                        ReceiveObj receive = remittance.receive;
+                        if(receive != null) {
+                            CustomerObj customer = receive.customer;
+                            if(customer != null) {
+                                String receiveDate = CodePanUtils.getCalendarDate(receive.dDate, true, true);
+                                String time = CodePanUtils.getNormalTime(receive.dTime, false);
+                                String current = CodePanUtils.getDate();
+                                String date = current.equals(receive.dDate) ? "today" : "on " + receiveDate;
+                                String message = "This transaction was claimed by " + customer.name + " " +
+                                        date + " at " + time;
+                                SMPadalaLib.alertDialog(MainActivity.this, "Transaction Claimed", message);
+                            }
+                        }
+                    }
+                }
+            }
+        });
         lvMain.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -152,6 +199,13 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     }
 
     public void loadRemittance(final SQLiteAdapter db) {
+        final Handler handler = new Handler(new Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                updateRemittance(false);
+                return true;
+            }
+        });
         Thread bg = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -166,7 +220,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                         int lastPosition = remittanceList.size() - 1;
                         start = remittanceList.get(lastPosition).ID;
                     }
-                    loadRemittanceHandler.obtainMessage().sendToTarget();
+                    handler.obtainMessage().sendToTarget();
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -177,15 +231,15 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         bg.start();
     }
 
-    Handler loadRemittanceHandler = new Handler(new Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            updateRemittance(false);
-            return true;
-        }
-    });
-
     public void loadMoreRemittance(final SQLiteAdapter db) {
+        final Handler handler = new Handler(new Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                lvMain.setEnabled(true);
+                updateRemittance(true);
+                return true;
+            }
+        });
         lvMain.setEnabled(false);
         Thread bg = new Thread(new Runnable() {
             @Override
@@ -202,7 +256,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                         int lastPosition = additionalList.size() - 1;
                         start = additionalList.get(lastPosition).ID;
                     }
-                    loadMoreRemittanceHandler.obtainMessage().sendToTarget();
+                    handler.obtainMessage().sendToTarget();
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -212,15 +266,6 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         });
         bg.start();
     }
-
-    Handler loadMoreRemittanceHandler = new Handler(new Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            lvMain.setEnabled(true);
-            updateRemittance(true);
-            return true;
-        }
-    });
 
     public void updateRemittance(boolean isUpdate) {
         if(isUpdate) {
@@ -345,7 +390,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 dlMain.closeDrawer(llMenuMain);
                 String dDate = CodePanUtils.getDate();
                 String dTime = CodePanUtils.getTime();
-                for(int i = 0; i < 5; i++) {
+                for(int i = 0; i < 100; i++) {
                     float amount = i * 20;
                     float balance = i * 1000;
                     int type = i % 2 != 0 ? RemittanceType.RECEIVE : RemittanceType.TRANSFER;
@@ -382,6 +427,14 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     }
 
     public void backUpData(final boolean external) {
+        final Handler handler = new Handler(new Callback() {
+            @Override
+            public boolean handleMessage(Message message) {
+                CodePanUtils.alertToast(MainActivity.this, "Data has " +
+                        "been successfully backed-up.");
+                return true;
+            }
+        });
         if(!CodePanUtils.isThreadRunning(ProcessName.BACK_UP_DB)) {
             Thread bg = new Thread(new Runnable() {
                 @Override
@@ -389,7 +442,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                     try {
                         boolean result = SMPadalaLib.backUpData(MainActivity.this, external);
                         if(external && result) {
-                            backUpDataHandler.obtainMessage().sendToTarget();
+                            handler.obtainMessage().sendToTarget();
                         }
                     }
                     catch(Exception e) {
@@ -402,14 +455,6 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         }
     }
 
-    Handler backUpDataHandler = new Handler(new Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            CodePanUtils.alertToast(MainActivity.this, "Data has been successfully backed-up.");
-            return true;
-        }
-    });
-
     private Runnable inputFinishChecker = new Runnable() {
         @Override
         public void run() {
@@ -418,4 +463,11 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             }
         }
     };
+
+    public SQLiteAdapter getDatabase() {
+        if(db == null) {
+            db = SQLiteCache.getDatabase(this, App.DB);
+        }
+        return this.db;
+    }
 }

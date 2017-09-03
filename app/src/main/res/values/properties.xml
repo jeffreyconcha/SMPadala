@@ -6,7 +6,7 @@
     <color name="divider">@color/gray_sec</color>
     <dimen name="header">@dimen/twenty_five</dimen>
     <dimen name="scrollbar">@dimen/two</dimen>
-    <string name="dialog_title_font">@string/proxima_nova_semi_bold</string>
+    <string name="dialog_title_font">@string/helvetica_neue_mid</string>
     <integer name="pic_width">640</integer>
     <integer name="pic_height">360</integer>
     <integer name="min_overtime_hour">1</integer>

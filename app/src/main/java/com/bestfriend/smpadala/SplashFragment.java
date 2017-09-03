@@ -133,7 +133,7 @@ public class SplashFragment extends Fragment implements OnPermissionGrantedCallb
         File external = new File(externalPath);
         File internal = new File(internalPath);
         File src = external.exists() ? external : internal;
-        if(src.exists()) {
+        if(!SMPadalaLib.hasRemittance(db) && src.exists()) {
             File dst = main.getDatabasePath(App.DB);
             try {
                 db.close();

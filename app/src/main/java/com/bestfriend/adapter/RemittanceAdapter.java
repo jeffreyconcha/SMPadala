@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.model.CustomerObj;
+import com.bestfriend.model.ReceiveObj;
 import com.bestfriend.model.RemittanceObj;
 import com.bestfriend.smpadala.R;
 import com.codepan.utils.CodePanUtils;
@@ -64,9 +65,15 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
                 holder.tvDateRemittance.setText(date);
             }
             holder.tvTimeRemittance.setText(obj.smTime);
-            CustomerObj receive = obj.customer;
+            ReceiveObj receive = obj.receive;
             if(receive != null) {
-                holder.tvNameRemittance.setText(receive.name);
+                CustomerObj customer = receive.customer;
+                if(customer != null) {
+                    holder.tvNameRemittance.setText(customer.name);
+                }
+            }
+            else {
+                holder.tvNameRemittance.setText(null);
             }
             holder.tvChargeRemittance.setText(nf.format(obj.charge));
             holder.tvAmountRemittance.setText(nf.format(obj.amount));

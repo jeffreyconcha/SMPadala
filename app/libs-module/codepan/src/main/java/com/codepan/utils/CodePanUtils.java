@@ -2366,4 +2366,16 @@ public class CodePanUtils {
         }
         return null;
     }
+
+    public static void requiredField(CodePanLabel label) {
+        if(label != null) {
+            String text = label.getText().toString();
+            int length = text.length();
+            String name = text + "*";
+            ArrayList<SpannableMap> list = new ArrayList<>();
+            list.add(new SpannableMap(length, length + 1, Color.RED));
+            SpannableStringBuilder ssb = CodePanUtils.customizeText(list, name);
+            label.setText(ssb);
+        }
+    }
 }
