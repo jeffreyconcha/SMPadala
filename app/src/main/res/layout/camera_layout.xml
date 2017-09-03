@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/flCamera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.codepan.widget.FocusIndicatorView
+                android:id="@+id/dvCamera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/vCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"/>
+
+    <FrameLayout
+        android:layout_width="@dimen/twenty_three"
+        android:layout_height="@dimen/twenty_three"
+        android:layout_margin="@dimen/five">
+
+        <ImageView
+            android:layout_width="@dimen/nine"
+            android:layout_height="@dimen/eight"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_back"/>
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnBackCamera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/state_oval_trans_light"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/twenty_five"
+        android:layout_marginRight="@dimen/twenty_five">
+
+        <FrameLayout
+            android:id="@+id/flCaptureCamera"
+            android:layout_width="@dimen/thirty"
+            android:layout_height="@dimen/thirty"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_capture"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnCaptureCamera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_oval_trans_dark"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/flCaptureCamera"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/ten">
+
+            <ImageView
+                android:layout_width="@dimen/fourteen"
+                android:layout_height="@dimen/eleven"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_switch"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnSwitchCamera"
+                android:layout_width="@dimen/twenty_three"
+                android:layout_height="@dimen/twenty_three"
+                android:background="@drawable/state_oval_trans_light"/>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

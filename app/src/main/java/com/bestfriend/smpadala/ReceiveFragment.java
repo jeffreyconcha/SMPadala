@@ -1,5 +1,6 @@
 package com.bestfriend.smpadala;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,18 +11,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 
+import com.bestfriend.callback.Interface;
 import com.bestfriend.callback.Interface.OnReceiveRemittanceCallback;
+import com.bestfriend.callback.Interface.OnUsePhotoCallback;
+import com.bestfriend.constant.App;
 import com.bestfriend.constant.Result;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
@@ -42,13 +45,14 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 
     private CodePanLabel tvDateReceive, tvTimeReceive, tvAmountReceive, tvRefNoReceive,
             tvNameTitleReceive;
+    private CodePanButton btnCancelReceive, btnClaimReceive, btnPhotoReceive;
     private OnReceiveRemittanceCallback receiveRemittanceCallback;
     private CodePanTextField etMobileNoReceive, etAddressReceive;
-    private CodePanButton btnCancelReceive, btnClaimReceive;
     private ArrayList<CustomerObj> customerList;
     private AutoCompleteTextView etNameReceive;
     private FragmentTransaction transaction;
     private ArrayAdapter<String> adapter;
+    private ImageView ivPhotoReceive;
     private RemittanceObj remittance;
     private FragmentManager manager;
     private CustomerObj customer;
@@ -84,8 +88,11 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
         etAddressReceive = (CodePanTextField) view.findViewById(R.id.etAddressReceive);
         btnCancelReceive = (CodePanButton) view.findViewById(R.id.btnCancelReceive);
         btnClaimReceive = (CodePanButton) view.findViewById(R.id.btnClaimReceive);
+        btnPhotoReceive = (CodePanButton) view.findViewById(R.id.btnPhotoReceive);
+        ivPhotoReceive = (ImageView) view.findViewById(R.id.ivPhotoReceive);
         btnCancelReceive.setOnClickListener(this);
         btnClaimReceive.setOnClickListener(this);
+        btnPhotoReceive.setOnClickListener(this);
         if(remittance != null) {
             String date = CodePanUtils.getCalendarDate(remittance.smDate, true, true);
             String amount = "P" + nf.format(remittance.amount);
@@ -107,6 +114,12 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
                     customer = customerList.get(index);
                     etMobileNoReceive.setText(customer.mobileNo);
                     etAddressReceive.setText(customer.address);
+                    String photo = customer.photo;
+                    if(photo != null) {
+                        final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
+                                .getPath() + "/" + photo;
+                        CodePanUtils.displayImage(ivPhotoReceive, uri, R.drawable.ic_user);
+                    }
                 }
             }
         });
@@ -203,6 +216,25 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
                         SMPadalaLib.alertDialog(main, "Name Required", "Please input name.");
                     }
                 }
+                break;
+            case R.id.btnPhotoReceive:
+                CameraFragment camera = new CameraFragment();
+                camera.setOnUsePhotoCallback(new OnUsePhotoCallback() {
+                    @Override
+                    public void onUsePhoto(String fileName) {
+                        final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
+                                .getPath() + "/" + fileName;
+                        CodePanUtils.displayImage(ivPhotoReceive, uri, R.drawable.ic_user);
+                        photo = fileName;
+                        if(customer != null) {
+                            withChanges = true;
+                        }
+                    }
+                });
+                transaction = manager.beginTransaction();
+                transaction.add(R.id.rlMain, camera);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
         }
     }

@@ -32,18 +32,19 @@
             android:layout_marginTop="@dimen/five">
 
             <FrameLayout
-                android:layout_width="@dimen/fourty_five"
-                android:layout_height="@dimen/fourty_five"
+                android:layout_width="@dimen/forty_five"
+                android:layout_height="@dimen/forty_five"
                 android:layout_centerVertical="true">
 
                 <ImageView
-                    android:id="@+id/ivCustomerReceive"
+                    android:id="@+id/ivPhotoReceive"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_camera"/>
 
                 <com.codepan.widget.CodePanButton
-                    android:id="@+id/btnCustomerReceive"
+                    android:id="@+id/btnPhotoReceive"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/state_rect_trans_dark"/>
@@ -211,7 +212,7 @@
             android:gravity="start|top"
             android:imeOptions="actionDone"
             android:inputType="textCapWords"
-            android:minHeight="@dimen/fourty"
+            android:minHeight="@dimen/forty"
             android:padding="@dimen/five"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/nine"

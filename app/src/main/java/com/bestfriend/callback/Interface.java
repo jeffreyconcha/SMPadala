@@ -12,4 +12,12 @@ public class Interface {
     public interface OnReceiveRemittanceCallback {
         void onReceiveRemittance(RemittanceObj remittance);
     }
+
+    public interface OnRetakeCameraCallback {
+        void onRetakeCamera();
+    }
+
+    public interface OnUsePhotoCallback {
+        void onUsePhoto(String fileName);
+    }
 }
