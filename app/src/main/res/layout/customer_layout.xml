@@ -75,13 +75,20 @@
             android:id="@+id/lvCustomer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/llFooterCustomer"
+            android:layout_above="@+id/vDividerCustomer"
             android:layout_below="@+id/llHeaderCustomer"
             android:divider="@color/divider"
             android:dividerHeight="@dimen/p_one"
             android:listSelector="@drawable/state_rect_trans_dark"
             android:scrollbarSize="@dimen/scrollbar"
             android:scrollbarThumbVertical="@color/scrollbar"/>
+
+        <View
+            android:id="@+id/vDividerCustomer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/one"
+            android:layout_above="@+id/llFooterCustomer"
+            android:background="@color/divider"/>
 
         <LinearLayout
             android:id="@+id/llFooterCustomer"
