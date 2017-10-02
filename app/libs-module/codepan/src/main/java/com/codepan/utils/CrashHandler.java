@@ -6,7 +6,6 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 public class CrashHandler implements UncaughtExceptionHandler {
 
-	private float fileSize = 0f;
 	private Context context;
 	private String folder, password;
 

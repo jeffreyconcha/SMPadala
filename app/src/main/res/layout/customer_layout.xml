@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_bg"
+    android:clickable="true"
+    android:padding="@dimen/fifteen">
+
+    <RelativeLayout
+        android:layout_width="@dimen/two_hundred_seventy"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_rect_white_rad_five"
+        android:paddingBottom="@dimen/ten"
+        android:paddingTop="@dimen/ten">
+
+        <LinearLayout
+            android:id="@+id/llHeaderCustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/customers"
+                android:textColor="@color/theme_pri"
+                android:textSize="@dimen/ten"
+                codePan:typeface="@string/dialog_title_font"/>
+
+            <FrameLayout
+                android:id="@+id/flSearchCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/five">
+
+                <com.codepan.widget.CodePanTextField
+                    android:id="@+id/etSearchCustomer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_gray_qui_rad_one"
+                    android:hint="@string/search"
+                    android:paddingBottom="@dimen/five"
+                    android:paddingEnd="@dimen/fifteen"
+                    android:paddingLeft="@dimen/four"
+                    android:paddingRight="@dimen/fifteen"
+                    android:paddingStart="@dimen/four"
+                    android:paddingTop="@dimen/five"
+                    android:textColor="@color/gray_pri"
+                    android:textColorHint="@color/gray_ter"
+                    android:textSize="@dimen/nine"
+                    codePan:typeface="@string/helvetica_neue_light"/>
+
+                <ImageView
+                    android:layout_width="@dimen/eleven"
+                    android:layout_height="@dimen/eleven"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/four"
+                    android:layout_marginRight="@dimen/four"
+                    android:src="@drawable/ic_search_dark"/>
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
+                android:background="@color/divider"/>
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lvCustomer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/llFooterCustomer"
+            android:layout_below="@+id/llHeaderCustomer"
+            android:divider="@color/divider"
+            android:dividerHeight="@dimen/p_one"
+            android:listSelector="@drawable/state_rect_trans_dark"
+            android:scrollbarSize="@dimen/scrollbar"
+            android:scrollbarThumbVertical="@color/scrollbar"/>
+
+        <LinearLayout
+            android:id="@+id/llFooterCustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/five"
+            android:orientation="horizontal">
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnCancelCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_gray_qua_rad_three"
+                android:minWidth="@dimen/sixty"
+                android:paddingBottom="@dimen/five"
+                android:paddingLeft="@dimen/three"
+                android:paddingRight="@dimen/three"
+                android:paddingTop="@dimen/five"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                android:visibility="visible"
+                codePan:typeface="@string/helvetica_neue_mid"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnAddCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/three"
+                android:layout_marginStart="@dimen/three"
+                android:background="@drawable/state_rect_theme_sec_rad_three"
+                android:minWidth="@dimen/sixty"
+                android:paddingBottom="@dimen/five"
+                android:paddingLeft="@dimen/three"
+                android:paddingRight="@dimen/three"
+                android:paddingTop="@dimen/five"
+                android:text="@string/add_new"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_mid"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

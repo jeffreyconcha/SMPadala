@@ -428,6 +428,15 @@ public class SQLiteQuery {
 				+ getGroups() + getOrders();
 	}
 
+	public String selectCount(Field field) {
+		String conditions = "";
+		if(hasConditions()) {
+			conditions = " WHERE " + getConditions();
+		}
+		return "SELECT COUNT(" + field.field + ") FROM " + getTables() + conditions
+				+ getGroups() + getOrders();
+	}
+
 	public String addColumn(String table, String column, String defText) {
 		String value = defText != null ? defText : "NULL";
 		return "ALTER TABLE " + table + " ADD COLUMN " + column + " TEXT DEFAULT " + value + "";

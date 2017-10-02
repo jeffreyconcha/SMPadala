@@ -11,17 +11,18 @@
     <LinearLayout
         android:layout_width="@dimen/two_hundred_fifty"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="@drawable/bg_rect_white_rad_five"
         android:orientation="vertical"
-        android:padding="@dimen/ten"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:padding="@dimen/ten">
 
         <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvTitleAddCustomer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/receive_money"
+            android:text="@string/add_customer"
             android:textColor="@color/theme_pri"
             android:textSize="@dimen/ten"
             codePan:typeface="@string/dialog_title_font"/>
@@ -37,118 +38,24 @@
                 android:layout_centerVertical="true">
 
                 <ImageView
-                    android:id="@+id/ivPhotoReceive"
+                    android:id="@+id/ivPhotoAddCustomer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_camera"/>
 
                 <com.codepan.widget.CodePanButton
-                    android:id="@+id/btnPhotoReceive"
+                    android:id="@+id/btnPhotoAddCustomer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/state_rect_trans_dark"/>
 
             </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/llDetailsReceive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:gravity="end"
-                android:orientation="vertical">
-
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvDateReceive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvTimeReceive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/two"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvAmountReceive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/two"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvRefNoReceive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/two"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/fifteen"
-                android:layout_marginRight="@dimen/fifteen"
-                android:layout_toLeftOf="@+id/llDetailsReceive"
-                android:layout_toStartOf="@+id/llDetailsReceive"
-                android:orientation="vertical">
-
-                <com.codepan.widget.CodePanLabel
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/date"
-                    android:textColor="@color/gray_ter"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-                <com.codepan.widget.CodePanLabel
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/two"
-                    android:text="@string/time"
-                    android:textColor="@color/gray_ter"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-                <com.codepan.widget.CodePanLabel
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/two"
-                    android:text="@string/amount"
-                    android:textColor="@color/gray_ter"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-                <com.codepan.widget.CodePanLabel
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/two"
-                    android:text="@string/reference"
-                    android:textColor="@color/gray_ter"
-                    android:textSize="@dimen/nine"
-                    codePan:typeface="@string/helvetica_neue_light"/>
-
-            </LinearLayout>
-
         </RelativeLayout>
 
         <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvNameTitleReceive"
+            android:id="@+id/tvNameTitleAddCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/five"
@@ -157,20 +64,19 @@
             android:textSize="@dimen/nine"
             codePan:typeface="@string/helvetica_neue_light"/>
 
-        <AutoCompleteTextView
-            android:id="@+id/etNameReceive"
-            style="@android:style/Widget.Holo.Light.Spinner"
+        <com.codepan.widget.CodePanTextField
+            android:id="@+id/etNameAddCustomer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_gray_qui_rad_one"
-            android:completionThreshold="1"
             android:imeOptions="actionNext"
             android:inputType="textCapWords"
             android:maxLines="1"
             android:padding="@dimen/five"
             android:singleLine="true"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/nine"/>
+            android:textSize="@dimen/nine"
+            codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
             android:layout_width="wrap_content"
@@ -182,7 +88,7 @@
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanTextField
-            android:id="@+id/etMobileNoReceive"
+            android:id="@+id/etMobileNoAddCustomer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_gray_qui_rad_one"
@@ -206,7 +112,7 @@
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanTextField
-            android:id="@+id/etAddressReceive"
+            android:id="@+id/etAddressAddCustomer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_gray_qui_rad_one"
@@ -227,7 +133,7 @@
             android:orientation="horizontal">
 
             <com.codepan.widget.CodePanButton
-                android:id="@+id/btnCancelReceive"
+                android:id="@+id/btnCancelAddCustomer"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/state_rect_gray_qua_rad_three"
@@ -243,7 +149,7 @@
                 codePan:typeface="@string/helvetica_neue_mid"/>
 
             <com.codepan.widget.CodePanButton
-                android:id="@+id/btnClaimReceive"
+                android:id="@+id/btnSaveAddCustomer"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/three"
@@ -254,7 +160,7 @@
                 android:paddingLeft="@dimen/three"
                 android:paddingRight="@dimen/three"
                 android:paddingTop="@dimen/five"
-                android:text="@string/receive"
+                android:text="@string/save"
                 android:textColor="@color/white"
                 android:textSize="@dimen/nine"
                 codePan:typeface="@string/helvetica_neue_mid"/>

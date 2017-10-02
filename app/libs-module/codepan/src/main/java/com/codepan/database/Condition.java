@@ -205,6 +205,11 @@ public class Condition {
 		this.field = field;
 	}
 
+	public Condition(String field, Operator operator, Table table) {
+		this.field = table.as + "." + field;
+		this.operator = operator;
+	}
+
 	public Condition(String field, String start, String end, Operator operator, Table table) {
 		this.field = table.as + "." + field;
 		this.start = "'" + start + "'";

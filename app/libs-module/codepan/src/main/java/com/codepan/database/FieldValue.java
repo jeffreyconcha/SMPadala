@@ -2,6 +2,10 @@ package com.codepan.database;
 
 public class FieldValue {
 
+	public enum Value {
+		NULL
+	}
+
 	private final int TRUE = 1;
 	private final int FALSE = 0;
 
@@ -15,6 +19,11 @@ public class FieldValue {
 	public FieldValue(String field, String value) {
 		this.value = value != null ? "'" + value
 				.replace("'", "''") + "'" : "NULL";
+		this.field = field;
+	}
+
+	public FieldValue(String field, Value value) {
+		this.value = String.valueOf(value);
 		this.field = field;
 	}
 

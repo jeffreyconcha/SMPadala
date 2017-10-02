@@ -1,10 +1,9 @@
 package com.bestfriend.model;
 
-public class CustomerObj {
+import com.codepan.model.EntityObj;
 
-    public String ID;
-    public String name;
-    public String photo;
-    public String address;
-    public String mobileNo;
+public class CustomerObj extends EntityObj {
+	public String photo;
+	public String address;
+	public String mobileNo;
 }

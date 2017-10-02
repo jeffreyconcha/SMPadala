@@ -140,6 +140,12 @@ public class SQLiteBinder {
 		statement.close();
 	}
 
+	/**
+	 * Since SQLite does not support truncate the ID will not be reset.
+	 * Must only be used if you're going to replace ID (primary key) to avoid
+	 * incrementation of IDs when doing insert
+	 * @param table - name of table to truncate
+	 */
 	public void truncate(String table) {
 		SQLiteQuery query = new SQLiteQuery();
 		String sql = query.delete(table);

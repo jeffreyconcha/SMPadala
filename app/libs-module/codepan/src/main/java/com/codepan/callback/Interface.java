@@ -77,7 +77,7 @@ public class Interface {
 	}
 
 	public interface OnErrorCallback {
-		void onError(String error, String params,
+		void onError(String error, String url, String params,
 					 String response, boolean showError);
 	}
 
