@@ -482,6 +482,45 @@
                 android:background="@color/divider"/>
 
             <LinearLayout
+                android:id="@+id/llDailyReportMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/seven">
+
+                <FrameLayout
+                    android:layout_width="@dimen/twelve"
+                    android:layout_height="@dimen/twelve">
+
+                    <ImageView
+                        android:layout_width="@dimen/twelve"
+                        android:layout_height="@dimen/nine"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_clients"/>
+
+                </FrameLayout>
+
+                <com.codepan.widget.CodePanLabel
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/seven"
+                    android:layout_marginStart="@dimen/seven"
+                    android:text="@string/daily_report"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/ten"
+                    codePan:typeface="@string/helvetica_neue_light"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/p_one"
+                android:background="@color/divider"/>
+
+            <LinearLayout
                 android:id="@+id/llBackUpMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

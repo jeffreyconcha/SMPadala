@@ -64,7 +64,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 
 	private CodePanButton btnMenuMain, btnShowFilterMain, btnDateMain, btnTypeMain,
 			btnStatusMain, btnFilterMain, btnClearMain;
-	private LinearLayout llMenuMain, llCustomersMain, llBackUpMain;
+	private LinearLayout llMenuMain, llCustomersMain, llDailyReportMain, llBackUpMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private int visibleItem, totalItem, firstVisible;
 	private ArrayList<RemittanceObj> remittanceList;
@@ -118,6 +118,8 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 		this.inputFinishHandler = new Handler();
 		btnShowFilterMain = (CodePanButton) findViewById(R.id.btnShowFilterMain);
 		llCustomersMain = (LinearLayout) findViewById(R.id.llCustomersMain);
+		llBackUpMain = (LinearLayout) findViewById(R.id.llBackUpMain);
+		llDailyReportMain = (LinearLayout) findViewById(R.id.llDailyReportMain);
 		etSearchMain = (CodePanTextField) findViewById(R.id.etSearchMain);
 		btnStatusMain = (CodePanButton) findViewById(R.id.btnStatusMain);
 		rlFilterMain = (RelativeLayout) findViewById(R.id.rlFilterMain);
@@ -142,6 +144,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 		btnTypeMain.setOnClickListener(this);
 		btnStatusMain.setOnClickListener(this);
 		llBackUpMain.setOnClickListener(this);
+		llDailyReportMain.setOnClickListener(this);
 		llCustomersMain.setOnClickListener(this);
 		rlFilterMain.setOnClickListener(this);
 		int color = getResources().getColor(R.color.black_trans_twenty);
@@ -418,19 +421,19 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 				}
 				break;
 			case R.id.llCustomersMain:
-//				dlMain.closeDrawer(llMenuMain);
-//				CustomerFragment customer = new CustomerFragment();
-//				transaction = manager.beginTransaction();
-//				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-//						R.anim.fade_in, R.anim.fade_out);
-//				transaction.add(R.id.rlMain, customer);
-//				transaction.addToBackStack(null);
-//				transaction.commit();
 				dlMain.closeDrawer(llMenuMain);
-				SalesToDateFragment std = new SalesToDateFragment();
+				CustomerFragment customer = new CustomerFragment();
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
 						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, customer);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case R.id.llDailyReportMain:
+				dlMain.closeDrawer(llMenuMain);
+				SalesToDateFragment std = new SalesToDateFragment();
+				transaction = manager.beginTransaction();
 				transaction.add(R.id.rlMain, std);
 				transaction.addToBackStack(null);
 				transaction.commit();

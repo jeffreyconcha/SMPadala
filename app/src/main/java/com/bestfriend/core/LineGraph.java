@@ -62,9 +62,9 @@ public class LineGraph {
 		maxDay = maxDay > size ? size : maxDay;
 		minDay = minDay > x ? size - x : minDay;
 		XYMultipleSeriesDataset dataSet = new XYMultipleSeriesDataset();
-		dataSet.addSeries(totalSeries);
-		dataSet.addSeries(receiveSeries);
 		dataSet.addSeries(transferSeries);
+		dataSet.addSeries(receiveSeries);
+		dataSet.addSeries(totalSeries);
 		XYSeriesRenderer totalRenderer = new XYSeriesRenderer();
 		totalRenderer.setColor(totalColor);
 		totalRenderer.setFillPoints(true);
@@ -100,9 +100,9 @@ public class LineGraph {
 		msRenderer.setYLabelsColor(0, Color.BLACK);
 		msRenderer.setXLabelsColor(Color.BLACK);
 		msRenderer.setAxesColor(Color.BLACK);
-		msRenderer.addSeriesRenderer(totalRenderer);
-		msRenderer.addSeriesRenderer(receiveRenderer);
 		msRenderer.addSeriesRenderer(transferRenderer);
+		msRenderer.addSeriesRenderer(receiveRenderer);
+		msRenderer.addSeriesRenderer(totalRenderer);
 		msRenderer.setInScroll(true);
 		msRenderer.setPointSize(4f);
 		msRenderer.setShowCustomTextGrid(true);

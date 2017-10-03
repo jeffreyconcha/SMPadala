@@ -28,6 +28,7 @@
     <string name="filter">Filter</string>
     <string name="customers">Customers</string>
     <string name="save">Save</string>
+    <string name="daily_report">Daily Report</string>
     <string name="edit_customer">Edit Customer</string>
     <string name="add_customer">Add Customer</string>
     <string name="back_up_data">Back-up Data</string>
