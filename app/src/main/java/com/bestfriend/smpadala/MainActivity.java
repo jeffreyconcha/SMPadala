@@ -418,12 +418,20 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 				}
 				break;
 			case R.id.llCustomersMain:
+//				dlMain.closeDrawer(llMenuMain);
+//				CustomerFragment customer = new CustomerFragment();
+//				transaction = manager.beginTransaction();
+//				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+//						R.anim.fade_in, R.anim.fade_out);
+//				transaction.add(R.id.rlMain, customer);
+//				transaction.addToBackStack(null);
+//				transaction.commit();
 				dlMain.closeDrawer(llMenuMain);
-				CustomerFragment customer = new CustomerFragment();
+				SalesToDateFragment std = new SalesToDateFragment();
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
 						R.anim.fade_in, R.anim.fade_out);
-				transaction.add(R.id.rlMain, customer);
+				transaction.add(R.id.rlMain, std);
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;

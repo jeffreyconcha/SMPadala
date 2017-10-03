@@ -737,7 +737,7 @@ public class CodePanUtils {
 			int year = Integer.parseInt(array[0]);
 			int month = Integer.parseInt(array[1]);
 			int day = Integer.parseInt(array[2]);
-			String nameOfMonths = getNameOfMonths(month, isAbbreviated, false);
+			String nameOfMonths = getNameOfMonths(date, isAbbreviated);
 			if(withYear) {
 				calendarDate = nameOfMonths + " " + day + ", " + year;
 			}
@@ -1116,60 +1116,11 @@ public class CodePanUtils {
 		return password;
 	}
 
-	public static String getNameOfMonths(int month, boolean isAbbreviated, boolean isUpperCase) {
-		String nameOfMonths = "";
-		switch(month) {
-			case 1:
-				nameOfMonths = "January";
-				break;
-			case 2:
-				nameOfMonths = "February";
-				break;
-			case 3:
-				nameOfMonths = "March";
-				break;
-			case 4:
-				nameOfMonths = "April";
-				break;
-			case 5:
-				nameOfMonths = "May";
-				break;
-			case 6:
-				nameOfMonths = "June";
-				break;
-			case 7:
-				nameOfMonths = "July";
-				break;
-			case 8:
-				nameOfMonths = "August";
-				break;
-			case 9:
-				nameOfMonths = "September";
-				break;
-			case 10:
-				nameOfMonths = "October";
-				break;
-			case 11:
-				nameOfMonths = "November";
-				break;
-			case 12:
-				nameOfMonths = "December";
-				break;
-		}
-		if(isAbbreviated) {
-			nameOfMonths = nameOfMonths.substring(0, 3);
-		}
-		if(isUpperCase) {
-			String upperCase = "";
-			for(int x = 0; x < nameOfMonths.length(); x++) {
-				Character temp;
-				temp = nameOfMonths.charAt(x);
-				temp = Character.toUpperCase(temp);
-				upperCase = upperCase + temp.toString();
-			}
-			nameOfMonths = upperCase;
-		}
-		return nameOfMonths;
+	public static String getNameOfMonths(String date, boolean isAbbreviated) {
+		Calendar cal = getCalendar(date);
+		int style = isAbbreviated ? Calendar.SHORT : Calendar.LONG;
+		return cal.getDisplayName(Calendar.MONTH, style,
+				Locale.getDefault());
 	}
 
 	public static String getStringSharedPref(Context context, String sharedPref, String key) {
@@ -2432,5 +2383,10 @@ public class CodePanUtils {
 			SpannableStringBuilder ssb = CodePanUtils.customizeText(list, name);
 			label.setText(ssb);
 		}
+	}
+
+	public static int getNoOfDays(String date) {
+		Calendar cal = getCalendar(date);
+		return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 }
