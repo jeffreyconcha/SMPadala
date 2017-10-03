@@ -32,7 +32,9 @@ public class LineGraph {
 	public GraphicalView getGraph(String date, ArrayList<SalesToDateObj> totalList,
 								  ArrayList<SalesToDateObj> receiveList,
 								  ArrayList<SalesToDateObj> transferList) {
-		String xTitle = CodePanUtils.getNameOfMonths(date, false);
+		String month = CodePanUtils.getNameOfMonths(date, false);
+		String year = CodePanUtils.getDisplayYear(date);
+		String xTitle = month + " " + year;
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMinimumFractionDigits(2);
 		nf.setMaximumFractionDigits(2);

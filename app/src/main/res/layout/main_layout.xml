@@ -499,7 +499,7 @@
                         android:layout_width="@dimen/twelve"
                         android:layout_height="@dimen/nine"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_clients"/>
+                        android:src="@drawable/ic_report"/>
 
                 </FrameLayout>
 
