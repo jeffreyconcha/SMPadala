@@ -50,6 +50,16 @@ public class MainService extends Service {
 		return START_STICKY;
 	}
 
+	private String removeCurrency(String amount) {
+		String text = null;
+		if(amount != null) {
+			text = amount.replace("PHP", "")
+					.replace("P", "")
+					.replace(",", "");
+		}
+		return text;
+	}
+
 	public void handleReceiver(Intent intent, SQLiteAdapter db) {
 		final int type = intent.getIntExtra(Key.RECEIVER, 0);
 		switch(type) {
@@ -65,43 +75,28 @@ public class MainService extends Service {
 							sender.equalsIgnoreCase(RemittanceKey.SENDER_T1) ||
 							sender.equalsIgnoreCase(RemittanceKey.SENDER_T2))) {
 						if(message != null) {
+							String[] fields = message.split(" ");
 							if(message.contains(RemittanceKey.RECEIVE_SP_1)) {
-								String[] fields = message.split(" ");
-								String amount = fields[3].replace("P", "").replace(",", "");
-								String charge = fields[5].replace("P", "").replace(",", "");
+								String amount = removeCurrency(fields[3]);
+								String charge = removeCurrency(fields[5]);
 								String mobileNo = fields[6];
 								String referenceNo = fields[13].replace("Ref:", "");
 								String balance = fields[14].replace("Bal:P", "").replace(",", "");
 								saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
 										charge, mobileNo, balance, referenceNo);
 							}
-							else if(message.contains(RemittanceKey.TRANSFER_SP_1)) {
-								String[] fields = message.split(" ");
-								String amount = fields[2].replace("P", "").replace(",", "");
-								String mobileNo = fields[8].replace("\\.", "");
-								String charge = fields[11].replace("P", "").replace(",", "");
-								String text = fields[14].replace("account.Bal:P", "").
-										replace(".Ref", "").replace(",", "");
-								String[] array = text.split(":");
-								String balance = array[0];
-								String referenceNo = array[1];
-								saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-										charge, mobileNo, balance, referenceNo);
-							}
 							else if(message.contains(RemittanceKey.RECEIVE_SP_2)) {
-								String[] fields = message.split(" ");
-								String amount = fields[4].replace("PHP", "").replace(",", "");
-								String charge = fields[8].replace("PHP", "").replace(",", "");
+								String amount = removeCurrency(fields[4]);
+								String charge = removeCurrency(fields[8]);
 								String mobileNo = fields[12].split("\\.")[0];
 								String referenceNo = fields[17].split(":")[1];
 								saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
 										charge, mobileNo, null, referenceNo);
 							}
 							else if(message.contains(RemittanceKey.RECEIVE_SP_3)) {
-								String[] fields = message.split(" ");
-								String amount = fields[3].replace("PHP", "").replace(",", "");
+								String amount = removeCurrency(fields[3]);
 								String referenceNo = fields[17].replace("Ref:", "");
-								String balance = fields[19].replace("PHP", "").replace(",", "");
+								String balance = removeCurrency(fields[19]);
 								if(balance.length() > 1) {
 									int lastIndex = balance.length() - 1;
 									char period = balance.charAt(lastIndex);
@@ -111,22 +106,50 @@ public class MainService extends Service {
 								}
 								saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
 										null, null, balance, referenceNo);
-
+							}
+							else if(message.contains(RemittanceKey.RECEIVE_SP_4)) {
+								String amount = removeCurrency(fields[3]);
+								String charge = removeCurrency(fields[7]);
+								String field = fields[13].replace("Bal:P", "")
+										.replace(".Ref", "").replace(",", "");
+								String balance = field.split(":")[0];
+								String referenceNo = field.split(":")[1];
+								saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
+										charge, null, balance, referenceNo);
+							}
+							else if(message.contains(RemittanceKey.TRANSFER_SP_1)) {
+								String amount = removeCurrency(fields[2]);
+								String mobileNo = fields[8].replace("\\.", "");
+								String charge = removeCurrency(fields[11]);
+								String text = fields[14].replace("account.Bal:P", "").
+										replace(".Ref", "").replace(",", "");
+								String[] array = text.split(":");
+								String balance = array[0];
+								String referenceNo = array[1];
+								saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+										charge, mobileNo, balance, referenceNo);
 							}
 							else if(message.contains(RemittanceKey.TRANSFER_SP_2)) {
-								String[] fields = message.split(" ");
-								String amount = fields[3].replace("PHP", "").replace(",", "");
-								String charge = fields[7].replace("PHP", "").replace(",", "");
-								String field = fields[13].replace("bal:PHP", "").replace(".Ref", "").replace(",", "");
+								String amount = removeCurrency(fields[3]);
+								String charge = removeCurrency(fields[7]);
+								String field = fields[13].replace("bal:PHP", "")
+										.replace(".Ref", "").replace(",", "");
 								String balance = field.split(":")[0];
 								String referenceNo = field.split(":")[1];
 								saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
 										charge, null, balance, referenceNo);
 							}
+							else if(message.contains(RemittanceKey.TRANSFER_SP_3)) {
+								String amount = removeCurrency(fields[3]);
+								String field = fields[9].replace(".Ref", "").replace(".Sa", "");
+								String mobileNo = field.split(":")[0];
+								String referenceNo = field.split(":")[1];
+								saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+										null, mobileNo, null, referenceNo);
+							}
 							else if(message.contains(RemittanceKey.TRANSFER_SM)) {
-								String[] fields = message.split(" ");
-								String amount = fields[5].replace("PHP", "").replace(",", "");
-								String balance = fields[18].replace("PHP", "").replace(",", "");
+								String amount = removeCurrency(fields[5]);
+								String balance = removeCurrency(fields[18]);
 								if(balance.length() > 1) {
 									int lastIndex = balance.length() - 1;
 									char period = balance.charAt(lastIndex);
@@ -147,7 +170,6 @@ public class MainService extends Service {
 										charge, null, balance, referenceNo);
 							}
 							else if(message.contains(RemittanceKey.BALANCE)) {
-								String[] fields = message.split(" ");
 								String balance = fields[1].replace("Bal:PHP", "").replace(",", "");
 								updateBalance(db, balance);
 							}
