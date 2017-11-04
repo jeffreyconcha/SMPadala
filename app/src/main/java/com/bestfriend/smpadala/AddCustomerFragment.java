@@ -82,6 +82,9 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
 			}
 			tvTitleAddCustomer.setText(R.string.edit_customer);
 		}
+		else {
+			tvViewPhotoAddCustomer.setVisibility(View.GONE);
+		}
 		return view;
 	}
 
