@@ -37,7 +37,7 @@ public class CalendarDayAdapter extends ArrayAdapter<DayObj> {
 			if(convertView == null) {
 				view = inflater.inflate(R.layout.calendar_day_item, parent, false);
 				holder = new ViewHolder();
-				holder.tvDay = (CodePanLabel) view.findViewById(R.id.tvDay);
+				holder.tvDay = view.findViewById(R.id.tvDay);
 				if(position == 0) {
 					this.parent = (ViewGroup) holder.tvDay.getParent();
 				}

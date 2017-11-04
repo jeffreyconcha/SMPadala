@@ -34,7 +34,7 @@ public class CalendarYearAdapter extends ArrayAdapter<YearObj> {
 			if(convertView == null) {
 				view = inflater.inflate(R.layout.calendar_year_item, parent, false);
 				holder = new ViewHolder();
-				holder.tvYear = (CodePanLabel) view.findViewById(R.id.tvYear);
+				holder.tvYear = view.findViewById(R.id.tvYear);
 				holder.tvYear.setHeight(height);
 				view.setTag(holder);
 			}

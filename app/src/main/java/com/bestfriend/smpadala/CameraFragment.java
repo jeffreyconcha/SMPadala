@@ -88,11 +88,11 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.camera_layout, container, false);
-        dvCamera = (FocusIndicatorView) view.findViewById(R.id.dvCamera);
-        flCamera = (FrameLayout) view.findViewById(R.id.flCamera);
-        btnCaptureCamera = (CodePanButton) view.findViewById(R.id.btnCaptureCamera);
-        btnSwitchCamera = (CodePanButton) view.findViewById(R.id.btnSwitchCamera);
-        btnBackCamera = (CodePanButton) view.findViewById(R.id.btnBackCamera);
+        dvCamera = view.findViewById(R.id.dvCamera);
+        flCamera = view.findViewById(R.id.flCamera);
+        btnCaptureCamera = view.findViewById(R.id.btnCaptureCamera);
+        btnSwitchCamera = view.findViewById(R.id.btnSwitchCamera);
+        btnBackCamera = view.findViewById(R.id.btnBackCamera);
         vCamera = view.findViewById(R.id.vCamera);
         btnCaptureCamera.setOnClickListener(this);
         btnSwitchCamera.setOnClickListener(this);

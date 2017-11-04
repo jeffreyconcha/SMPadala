@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/rlMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.bestfriend.smpadala.MainActivity">
@@ -256,9 +256,9 @@
                     android:layout_alignParentRight="true"
                     android:layout_margin="@dimen/three"
                     android:background="@color/gray_sen"
-                    android:padding="@dimen/p_one"
                     android:elevation="@dimen/four"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/p_one">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -289,6 +289,42 @@
 
                         <com.codepan.widget.CodePanButton
                             android:id="@+id/btnDateMain"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/state_rect_trans_dark"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/twenty_five"
+                        android:layout_marginTop="@dimen/p_one"
+                        android:background="@color/gray_qui">
+
+                        <com.codepan.widget.CodePanLabel
+                            android:id="@+id/tvCustomerMain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/ten"
+                            android:layout_marginStart="@dimen/ten"
+                            android:text="@string/select_customer"
+                            android:textColor="@color/gray_pri"
+                            android:textSize="@dimen/ten"
+                            codePan:typeface="@string/helvetica_neue_light"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/thirteen"
+                            android:layout_height="@dimen/thirteen"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/five"
+                            android:layout_marginRight="@dimen/five"
+                            android:src="@drawable/ic_customer"/>
+
+                        <com.codepan.widget.CodePanButton
+                            android:id="@+id/btnCustomerMain"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/state_rect_trans_dark"/>
@@ -448,6 +484,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/state_rect_trans_dark"
                 android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/seven">
@@ -487,6 +524,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/state_rect_trans_dark"
                 android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/seven">
@@ -526,6 +564,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/state_rect_trans_dark"
                 android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/seven">

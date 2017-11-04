@@ -18,10 +18,12 @@
     <string name="pending">Pending</string>
     <string name="claimed">Claimed</string>
     <string name="receive">Receive</string>
+    <string name="mark">Mark</string>
     <string name="cancel">Cancel</string>
     <string name="search">Search</string>
     <string name="add_new">New</string>
     <string name="select_date">Select Date</string>
+    <string name="select_customer">Select Customer</string>
     <string name="show_transfers">Show Transfers</string>
     <string name="show_claimed">Show Claimed</string>
     <string name="clear">Clear</string>
@@ -31,6 +33,8 @@
     <string name="daily_report">Daily Report</string>
     <string name="edit_customer">Edit Customer</string>
     <string name="add_customer">Add Customer</string>
+    <string name="view_photo"><u>View Photo</u></string>
+    <string name="money_claimed">The money was claimed by the customer.</string>
     <string name="back_up_data">Back-up Data</string>
     <string name="permission_title">Permissions Required</string>
     <string name="permission_message">Please enable the required permissions to continue.</string>

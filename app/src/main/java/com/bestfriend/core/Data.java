@@ -21,10 +21,13 @@ import java.util.Locale;
 
 public class Data {
 
-	public static ArrayList<RemittanceObj> loadRemittance(SQLiteAdapter db, String search, String smDate,
-														  String status, String start, int type, int limit) {
+	public static ArrayList<RemittanceObj> loadRemittance(SQLiteAdapter db, CustomerObj receivedBy,
+			String search, String smDate, String status, String start, int type, int limit) {
 		ArrayList<RemittanceObj> remittanceList = new ArrayList<>();
 		SQLiteQuery query = new SQLiteQuery();
+		if(receivedBy != null) {
+			query.add(new Condition("c.ID", receivedBy.ID));
+		}
 		if(smDate != null) {
 			query.add(new Condition("h.smDate", smDate));
 		}
@@ -54,8 +57,9 @@ public class Data {
 		String sql = "SELECT h.ID, h.dDate, h.dTime, h.smDate, h.smTime, h.charge, h.type, " +
 				"h.amount, h.referenceNo, h.balance, h.mobileNo, h.isClaimed, d.ID, d.dDate, " +
 				"d.dTime, c.ID, c.name, c.photo, c.address, c.mobileNo FROM " + h + " h LEFT " +
-				"JOIN " + d + " d ON d.remittanceID = h.ID LEFT JOIN " + c + " c ON " +
-				"c.ID = d.customerID " + condition + "ORDER BY h.ID DESC LIMIT " + limit;
+				"JOIN " + d + " d ON d.remittanceID = h.ID AND d.isCancelled = 0 LEFT " +
+				"JOIN " + c + " c ON c.ID = d.customerID " + condition + "ORDER BY h.ID " +
+				"DESC LIMIT " + limit;
 		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
 			RemittanceObj remittance = new RemittanceObj();
@@ -87,6 +91,7 @@ public class Data {
 					customer.address = cursor.getString(18);
 					customer.mobileNo = cursor.getString(19);
 					receive.customer = customer;
+					remittance.isMarked = !remittance.isClaimed;
 				}
 				remittance.receive = receive;
 			}
@@ -99,8 +104,8 @@ public class Data {
 	public static ArrayList<CustomerObj> loadCustomers(SQLiteAdapter db) {
 		ArrayList<CustomerObj> customerList = new ArrayList<>();
 		String table = Tables.getName(TB.CUSTOMER);
-		String query = "SELECT ID, name, mobileNo, address, photo FROM " + table + " ORDER BY name " +
-				"COLLATE NOCASE";
+		String query = "SELECT ID, name, mobileNo, address, photo FROM " + table + " WHERE " +
+				"isActive = 1 ORDER BY name COLLATE NOCASE";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			CustomerObj customer = new CustomerObj();

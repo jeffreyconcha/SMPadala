@@ -28,8 +28,8 @@ import com.codepan.widget.CodePanTextField;
 public class AddCustomerFragment extends Fragment implements View.OnClickListener {
 
 	private CodePanTextField etNameAddCustomer, etMobileNoAddCustomer, etAddressAddCustomer;
+	private CodePanLabel tvTitleAddCustomer, tvNameTitleAddCustomer, tvViewPhotoAddCustomer;
 	private CodePanButton btnPhotoAddCustomer, btnCancelAddCustomer, btnSaveAddCustomer;
-	private CodePanLabel tvTitleAddCustomer, tvNameTitleAddCustomer;
 	private OnSaveCustomerCallback saveCustomerCallback;
 	private FragmentTransaction transaction;
 	private ImageView ivPhotoAddCustomer;
@@ -51,15 +51,17 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.add_customer_layout, container, false);
-		tvTitleAddCustomer = (CodePanLabel) view.findViewById(R.id.tvTitleAddCustomer);
-		tvNameTitleAddCustomer = (CodePanLabel) view.findViewById(R.id.tvNameTitleAddCustomer);
-		etNameAddCustomer = (CodePanTextField) view.findViewById(R.id.etNameAddCustomer);
-		etMobileNoAddCustomer = (CodePanTextField) view.findViewById(R.id.etMobileNoAddCustomer);
-		etAddressAddCustomer = (CodePanTextField) view.findViewById(R.id.etAddressAddCustomer);
-		btnCancelAddCustomer = (CodePanButton) view.findViewById(R.id.btnCancelAddCustomer);
-		btnSaveAddCustomer = (CodePanButton) view.findViewById(R.id.btnSaveAddCustomer);
-		btnPhotoAddCustomer = (CodePanButton) view.findViewById(R.id.btnPhotoAddCustomer);
-		ivPhotoAddCustomer = (ImageView) view.findViewById(R.id.ivPhotoAddCustomer);
+		tvTitleAddCustomer = view.findViewById(R.id.tvTitleAddCustomer);
+		tvViewPhotoAddCustomer = view.findViewById(R.id.tvViewPhotoAddCustomer);
+		tvNameTitleAddCustomer = view.findViewById(R.id.tvNameTitleAddCustomer);
+		etNameAddCustomer = view.findViewById(R.id.etNameAddCustomer);
+		etMobileNoAddCustomer = view.findViewById(R.id.etMobileNoAddCustomer);
+		etAddressAddCustomer = view.findViewById(R.id.etAddressAddCustomer);
+		btnCancelAddCustomer = view.findViewById(R.id.btnCancelAddCustomer);
+		btnSaveAddCustomer = view.findViewById(R.id.btnSaveAddCustomer);
+		btnPhotoAddCustomer = view.findViewById(R.id.btnPhotoAddCustomer);
+		ivPhotoAddCustomer = view.findViewById(R.id.ivPhotoAddCustomer);
+		tvViewPhotoAddCustomer.setOnClickListener(this);
 		btnCancelAddCustomer.setOnClickListener(this);
 		btnPhotoAddCustomer.setOnClickListener(this);
 		btnSaveAddCustomer.setOnClickListener(this);
@@ -72,7 +74,11 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
 				String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
 						.getPath() + "/" + customer.photo;
 				CodePanUtils.displayImage(ivPhotoAddCustomer, uri, R.drawable.ic_user);
+				tvViewPhotoAddCustomer.setVisibility(View.VISIBLE);
 				photo = customer.photo;
+			}
+			else {
+				tvViewPhotoAddCustomer.setVisibility(View.GONE);
 			}
 			tvTitleAddCustomer.setText(R.string.edit_customer);
 		}
@@ -90,6 +96,7 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
 						final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
 								.getPath() + "/" + fileName;
 						CodePanUtils.displayImage(ivPhotoAddCustomer, uri, R.drawable.ic_user);
+						tvViewPhotoAddCustomer.setVisibility(View.VISIBLE);
 						photo = fileName;
 					}
 				});
@@ -100,6 +107,14 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
 				break;
 			case R.id.btnCancelAddCustomer:
 				manager.popBackStack();
+				break;
+			case R.id.tvViewPhotoAddCustomer:
+				ImagePreviewFragment preview = new ImagePreviewFragment();
+				preview.setPhoto(photo);
+				transaction = manager.beginTransaction();
+				transaction.add(R.id.rlMain, preview);
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
 			case R.id.btnSaveAddCustomer:
 				String name = etNameAddCustomer.getText().toString().trim();

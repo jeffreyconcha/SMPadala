@@ -41,8 +41,8 @@ public class CustomerAdapter extends ArrayAdapter<CustomerObj> {
 			if(view == null) {
 				view = inflater.inflate(R.layout.customer_list_row, parent, false);
 				holder = new ViewHolder();
-				holder.tvNameCustomer = (CodePanLabel) view.findViewById(R.id.tvNameCustomer);
-				holder.ivPhotoCustomer = (ImageView) view.findViewById(R.id.ivPhotoCustomer);
+				holder.tvNameCustomer = view.findViewById(R.id.tvNameCustomer);
+				holder.ivPhotoCustomer = view.findViewById(R.id.ivPhotoCustomer);
 				view.setTag(holder);
 			}
 			else {

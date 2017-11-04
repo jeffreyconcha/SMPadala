@@ -29,28 +29,48 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/five">
+            android:layout_height="wrap_content">
 
-            <FrameLayout
-                android:layout_width="@dimen/fifty"
-                android:layout_height="@dimen/fifty"
-                android:layout_centerVertical="true">
+            <RelativeLayout
+                android:id="@+id/rlPhotoAddCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/five">
 
-                <ImageView
-                    android:id="@+id/ivPhotoAddCustomer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_camera"/>
+                <FrameLayout
+                    android:layout_width="@dimen/fifty"
+                    android:layout_height="@dimen/fifty"
+                    android:layout_centerVertical="true">
 
-                <com.codepan.widget.CodePanButton
-                    android:id="@+id/btnPhotoAddCustomer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/state_rect_trans_dark"/>
+                    <ImageView
+                        android:id="@+id/ivPhotoAddCustomer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_camera"/>
 
-            </FrameLayout>
+                    <com.codepan.widget.CodePanButton
+                        android:id="@+id/btnPhotoAddCustomer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/state_rect_trans_dark"/>
+
+                </FrameLayout>
+
+            </RelativeLayout>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvViewPhotoAddCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/rlPhotoAddCustomer"
+                android:text="@string/view_photo"
+                android:textColor="@color/theme_sec"
+                android:textSize="@dimen/nine"
+                android:padding="@dimen/five"
+                codePan:typeface="@string/helvetica_neue_light"/>
 
         </RelativeLayout>
 

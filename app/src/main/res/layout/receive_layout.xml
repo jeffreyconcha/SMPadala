@@ -11,11 +11,11 @@
     <LinearLayout
         android:layout_width="@dimen/two_hundred_fifty"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="@drawable/bg_rect_white_rad_five"
         android:orientation="vertical"
-        android:padding="@dimen/ten"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:padding="@dimen/ten">
 
         <com.codepan.widget.CodePanLabel
             android:layout_width="match_parent"
@@ -219,11 +219,45 @@
             android:textSize="@dimen/nine"
             codePan:typeface="@string/helvetica_neue_light"/>
 
+        <RelativeLayout
+            android:id="@+id/rlClaimedReceive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/three"
+            android:padding="@dimen/five">
+
+            <CheckBox
+                android:id="@+id/cbClaimedReceive"
+                android:layout_width="@dimen/twelve"
+                android:layout_height="@dimen/twelve"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/five"
+                android:layout_marginRight="@dimen/five"
+                android:background="@drawable/state_bmp_box"
+                android:button="@null"
+                android:checked="true"
+                android:clickable="false"
+                android:focusable="false"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/cbClaimedReceive"
+                android:layout_toRightOf="@+id/cbClaimedReceive"
+                android:text="@string/money_claimed"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/nine"
+                codePan:typeface="@string/helvetica_neue_light"/>
+
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/ten"
+            android:layout_marginTop="@dimen/eight"
             android:orientation="horizontal">
 
             <com.codepan.widget.CodePanButton

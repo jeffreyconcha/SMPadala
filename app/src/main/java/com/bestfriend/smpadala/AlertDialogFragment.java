@@ -47,10 +47,10 @@ public class AlertDialogFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.alert_dialog_layout, container, false);
-		btnPositiveAlertDialog = (CodePanButton) view.findViewById(R.id.btnPositiveAlertDialog);
-		btnNegativeAlertDialog = (CodePanButton) view.findViewById(R.id.btnNegativeAlertDialog);
-		tvTitleAlertDialog = (CodePanLabel) view.findViewById(R.id.tvTitleAlertDialog);
-		tvMessageAlertDialog = (CodePanLabel) view.findViewById(R.id.tvMessageAlertDialog);
+		btnPositiveAlertDialog = view.findViewById(R.id.btnPositiveAlertDialog);
+		btnNegativeAlertDialog = view.findViewById(R.id.btnNegativeAlertDialog);
+		tvTitleAlertDialog = view.findViewById(R.id.tvTitleAlertDialog);
+		tvMessageAlertDialog = view.findViewById(R.id.tvMessageAlertDialog);
 		dialogTitle = dialogTitle != null ? dialogTitle : getDialogActivity().getResources().getString(title);
 		dialogMessage = dialogMessage != null ? dialogMessage : getDialogActivity().getResources().getString(message);
 		if(list != null) {

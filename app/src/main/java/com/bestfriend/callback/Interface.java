@@ -25,4 +25,8 @@ public class Interface {
 	public interface OnSaveCustomerCallback {
 		void onSaveCustomer(CustomerObj customer);
 	}
+
+	public interface OnSelectCustomerCallback {
+		void onSelectCustomer(CustomerObj customer);
+	}
 }

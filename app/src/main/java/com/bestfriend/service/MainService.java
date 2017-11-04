@@ -72,6 +72,7 @@ public class MainService extends Service {
 					String smTime = CodePanUtils.getTime(timestamp);
 					if(sender != null && (sender.equalsIgnoreCase(RemittanceKey.SENDER_SP) ||
 							sender.equalsIgnoreCase(RemittanceKey.SENDER_SM) ||
+							sender.equalsIgnoreCase(RemittanceKey.SENDER_PM) ||
 							sender.equalsIgnoreCase(RemittanceKey.SENDER_T1) ||
 							sender.equalsIgnoreCase(RemittanceKey.SENDER_T2))) {
 						if(message != null) {
@@ -120,6 +121,14 @@ public class MainService extends Service {
 								String referenceNo = field.split(":")[1];
 								saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
 										charge, null, balance, referenceNo);
+							}
+							else if(message.contains(RemittanceKey.RECEIVE_SP_5)) {
+								String amount = removeCurrency(fields[4]);
+								String mobileNo = removeCurrency(fields[8]);
+								String balance = removeCurrency(fields[19]);
+								String referenceNo = fields[20].split(":")[1];
+								saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
+										null, mobileNo, balance, referenceNo);
 							}
 							else if(message.contains(RemittanceKey.TRANSFER_SP_1)) {
 								String amount = removeCurrency(fields[2]);
@@ -193,9 +202,9 @@ public class MainService extends Service {
 	}
 
 	public void saveRemittance(final SQLiteAdapter db, final int type, final String smDate,
-							   final String smTime, final String amount, final String charge,
-							   final String mobileNo, final String balance,
-							   final String referenceNo) {
+			final String smTime, final String amount, final String charge,
+			final String mobileNo, final String balance,
+			final String referenceNo) {
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {

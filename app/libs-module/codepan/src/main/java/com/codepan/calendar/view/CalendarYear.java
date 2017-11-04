@@ -27,7 +27,7 @@ public class CalendarYear extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.calendar_year_layout, container, false);
-		gvCalendarYear = (GridView) view.findViewById(R.id.gvCalendarYear);
+		gvCalendarYear = view.findViewById(R.id.gvCalendarYear);
 		gvCalendarYear.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

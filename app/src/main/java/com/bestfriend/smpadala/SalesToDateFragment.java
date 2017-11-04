@@ -65,9 +65,9 @@ public class SalesToDateFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.sales_to_date_layout, container, false);
-		btnCalendarSalesToDate = (CodePanButton) view.findViewById(R.id.btnCalendarSalesToDate);
-		btnBackSalesToDate = (CodePanButton) view.findViewById(R.id.btnBackSalesToDate);
-		flGraphSalesToDate = (FrameLayout) view.findViewById(R.id.flGraphSalesToDate);
+		btnCalendarSalesToDate = view.findViewById(R.id.btnCalendarSalesToDate);
+		btnBackSalesToDate = view.findViewById(R.id.btnBackSalesToDate);
+		flGraphSalesToDate = view.findViewById(R.id.flGraphSalesToDate);
 		btnCalendarSalesToDate.setOnClickListener(this);
 		btnBackSalesToDate.setOnClickListener(this);
 		loadSalesToDate(db, selectedDate);

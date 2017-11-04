@@ -34,7 +34,7 @@ public class CalendarMonthAdapter extends ArrayAdapter<MonthObj> {
 			if(convertView == null) {
 				view = inflater.inflate(R.layout.calendar_month_item, parent, false);
 				holder = new ViewHolder();
-				holder.tvMonth = (CodePanLabel) view.findViewById(R.id.tvMonth);
+				holder.tvMonth = view.findViewById(R.id.tvMonth);
 				holder.tvMonth.setHeight(height);
 				view.setTag(holder);
 			}

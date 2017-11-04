@@ -18,7 +18,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bestfriend.adapter.CustomerAdapter;
 import com.bestfriend.callback.Interface.OnReceiveRemittanceCallback;
@@ -50,6 +54,8 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 	private ArrayList<CustomerObj> customerList;
 	private AutoCompleteTextView etNameReceive;
 	private FragmentTransaction transaction;
+	private RelativeLayout rlClaimedReceive;
+	private CheckBox cbClaimedReceive;
 	private CustomerAdapter adapter;
 	private ImageView ivPhotoReceive;
 	private RemittanceObj remittance;
@@ -77,21 +83,24 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.receive_layout, container, false);
-		tvNameTitleReceive = (CodePanLabel) view.findViewById(R.id.tvNameTitleReceive);
-		tvDateReceive = (CodePanLabel) view.findViewById(R.id.tvDateReceive);
-		tvTimeReceive = (CodePanLabel) view.findViewById(R.id.tvTimeReceive);
-		tvAmountReceive = (CodePanLabel) view.findViewById(R.id.tvAmountReceive);
-		tvRefNoReceive = (CodePanLabel) view.findViewById(R.id.tvRefNoReceive);
-		etNameReceive = (AutoCompleteTextView) view.findViewById(R.id.etNameReceive);
-		etMobileNoReceive = (CodePanTextField) view.findViewById(R.id.etMobileNoReceive);
-		etAddressReceive = (CodePanTextField) view.findViewById(R.id.etAddressReceive);
-		btnCancelReceive = (CodePanButton) view.findViewById(R.id.btnCancelReceive);
-		btnClaimReceive = (CodePanButton) view.findViewById(R.id.btnClaimReceive);
-		btnPhotoReceive = (CodePanButton) view.findViewById(R.id.btnPhotoReceive);
-		ivPhotoReceive = (ImageView) view.findViewById(R.id.ivPhotoReceive);
+		rlClaimedReceive = view.findViewById(R.id.rlClaimedReceive);
+		cbClaimedReceive = view.findViewById(R.id.cbClaimedReceive);
+		tvNameTitleReceive = view.findViewById(R.id.tvNameTitleReceive);
+		tvDateReceive = view.findViewById(R.id.tvDateReceive);
+		tvTimeReceive = view.findViewById(R.id.tvTimeReceive);
+		tvAmountReceive = view.findViewById(R.id.tvAmountReceive);
+		tvRefNoReceive = view.findViewById(R.id.tvRefNoReceive);
+		etNameReceive = view.findViewById(R.id.etNameReceive);
+		etMobileNoReceive = view.findViewById(R.id.etMobileNoReceive);
+		etAddressReceive = view.findViewById(R.id.etAddressReceive);
+		btnCancelReceive = view.findViewById(R.id.btnCancelReceive);
+		btnClaimReceive = view.findViewById(R.id.btnClaimReceive);
+		btnPhotoReceive = view.findViewById(R.id.btnPhotoReceive);
+		ivPhotoReceive = view.findViewById(R.id.ivPhotoReceive);
 		btnCancelReceive.setOnClickListener(this);
 		btnClaimReceive.setOnClickListener(this);
 		btnPhotoReceive.setOnClickListener(this);
+		rlClaimedReceive.setOnClickListener(this);
 		if(remittance != null) {
 			String date = CodePanUtils.getCalendarDate(remittance.smDate, true, true);
 			String amount = "P" + nf.format(remittance.amount);
@@ -148,6 +157,13 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 		});
 		etAddressReceive.addTextChangedListener(this);
 		etMobileNoReceive.addTextChangedListener(this);
+		cbClaimedReceive.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+				int action = isChecked ? R.string.receive : R.string.mark;
+				btnClaimReceive.setText(action);
+			}
+		});
 		loadCustomers(db);
 		return view;
 	}
@@ -222,13 +238,20 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
+			case R.id.rlClaimedReceive:
+				cbClaimedReceive.setChecked(!cbClaimedReceive.isChecked());
+				break;
 		}
 	}
 
 	public void confirm(final CustomerObj obj) {
+		String title = cbClaimedReceive.isChecked() ? "Confirm Receiving" : "Mark Transaction";
+		String message = cbClaimedReceive.isChecked() ? "Are you sure you want to receive this " +
+				"transaction?" : "Marking a transaction will only tag the customer but will " +
+				"still be marked as pending. Are you sure you want to mark this transaction?";
 		final AlertDialogFragment alert = new AlertDialogFragment();
-		alert.setDialogTitle("Confirm Receiving");
-		alert.setDialogMessage("Are you sure you want to receive this transaction?");
+		alert.setDialogTitle(title);
+		alert.setDialogMessage(message);
 		alert.setPositiveButton("Yes", new OnClickListener() {
 			CustomerObj customer;
 
@@ -265,18 +288,24 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 		final Handler handler = new Handler(new Callback() {
 			@Override
 			public boolean handleMessage(Message msg) {
+				String message = null;
 				switch(msg.what) {
 					case Result.SUCCESS:
 						remittance.receive = (ReceiveObj) msg.obj;
-						remittance.isClaimed = true;
-						CodePanUtils.alertToast(main, "Received by " + customer.name);
+						remittance.isClaimed = cbClaimedReceive.isChecked();
+						remittance.isMarked = !cbClaimedReceive.isChecked();
+						message = cbClaimedReceive.isChecked() ? "Received by " + customer.name :
+								"Mark successful.";
+						CodePanUtils.alertToast(main, message);
 						if(receiveRemittanceCallback != null) {
 							receiveRemittanceCallback.onReceiveRemittance(remittance);
 						}
 						manager.popBackStack();
 						break;
 					case Result.FAILED:
-						CodePanUtils.alertToast(main, "Failed to receive. Please try again.");
+						message = cbClaimedReceive.isChecked() ? "Failed to receive transaction. " +
+								"Please try again." : "Failed to mark transaction. Please try again.";
+						CodePanUtils.alertToast(main, message);
 						break;
 				}
 				return false;
@@ -286,7 +315,8 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 			@Override
 			public void run() {
 				try {
-					ReceiveObj receive = SMPadalaLib.receive(db, customer, remittance.ID);
+					ReceiveObj receive = SMPadalaLib.receive(db, customer, remittance.ID,
+							cbClaimedReceive.isChecked());
 					handler.obtainMessage(receive != null ? Result.SUCCESS :
 							Result.FAILED, receive).sendToTarget();
 				}

@@ -107,15 +107,15 @@ public class CalendarView extends Fragment implements OnPickDateCallback, OnSele
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.calendar_view_layout, container, false);
-		tvYearCalendar = (CodePanLabel) view.findViewById(R.id.tvYearCalendar);
-		tvDateCalendar = (CodePanLabel) view.findViewById(R.id.tvDateCalendar);
-		btnMonthYearCalendar = (CodePanButton) view.findViewById(R.id.btnMonthYearCalendar);
-		btnCancelCalendar = (CodePanButton) view.findViewById(R.id.btnCancelCalendar);
-		btnSaveCalendar = (CodePanButton) view.findViewById(R.id.btnSaveCalendar);
-		btnPreviousCalendar = (Button) view.findViewById(R.id.btnPreviousCalendar);
-		btnNextCalendar = (Button) view.findViewById(R.id.btnNextCalendar);
-		llDayCalendar = (LinearLayout) view.findViewById(R.id.llDayCalendar);
-		vpCalendar = (CalendarPager) view.findViewById(R.id.vpCalendar);
+		tvYearCalendar = view.findViewById(R.id.tvYearCalendar);
+		tvDateCalendar = view.findViewById(R.id.tvDateCalendar);
+		btnMonthYearCalendar = view.findViewById(R.id.btnMonthYearCalendar);
+		btnCancelCalendar = view.findViewById(R.id.btnCancelCalendar);
+		btnSaveCalendar = view.findViewById(R.id.btnSaveCalendar);
+		btnPreviousCalendar = view.findViewById(R.id.btnPreviousCalendar);
+		btnNextCalendar = view.findViewById(R.id.btnNextCalendar);
+		llDayCalendar = view.findViewById(R.id.llDayCalendar);
+		vpCalendar = view.findViewById(R.id.vpCalendar);
 		btnMonthYearCalendar.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

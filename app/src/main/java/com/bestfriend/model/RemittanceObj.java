@@ -11,6 +11,7 @@ public class RemittanceObj extends TransactionObj {
     public float charge;
     public boolean isClaimed;
     public boolean hasBalance;
+    public boolean isMarked;
     public ReceiveObj receive;
     public int type;
 }

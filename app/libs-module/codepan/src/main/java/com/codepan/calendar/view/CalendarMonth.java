@@ -27,7 +27,7 @@ public class CalendarMonth extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.calendar_month_layout, container, false);
-		gvCalendarMonth = (GridView) view.findViewById(R.id.gvCalendarMonth);
+		gvCalendarMonth = view.findViewById(R.id.gvCalendarMonth);
 		gvCalendarMonth.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
