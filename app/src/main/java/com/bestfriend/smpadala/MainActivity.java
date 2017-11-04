@@ -206,7 +206,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 				if(remittance.type == RemittanceType.RECEIVE && (remittance.isClaimed ||
 						remittance.isMarked)) {
 					AlertDialogFragment alert = new AlertDialogFragment();
-					alert.setDialogTitle("Undo Transactions");
+					alert.setDialogTitle("Undo Transaction");
 					alert.setDialogMessage("Are you sure you want to undo this transaction?");
 					alert.setPositiveButton("Undo", new OnClickListener() {
 						@Override
