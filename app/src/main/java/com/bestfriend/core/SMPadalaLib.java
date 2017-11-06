@@ -15,6 +15,7 @@ import com.bestfriend.model.RemittanceObj;
 import com.bestfriend.schema.Tables;
 import com.bestfriend.smpadala.AlertDialogFragment;
 import com.bestfriend.smpadala.R;
+import com.codepan.database.Condition;
 import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
@@ -29,6 +30,7 @@ import java.util.List;
 import static com.bestfriend.schema.Tables.TB;
 import static com.bestfriend.schema.Tables.create;
 import static com.bestfriend.schema.Tables.getName;
+import static com.codepan.database.FieldValue.*;
 
 public class SMPadalaLib {
 
@@ -72,6 +74,16 @@ public class SMPadalaLib {
 		table = Tables.getName(TB.CUSTOMER);
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, column, 1);
+		}
+		if(o == 5 && n == 6) {
+			table = Tables.getName(TB.REMITTANCE);
+			SQLiteQuery query = new SQLiteQuery();
+			query.add(new FieldValue("balance", Value.NULL));
+			query.add(new FieldValue("referenceNo", "aa42aee79b9e"));
+			query.add(new Condition("referenceNo", "suki!"));
+			query.add(new Condition("dDate", "2017-11-05"));
+			query.add(new Condition("dTime", "14:37:20"));
+			binder.update(table, query);
 		}
 		binder.finish();
 	}
@@ -150,7 +162,7 @@ public class SMPadalaLib {
 		query.add(new FieldValue("mobileNo", mobileNo));
 		query.add(new FieldValue("address", address));
 		query.add(new FieldValue("photo", photo));
-		String sql = "SELECT ID FROM " + table + " WHERE name = '" + name + "'";
+		String sql = "SELECT ID FROM " + table + " WHERE name = '" + name + "' AND isActive = 1";
 		if(!db.isRecordExists(sql)) {
 			customer.ID = binder.insert(table, query);
 		}
@@ -193,7 +205,11 @@ public class SMPadalaLib {
 	public static boolean claim(SQLiteAdapter db, String remittanceID) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String table = Tables.getName(TB.REMITTANCE);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
 		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("isClaimed", true));
 		binder.update(table, query, remittanceID);
 		return binder.finish();

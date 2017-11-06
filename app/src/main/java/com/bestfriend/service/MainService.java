@@ -7,6 +7,7 @@ import android.os.Handler.Callback;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.bestfriend.cache.SQLiteCache;
 import com.bestfriend.constant.App;
@@ -165,26 +166,43 @@ public class MainService extends Service {
 										null, mobileNo, null, referenceNo);
 							}
 							else if(message.contains(RemittanceKey.TRANSFER_SM)) {
-								String amount = removeCurrency(fields[5]);
-								String balance = removeCurrency(fields[18]);
-								if(balance.length() > 1) {
-									int lastIndex = balance.length() - 1;
-									char period = balance.charAt(lastIndex);
-									if(period == '.') {
-										balance = balance.substring(0, lastIndex - 1);
+								if(fields.length == 22) {
+									String amount = removeCurrency(fields[5]);
+									String balance = removeCurrency(fields[18]);
+									String mobileNo = fields[13];
+									if(mobileNo.length() > 1) {
+										int lastIndex = mobileNo.length() - 1;
+										char period = mobileNo.charAt(lastIndex);
+										if(period == '.') {
+											mobileNo = mobileNo.substring(0, lastIndex - 1);
+										}
 									}
-								}
-								String referenceNo = fields[21];
-								if(referenceNo.length() > 1) {
-									int lastIndex = referenceNo.length() - 1;
-									char period = referenceNo.charAt(lastIndex);
-									if(period == '.') {
-										referenceNo = referenceNo.substring(0, lastIndex - 1);
+									if(balance.length() > 1) {
+										int lastIndex = balance.length() - 1;
+										char period = balance.charAt(lastIndex);
+										if(period == '.') {
+											balance = balance.substring(0, lastIndex - 1);
+										}
 									}
+									String referenceNo = fields[21];
+									if(referenceNo.length() > 1) {
+										int lastIndex = referenceNo.length() - 1;
+										char period = referenceNo.charAt(lastIndex);
+										if(period == '.') {
+											referenceNo = referenceNo.substring(0, lastIndex - 1);
+										}
+									}
+									saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+											null, mobileNo, balance, referenceNo);
 								}
-								String charge = "0.00";
-								saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-										charge, null, balance, referenceNo);
+								else if(fields.length == 20) {
+									String amount = removeCurrency(fields[5]);
+									String referenceNo = fields[19].replace("Ref:", "");
+									saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+											null, null, null, referenceNo);
+									Log.e("amount", ""+amount);
+									Log.e("referenceNo", ""+referenceNo);
+								}
 							}
 							else if(message.contains(RemittanceKey.BALANCE)) {
 								String balance = removeCurrency(fields[1])
