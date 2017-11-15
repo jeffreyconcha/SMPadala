@@ -27,6 +27,7 @@ import com.bestfriend.model.CustomerObj;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
+import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 	private ArrayList<CustomerObj> customerList;
 	private CodePanTextField etSearchCustomer;
 	private FragmentTransaction transaction;
+	private CodePanLabel tvTitleCustomer;
 	private FragmentManager manager;
 	private CustomerAdapter adapter;
 	private ListView lvCustomer;
@@ -56,12 +58,17 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.customer_layout, container, false);
+		tvTitleCustomer = view.findViewById(R.id.tvTitleCustomer);
 		etSearchCustomer = view.findViewById(R.id.etSearchCustomer);
 		btnCancelCustomer = view.findViewById(R.id.btnCancelCustomer);
 		btnAddCustomer = view.findViewById(R.id.btnAddCustomer);
 		lvCustomer = view.findViewById(R.id.lvCustomer);
 		btnCancelCustomer.setOnClickListener(this);
 		btnAddCustomer.setOnClickListener(this);
+		int count = SMPadalaLib.getNoOfCustomers(db);
+		String customers = main.getResources().getString(R.string.customers);
+		String title = customers + " (" + count + ")";
+		tvTitleCustomer.setText(title);
 		etSearchCustomer.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {
@@ -79,6 +86,7 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 		lvCustomer.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(final AdapterView<?> adapterView, View view, final int i, long l) {
+				CodePanUtils.hideKeyboard(view, main);
 				CustomerObj customer = customerList.get(i);
 				if(selectCustomerCallback != null) {
 					selectCustomerCallback.onSelectCustomer(customer);

@@ -51,10 +51,10 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 	private CodePanButton btnCancelReceive, btnClaimReceive, btnPhotoReceive;
 	private OnReceiveRemittanceCallback receiveRemittanceCallback;
 	private CodePanTextField etMobileNoReceive, etAddressReceive;
+	private RelativeLayout rlClaimedReceive, rlReceive;
 	private ArrayList<CustomerObj> customerList;
 	private AutoCompleteTextView etNameReceive;
 	private FragmentTransaction transaction;
-	private RelativeLayout rlClaimedReceive;
 	private CheckBox cbClaimedReceive;
 	private CustomerAdapter adapter;
 	private ImageView ivPhotoReceive;
@@ -97,10 +97,12 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 		btnClaimReceive = view.findViewById(R.id.btnClaimReceive);
 		btnPhotoReceive = view.findViewById(R.id.btnPhotoReceive);
 		ivPhotoReceive = view.findViewById(R.id.ivPhotoReceive);
+		rlReceive = view.findViewById(R.id.rlReceive);
 		btnCancelReceive.setOnClickListener(this);
 		btnClaimReceive.setOnClickListener(this);
 		btnPhotoReceive.setOnClickListener(this);
 		rlClaimedReceive.setOnClickListener(this);
+		rlReceive.setOnClickListener(this);
 		if(remittance != null) {
 			String date = CodePanUtils.getCalendarDate(remittance.smDate, true, true);
 			String amount = "P" + nf.format(remittance.amount);
@@ -240,6 +242,9 @@ public class ReceiveFragment extends Fragment implements OnClickListener, TextWa
 				break;
 			case R.id.rlClaimedReceive:
 				cbClaimedReceive.setChecked(!cbClaimedReceive.isChecked());
+				break;
+			case R.id.rlReceive:
+				CodePanUtils.hideKeyboard(v, main);
 				break;
 		}
 	}

@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/dialog_bg"
     android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:padding="@dimen/fifteen">
 
     <RelativeLayout
@@ -23,6 +25,7 @@
             android:orientation="vertical">
 
             <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvTitleCustomer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -52,6 +55,7 @@
                     android:textColor="@color/gray_pri"
                     android:textColorHint="@color/gray_ter"
                     android:textSize="@dimen/nine"
+                    codePan:autoHideKeyboard="true"
                     codePan:typeface="@string/helvetica_neue_light"/>
 
                 <ImageView

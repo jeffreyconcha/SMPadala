@@ -157,6 +157,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 		lvMain.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+				CodePanUtils.hideKeyboard(view, MainActivity.this);
 				final RemittanceObj remittance = remittanceList.get(i);
 				if(remittance.type == RemittanceType.RECEIVE) {
 					if(!remittance.isClaimed) {
@@ -284,6 +285,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 	}
 
 	public void loadRemittance(final SQLiteAdapter db) {
+		this.start = null;
 		final Handler handler = new Handler(new Callback() {
 			@Override
 			public boolean handleMessage(Message msg) {
@@ -527,6 +529,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 				break;
 			case R.id.btnDateMain:
 				CalendarView calendar = new CalendarView();
+				calendar.setCurrentDate(smDate);
 				calendar.setOnPickDateCallback(new OnPickDateCallback() {
 					@Override
 					public void onPickDate(String date) {
@@ -583,10 +586,10 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 				cbStatusMain.setChecked(true);
 				etSearchMain.setText(null);
 				type = RemittanceType.DEFAULT;
-				receivedBy = null;
-				smDate = null;
-				status = null;
-				search = null;
+				this.receivedBy = null;
+				this.smDate = null;
+				this.status = null;
+				this.search = null;
 				loadRemittance(db);
 				break;
 		}
@@ -597,8 +600,6 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 		alert.setDialogTitle("Confirm Receiving");
 		alert.setDialogMessage("Are you sure you want to receive this transaction?");
 		alert.setPositiveButton("Yes", new OnClickListener() {
-			CustomerObj customer;
-
 			@Override
 			public void onClick(View view) {
 				manager.popBackStack();

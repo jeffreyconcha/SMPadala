@@ -15,7 +15,6 @@ import com.bestfriend.model.RemittanceObj;
 import com.bestfriend.schema.Tables;
 import com.bestfriend.smpadala.AlertDialogFragment;
 import com.bestfriend.smpadala.R;
-import com.codepan.database.Condition;
 import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
@@ -30,7 +29,7 @@ import java.util.List;
 import static com.bestfriend.schema.Tables.TB;
 import static com.bestfriend.schema.Tables.create;
 import static com.bestfriend.schema.Tables.getName;
-import static com.codepan.database.FieldValue.*;
+import static com.codepan.database.FieldValue.Value;
 
 public class SMPadalaLib {
 
@@ -75,15 +74,12 @@ public class SMPadalaLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, column, 1);
 		}
-		if(o == 5 && n == 6) {
+		if(o == 6 && n == 7) {
 			table = Tables.getName(TB.REMITTANCE);
 			SQLiteQuery query = new SQLiteQuery();
 			query.add(new FieldValue("balance", Value.NULL));
 			query.add(new FieldValue("referenceNo", "aa42aee79b9e"));
-			query.add(new Condition("referenceNo", "suki!"));
-			query.add(new Condition("dDate", "2017-11-05"));
-			query.add(new Condition("dTime", "14:37:20"));
-			binder.update(table, query);
+			binder.update(table, query, 502);
 		}
 		binder.finish();
 	}
@@ -261,5 +257,11 @@ public class SMPadalaLib {
 		receive.customer = customer;
 		binder.finish();
 		return receive;
+	}
+
+	public static int getNoOfCustomers(SQLiteAdapter db) {
+		String table = Tables.getName(TB.CUSTOMER);
+		String query = "SELECT COUNT(ID) FROM " + table + " WHERE isActive = 1";
+		return db.getInt(query);
 	}
 }
