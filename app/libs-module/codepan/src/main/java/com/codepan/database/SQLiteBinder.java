@@ -134,6 +134,21 @@ public class SQLiteBinder {
 		create.close();
 	}
 
+	public void createIndex(String idx, String table, SQLiteQuery query) {
+		String sql = query.createIndex(idx, table);
+		SQLiteStatement create = db.compileStatement(sql);
+		create.execute();
+		create.close();
+	}
+
+	public void dropIndex(String idx) {
+		SQLiteQuery query = new SQLiteQuery();
+		String sql = query.dropIndex(idx);
+		SQLiteStatement create = db.compileStatement(sql);
+		create.execute();
+		create.close();
+	}
+
 	public void execute(String sql) {
 		SQLiteStatement statement = db.compileStatement(sql);
 		statement.execute();
@@ -144,6 +159,7 @@ public class SQLiteBinder {
 	 * Since SQLite does not support truncate the ID will not be reset.
 	 * Must only be used if you're going to replace ID (primary key) to avoid
 	 * incrementation of IDs when doing insert
+	 *
 	 * @param table - name of table to truncate
 	 */
 	public void truncate(String table) {
@@ -167,5 +183,9 @@ public class SQLiteBinder {
 			db.endTransaction();
 		}
 		return result;
+	}
+
+	public SQLiteAdapter getDatabase() {
+		return this.db;
 	}
 }

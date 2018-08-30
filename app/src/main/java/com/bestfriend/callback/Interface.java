@@ -14,6 +14,10 @@ public class Interface {
 		void onReceiveRemittance(RemittanceObj remittance);
 	}
 
+	public interface OnTransferRemittanceCallback {
+		void onTransferRemittance(RemittanceObj remittance);
+	}
+
 	public interface OnRetakeCameraCallback {
 		void onRetakeCamera();
 	}

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/dialog_bg"
     android:clickable="true"
+    android:focusable="true"
     android:padding="@dimen/nine">
 
     <LinearLayout
@@ -63,13 +64,13 @@
                 android:id="@+id/tvViewPhotoAddCustomer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/rlPhotoAddCustomer"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignBottom="@+id/rlPhotoAddCustomer"
+                android:padding="@dimen/five"
                 android:text="@string/view_photo"
                 android:textColor="@color/theme_sec"
                 android:textSize="@dimen/nine"
-                android:padding="@dimen/five"
                 codePan:typeface="@string/helvetica_neue_light"/>
 
         </RelativeLayout>
@@ -79,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/five"
-            android:text="@string/name"
+            android:text="@string/customer_name"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/nine"
             codePan:typeface="@string/helvetica_neue_light"/>
@@ -89,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_gray_qui_rad_one"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionNext|flagNoFullscreen"
             android:inputType="textCapWords"
             android:maxLines="1"
             android:padding="@dimen/five"
@@ -102,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/five"
-            android:text="@string/mobile"
+            android:text="@string/customer_mobile"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/nine"
             codePan:typeface="@string/helvetica_neue_light"/>
@@ -112,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_gray_qui_rad_one"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionNext|flagNoFullscreen"
             android:inputType="number"
             android:maxLength="11"
             android:maxLines="1"
@@ -126,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/five"
-            android:text="@string/address"
+            android:text="@string/customer_address"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/nine"
             codePan:typeface="@string/helvetica_neue_light"/>
@@ -137,7 +138,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_gray_qui_rad_one"
             android:gravity="start|top"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionDone|flagNoFullscreen"
             android:inputType="textCapWords"
             android:minHeight="@dimen/fifty"
             android:padding="@dimen/five"

@@ -46,6 +46,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/state_rect_gray_qui_rad_one"
                     android:hint="@string/search"
+                    android:imeOptions="flagNoFullscreen"
                     android:paddingBottom="@dimen/five"
                     android:paddingEnd="@dimen/fifteen"
                     android:paddingLeft="@dimen/four"

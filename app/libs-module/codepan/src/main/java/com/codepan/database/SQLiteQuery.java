@@ -410,6 +410,18 @@ public class SQLiteQuery {
 		return "CREATE TABLE IF NOT EXISTS " + table + " (" + createFields() + ")";
 	}
 
+	public String createIndex(String idx, String table) {
+		return "CREATE INDEX IF NOT EXISTS " + idx + " ON " + table + " (" + getFields() + ")";
+	}
+
+	public String vacuum(String database, String table) {
+		return "VACUUM '" + database + "." + table + "'";
+	}
+
+	public String dropIndex(String idx) {
+		return "DROP INDEX IF EXISTS " + idx;
+	}
+
 	public String select(String table) {
 		String conditions = "";
 		if(hasConditions()) {

@@ -13,5 +13,6 @@ public class RemittanceObj extends TransactionObj {
     public boolean hasBalance;
     public boolean isMarked;
     public ReceiveObj receive;
+    public TransferObj transfer;
     public int type;
 }

@@ -14,6 +14,7 @@ import java.util.Hashtable;
 public class SQLiteCache {
 
     private static final Hashtable<String, SQLiteAdapter> CACHE = new Hashtable<>();
+
     private static native String key();
 
     static {
@@ -28,13 +29,14 @@ public class SQLiteCache {
                     @Override
                     public void onCreateDatabase(SQLiteAdapter db) {
                         SMPadalaLib.createTables(db);
+                        SMPadalaLib.createIndex(db);
                     }
                 });
                 db.setOnUpgradeDatabaseCallback(new OnUpgradeDatabaseCallback() {
                     @Override
                     public void onUpgradeDatabase(SQLiteAdapter db, int ov, int nv) {
                         SMPadalaLib.createTables(db);
-                        SMPadalaLib.updateTables(db, ov, nv);
+                        SMPadalaLib.createIndex(db);
                     }
                 });
                 CACHE.put(name, db);

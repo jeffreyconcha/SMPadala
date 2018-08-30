@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/rlMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.bestfriend.smpadala.MainActivity">
@@ -97,7 +97,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/transparent"
                             android:hint="@string/search"
-                            android:imeOptions="actionDone"
+                            android:imeOptions="actionDone|flagNoFullscreen"
                             android:maxLines="1"
                             android:padding="@dimen/three"
                             android:singleLine="true"
@@ -173,7 +173,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="@string/name"
+                        android:text="@string/customer_name"
                         android:textColor="@color/white"
                         android:textSize="@dimen/nine"
                         codePan:typeface="@string/helvetica_neue_light"/>
