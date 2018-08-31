@@ -1,7 +1,6 @@
 package com.bestfriend.cache;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.bestfriend.core.SMPadalaLib;
 import com.codepan.callback.Interface.OnCreateDatabaseCallback;
@@ -29,14 +28,14 @@ public class SQLiteCache {
                     @Override
                     public void onCreateDatabase(SQLiteAdapter db) {
                         SMPadalaLib.createTables(db);
-                        SMPadalaLib.createIndex(db);
+                        SMPadalaLib.dropIndex(db);
                     }
                 });
                 db.setOnUpgradeDatabaseCallback(new OnUpgradeDatabaseCallback() {
                     @Override
                     public void onUpgradeDatabase(SQLiteAdapter db, int ov, int nv) {
                         SMPadalaLib.createTables(db);
-                        SMPadalaLib.createIndex(db);
+                        SMPadalaLib.dropIndex(db);
                     }
                 });
                 CACHE.put(name, db);

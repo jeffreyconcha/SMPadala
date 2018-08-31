@@ -64,15 +64,13 @@ public class SMPadalaLib {
         binder.finish();
     }
 
-    public static void createIndex(SQLiteAdapter db) {
+    public static void dropIndex(SQLiteAdapter db) {
         SQLiteBinder binder = new SQLiteBinder(db);
         List<TB> tableList = Arrays.asList(TB.values());
         for(TB tb : tableList) {
-            String table = Tables.getName(tb);
-            SQLiteQuery index = Tables.index(tb);
-            if(index.hasFields()) {
-                String idx = Tables.getIndex(tb);
-                binder.createIndex(idx, table, index);
+            String idx = Tables.getIndex(tb);
+            if(idx != null) {
+                binder.dropIndex(idx);
             }
         }
         binder.finish();
@@ -304,5 +302,22 @@ public class SMPadalaLib {
         String table = Tables.getName(TB.CUSTOMER);
         String query = "SELECT COUNT(ID) FROM " + table + " WHERE isActive = 1";
         return db.getInt(query);
+    }
+
+    public static CustomerObj getCustomer(SQLiteAdapter db, String customerID) {
+        CustomerObj customer = null;
+        String table = Tables.getName(TB.CUSTOMER);
+        String query = "SELECT name, mobileNo, address FROM " + table + " " +
+                "WHERE ID = '" + customerID + "'";
+        Cursor cursor = db.read(query);
+        while(cursor.moveToNext()) {
+            customer = new CustomerObj();
+            customer.ID = customerID;
+            customer.name = cursor.getString(0);
+            customer.mobileNo = cursor.getString(1);
+            customer.address = cursor.getString(2);
+        }
+        cursor.close();
+        return customer;
     }
 }

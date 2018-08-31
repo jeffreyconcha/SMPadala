@@ -78,32 +78,6 @@ public class Tables {
         return name;
     }
 
-    public static SQLiteQuery index(TB tb) {
-        SQLiteQuery query = new SQLiteQuery();
-        switch(tb) {
-            case REMITTANCE:
-                query.clearAll();
-                query.add(new Field("type"));
-                query.add(new Field("isClaimed"));
-                query.add(new Field("smDate"));
-                break;
-            case RECEIVE:
-                query.clearAll();
-                query.add(new Field("isCancelled"));
-                query.add(new Field("customerID"));
-                query.add(new Field("remittanceID"));
-                break;
-            case TRANSFER:
-                query.clearAll();
-                query.add(new Field("isCancelled"));
-                query.add(new Field("customerID"));
-                query.add(new Field("remittanceID"));
-                break;
-        }
-        return query;
-    }
-
-
     public static String getIndex(TB tb) {
         String name = null;
         switch(tb) {
