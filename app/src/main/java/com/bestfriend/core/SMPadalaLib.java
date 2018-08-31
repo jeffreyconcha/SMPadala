@@ -304,20 +304,20 @@ public class SMPadalaLib {
         return db.getInt(query);
     }
 
-    public static CustomerObj getCustomer(SQLiteAdapter db, String customerID) {
-        CustomerObj customer = null;
-        String table = Tables.getName(TB.CUSTOMER);
-        String query = "SELECT name, mobileNo, address FROM " + table + " " +
-                "WHERE ID = '" + customerID + "'";
-        Cursor cursor = db.read(query);
-        while(cursor.moveToNext()) {
-            customer = new CustomerObj();
-            customer.ID = customerID;
-            customer.name = cursor.getString(0);
-            customer.mobileNo = cursor.getString(1);
-            customer.address = cursor.getString(2);
-        }
-        cursor.close();
-        return customer;
-    }
+//    public static CustomerObj getCustomer(SQLiteAdapter db, String customerID) {
+//        CustomerObj customer = null;
+//        String table = Tables.getName(TB.CUSTOMER);
+//        String query = "SELECT name, mobileNo, address FROM " + table + " " +
+//                "WHERE ID = '" + customerID + "'";
+//        Cursor cursor = db.read(query);
+//        while(cursor.moveToNext()) {
+//            customer = new CustomerObj();
+//            customer.ID = customerID;
+//            customer.name = cursor.getString(0);
+//            customer.mobileNo = cursor.getString(1);
+//            customer.address = cursor.getString(2);
+//        }
+//        cursor.close();
+//        return customer;
+//    }
 }
