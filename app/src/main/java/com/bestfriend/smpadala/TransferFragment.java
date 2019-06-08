@@ -1,6 +1,11 @@
 package com.bestfriend.smpadala;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +31,8 @@ import com.bestfriend.adapter.CustomerAdapter;
 import com.bestfriend.callback.Interface.OnTransferRemittanceCallback;
 import com.bestfriend.callback.Interface.OnUsePhotoCallback;
 import com.bestfriend.constant.App;
+import com.bestfriend.constant.Forward;
+import com.bestfriend.constant.RequestCode;
 import com.bestfriend.constant.Result;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
@@ -38,6 +46,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
@@ -51,6 +60,7 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
     private ArrayList<CustomerObj> customerList;
     private AutoCompleteTextView etNameTransfer;
     private FragmentTransaction transaction;
+    private BroadcastReceiver broadcast;
     private RelativeLayout rlTransfer;
     private ImageView ivPhotoTransfer;
     private RemittanceObj remittance;
@@ -74,6 +84,7 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
         nf.setGroupingUsed(true);
+        setReceiver();
     }
 
     @Override
@@ -121,7 +132,7 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
                     photo = customer.photo;
                     if(photo != null) {
                         final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
-                                                               .getPath() + "/" + photo;
+                                .getPath() + "/" + photo;
                         CodePanUtils.displayImage(ivPhotoTransfer, uri, R.drawable.ic_camera);
                     }
                     else {
@@ -203,7 +214,20 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
                 else {
                     String name = etNameTransfer.getText().toString().trim();
                     String mobileNo = etMobileNoTransfer.getText().toString().trim();
+                    String receiver = etReceiverTransfer.getText().toString().trim();
                     String address = etAddressTransfer.getText().toString().trim();
+                    if(name.isEmpty()) {
+                        if(CodePanUtils.isValidMobile(mobileNo) &&
+                                CodePanUtils.isValidMobile(receiver)) {
+                            name = mobileNo + "/" + receiver;
+                        }
+                        else if(CodePanUtils.isValidMobile(mobileNo)) {
+                            name = mobileNo;
+                        }
+                        else if(CodePanUtils.isValidMobile(receiver)) {
+                            name = receiver;
+                        }
+                    }
                     if(!name.isEmpty()) {
                         CustomerObj customer = SMPadalaLib.addCustomer(db, name, mobileNo, address, photo);
                         confirm(customer);
@@ -219,7 +243,7 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
                     @Override
                     public void onUsePhoto(String fileName) {
                         final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
-                                                               .getPath() + "/" + fileName;
+                                .getPath() + "/" + fileName;
                         CodePanUtils.displayImage(ivPhotoTransfer, uri, R.drawable.ic_user);
                         photo = fileName;
                         if(customer != null) {
@@ -314,8 +338,9 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
             public void run() {
                 try {
                     TransferObj transfer = SMPadalaLib.tagTransfer(db, customer, remittance.ID, receiver);
+                    sendSMS(remittance.referenceNo, customer.mobileNo, receiver);
                     handler.obtainMessage(transfer != null ? Result.SUCCESS :
-                                                  Result.FAILED, transfer).sendToTarget();
+                            Result.FAILED, transfer).sendToTarget();
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -323,6 +348,41 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
             }
         });
         bg.start();
+    }
+
+    public void sendSMS(String reference, String mobileNo, String receiver) {
+        if(reference != null) {
+            if(CodePanUtils.isValidMobile(mobileNo) || CodePanUtils.isValidMobile(receiver)) {
+                File dir = main.getDir(App.FOLDER, Context.MODE_PRIVATE);
+                File file = new File(dir, reference);
+                Intent intent = new Intent(Forward.SENT);
+                PendingIntent pi = PendingIntent.getBroadcast(main,
+                        RequestCode.SMS_SENT, intent, 0);
+                if(!file.exists()) {
+                    String m = CodePanUtils.isValidMobile(mobileNo) ? mobileNo : "";
+                    String r = CodePanUtils.isValidMobile(receiver) ? receiver : "";
+                    String text = Forward.MESSAGE
+                            .replace(Forward.REFERENCE, reference)
+                            .replace(Forward.MOBILE, m)
+                            .replace(Forward.RECEIVER, r);
+                    main.registerReceiver(broadcast, new IntentFilter(Forward.SENT));
+                    CodePanUtils.sendSMS(Forward.ADDRESS, text, pi);
+                }
+                else {
+                    String text = CodePanUtils.readFromFile(file);
+                    if(!text.isEmpty()) {
+                        if(CodePanUtils.isValidMobile(mobileNo)) {
+                            main.registerReceiver(broadcast, new IntentFilter(Forward.SENT));
+                            CodePanUtils.sendSMS(mobileNo, text, pi);
+                        }
+                        if(CodePanUtils.isValidMobile(receiver)) {
+                            main.registerReceiver(broadcast, new IntentFilter(Forward.SENT));
+                            CodePanUtils.sendSMS(receiver, text, pi);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void setOnTransferRemittanceCallback(OnTransferRemittanceCallback receiveRemittanceCallback) {
@@ -342,5 +402,22 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
 
     @Override
     public void afterTextChanged(Editable editable) {
+    }
+
+    public void setReceiver() {
+        broadcast = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch(getResultCode()) {
+                    case Activity.RESULT_OK:
+                        CodePanUtils.alertToast(main, "Message successfully sent.");
+                        break;
+                    default:
+                        CodePanUtils.alertToast(main, "Sending failed.");
+                        break;
+                }
+                main.unregisterReceiver(broadcast);
+            }
+        };
     }
 }

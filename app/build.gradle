@@ -6,9 +6,9 @@ android {
     defaultConfig {
         applicationId "com.bestfriend.smpadala"
         minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 9
-        versionName "1.0.9"
+        targetSdkVersion 26
+        versionCode 11
+        versionName "1.1.1"
     }
     buildTypes {
         release {
@@ -34,6 +34,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':app:libs-module:codepan')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':app:libs-module:codepan')
 }

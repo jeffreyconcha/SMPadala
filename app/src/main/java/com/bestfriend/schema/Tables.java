@@ -77,20 +77,4 @@ public class Tables {
         }
         return name;
     }
-
-    public static String getIndex(TB tb) {
-        String name = null;
-        switch(tb) {
-            case REMITTANCE:
-                name = "remittance_idx";
-                break;
-            case RECEIVE:
-                name = "receive_idx";
-                break;
-            case TRANSFER:
-                name = "transfer_idx";
-                break;
-        }
-        return name;
-    }
 }

@@ -41,6 +41,7 @@ import com.bestfriend.constant.ProcessName;
 import com.bestfriend.constant.RemittanceStatus;
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.constant.RequestCode;
+import com.bestfriend.constant.Result;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
 import com.bestfriend.model.CustomerObj;
@@ -170,8 +171,11 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                                 receive.setOnReceiveRemittanceCallback(new OnReceiveRemittanceCallback() {
                                     @Override
                                     public void onReceiveRemittance(RemittanceObj obj) {
-                                        remittanceList.set(i, obj);
-                                        updateRemittance(true);
+                                        int index = getIndex(obj);
+                                        if(index != Result.FAILED) {
+                                            remittanceList.set(index, obj);
+                                            updateRemittance(true);
+                                        }
                                     }
                                 });
                                 transaction = manager.beginTransaction();
@@ -221,8 +225,11 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                             tag.setOnTransferRemittanceCallback(new OnTransferRemittanceCallback() {
                                 @Override
                                 public void onTransferRemittance(RemittanceObj obj) {
-                                    remittanceList.set(i, obj);
-                                    updateRemittance(true);
+                                    int index = getIndex(obj);
+                                    if(index != Result.FAILED) {
+                                        remittanceList.set(index, obj);
+                                        updateRemittance(true);
+                                    }
                                 }
                             });
                             transaction = manager.beginTransaction();
@@ -749,5 +756,17 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             db = SQLiteCache.getDatabase(this, App.DB);
         }
         return this.db;
+    }
+
+    public int getIndex(RemittanceObj remittance) {
+        if(remittanceList != null && remittance != null) {
+            for(RemittanceObj obj : remittanceList) {
+                if(remittance.ID != null && obj.ID != null &&
+                        remittance.ID.equals(obj.ID)) {
+                    return remittanceList.indexOf(obj);
+                }
+            }
+        }
+        return Result.FAILED;
     }
 }

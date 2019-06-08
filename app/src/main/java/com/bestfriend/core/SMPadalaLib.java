@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -21,6 +23,7 @@ import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.database.SQLiteQuery.DataType;
 import com.codepan.utils.CodePanUtils;
 
 import net.sqlcipher.Cursor;
@@ -64,18 +67,6 @@ public class SMPadalaLib {
         binder.finish();
     }
 
-    public static void dropIndex(SQLiteAdapter db) {
-        SQLiteBinder binder = new SQLiteBinder(db);
-        List<TB> tableList = Arrays.asList(TB.values());
-        for(TB tb : tableList) {
-            String idx = Tables.getIndex(tb);
-            if(idx != null) {
-                binder.dropIndex(idx);
-            }
-        }
-        binder.finish();
-    }
-
     public static boolean hasRemittance(SQLiteAdapter db) {
         String table = Tables.getName(TB.REMITTANCE);
         String query = "SELECT ID FROM " + table + " LIMIT 1";
@@ -83,8 +74,7 @@ public class SMPadalaLib {
     }
 
     public static boolean saveRemittance(SQLiteAdapter db, int type, String smDate, String smTime,
-            String amount, String charge, String mobileNo,
-            String balance, String referenceNo) {
+            String amount, String charge, String mobileNo, String balance, String referenceNo) {
         String dDate = CodePanUtils.getDate();
         String dTime = CodePanUtils.getTime();
         SQLiteBinder binder = new SQLiteBinder(db);
@@ -303,21 +293,4 @@ public class SMPadalaLib {
         String query = "SELECT COUNT(ID) FROM " + table + " WHERE isActive = 1";
         return db.getInt(query);
     }
-
-//    public static CustomerObj getCustomer(SQLiteAdapter db, String customerID) {
-//        CustomerObj customer = null;
-//        String table = Tables.getName(TB.CUSTOMER);
-//        String query = "SELECT name, mobileNo, address FROM " + table + " " +
-//                "WHERE ID = '" + customerID + "'";
-//        Cursor cursor = db.read(query);
-//        while(cursor.moveToNext()) {
-//            customer = new CustomerObj();
-//            customer.ID = customerID;
-//            customer.name = cursor.getString(0);
-//            customer.mobileNo = cursor.getString(1);
-//            customer.address = cursor.getString(2);
-//        }
-//        cursor.close();
-//        return customer;
-//    }
 }

@@ -28,14 +28,12 @@ public class SQLiteCache {
                     @Override
                     public void onCreateDatabase(SQLiteAdapter db) {
                         SMPadalaLib.createTables(db);
-                        SMPadalaLib.dropIndex(db);
                     }
                 });
                 db.setOnUpgradeDatabaseCallback(new OnUpgradeDatabaseCallback() {
                     @Override
                     public void onUpgradeDatabase(SQLiteAdapter db, int ov, int nv) {
                         SMPadalaLib.createTables(db);
-                        SMPadalaLib.dropIndex(db);
                     }
                 });
                 CACHE.put(name, db);

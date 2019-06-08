@@ -1,6 +1,5 @@
 package com.bestfriend.core;
 
-import android.util.Log;
 
 import com.bestfriend.constant.RemittanceStatus;
 import com.bestfriend.constant.RemittanceType;
@@ -66,7 +65,6 @@ public class Data {
                 "LEFT JOIN " + c + " c ON c.ID = (CASE WHEN h.type = '" + RemittanceType.RECEIVE + "' " +
                 "THEN r.customerID ELSE t.customerID END) " + condition + "ORDER BY h.ID " +
                 "DESC LIMIT " + limit;
-        Log.e("DEPANOT", "" + sql);
         Cursor cursor = db.read(sql);
         while(cursor.moveToNext()) {
             RemittanceObj remittance = new RemittanceObj();

@@ -34,7 +34,8 @@ public class RemittanceKey {
 	public static final String RECEIVE_SP_5 = "was transferred from";
 
 	/**
-	 * Format here
+	 * 31Dec 15:32:Sent P1,000.00 from LOADING to ****3100 at 09497749132. Also deducted P18.50
+	 * from your account.Bal:P140,115.27.Ref:1d800db4b7b1
 	 */
 	public static final String TRANSFER_SP_1 = "Also deducted";
 
