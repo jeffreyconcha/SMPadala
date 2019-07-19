@@ -75,19 +75,35 @@ public class MainService extends Service {
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_SM) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_PM) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T1) ||
-                            sender.equalsIgnoreCase(RemittanceKey.SENDER_T2))) {
+                            sender.equalsIgnoreCase(RemittanceKey.SENDER_T2) ||
+                            sender.equalsIgnoreCase(RemittanceKey.SENDER_T3))) {
                         if(message != null) {
                             String[] fields = message.split(" ");
                             if(message.contains(RemittanceKey.RECEIVE_SP_1)) {
-                                String amount = removeCurrency(fields[3]);
-                                String charge = removeCurrency(fields[5]);
-                                String mobileNo = fields[8];
-                                String referenceNo = fields[13]
-                                        .replace("Ref:", "");
-                                String balance = removeCurrency(fields[14])
-                                        .replace("Bal:", "");
-                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                        charge, mobileNo, balance, referenceNo);
+                                int length = fields.length;
+                                if(length == 15) {
+                                    String amount = removeCurrency(fields[3]);
+                                    String charge = removeCurrency(fields[5]);
+                                    String mobileNo = fields[8];
+                                    String referenceNo = fields[13]
+                                            .replace("Ref:", "");
+                                    String balance = removeCurrency(fields[14])
+                                            .replace("Bal:", "");
+                                    saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
+                                            charge, mobileNo, balance, referenceNo);
+                                }
+                                else if(length == 14) {
+                                    String amount = removeCurrency(fields[3]);
+                                    String charge = removeCurrency(fields[5]);
+                                    String mobileNo = fields[8];
+                                    String balance = removeCurrency(fields[12])
+                                            .replace("Bal:", "");
+                                    String referenceNo = fields[13]
+                                            .replace("Ref:", "");
+                                    saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
+                                            charge, mobileNo, balance, referenceNo);
+
+                                }
                             }
                             else if(message.contains(RemittanceKey.RECEIVE_SP_2)) {
                                 String amount = removeCurrency(fields[4]);
