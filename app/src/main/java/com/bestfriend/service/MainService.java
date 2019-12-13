@@ -7,7 +7,6 @@ import android.os.Handler.Callback;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.bestfriend.cache.SQLiteCache;
 import com.bestfriend.constant.App;
@@ -79,7 +78,25 @@ public class MainService extends Service {
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T3))) {
                         if(message != null) {
                             String[] fields = message.split(" ");
-                            if(message.contains(RemittanceKey.RECEIVE_SP_1)) {
+                            if(message.contains(RemittanceKey.RECEIVE_PN_1)) {
+                                String amount = removeCurrency(fields[5]);
+                                String mobileNo = fields[12];
+                                String charge = removeCurrency(fields[15]);
+                                String balance = removeCurrency(fields[24]);
+                                String referenceNo = fields[27];
+                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
+                                        charge, mobileNo, balance, referenceNo);
+                            }
+                            else if(message.contains(RemittanceKey.TRANSFER_PN_1)) {
+                                String amount = removeCurrency(fields[5]);
+                                String mobileNo = fields[12];
+                                String charge = removeCurrency(fields[15]);
+                                String balance = removeCurrency(fields[30]);
+                                String referenceNo = fields[33];
+                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
+                                        charge, mobileNo, balance, referenceNo);
+                            }
+                            else if(message.contains(RemittanceKey.RECEIVE_SP_1)) {
                                 int length = fields.length;
                                 if(length == 15) {
                                     String amount = removeCurrency(fields[3]);

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlMain"
@@ -12,8 +11,8 @@
         android:id="@+id/dlMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true">
 
         <RelativeLayout
@@ -35,8 +34,8 @@
                         android:id="@+id/flMenuMain"
                         android:layout_width="@dimen/fifty_five"
                         android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true">
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -52,8 +51,8 @@
                             <com.codepan.widget.CodePanLabel
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/three"
                                 android:layout_marginStart="@dimen/three"
+                                android:layout_marginLeft="@dimen/three"
                                 android:text="@string/menu"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/ten"
@@ -69,44 +68,73 @@
 
                     </FrameLayout>
 
-                    <LinearLayout
-                        android:id="@+id/flSearchMain"
-                        android:layout_width="@dimen/one_hundred_fifty"
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/four"
                         android:layout_marginRight="@dimen/four"
-                        android:layout_toLeftOf="@+id/flFilterMain"
                         android:layout_toStartOf="@+id/flFilterMain"
-                        android:background="@drawable/bg_rect_theme_ter_rad_three"
-                        android:gravity="center_vertical"
+                        android:layout_toLeftOf="@+id/flFilterMain"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="@dimen/ten"
-                            android:layout_height="@dimen/ten"
-                            android:layout_marginEnd="@dimen/two"
-                            android:layout_marginLeft="@dimen/four"
-                            android:layout_marginRight="@dimen/two"
-                            android:layout_marginStart="@dimen/four"
-                            android:src="@drawable/ic_search"/>
-
-                        <com.codepan.widget.CodePanTextField
-                            android:id="@+id/etSearchMain"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:id="@+id/flSearchMain"
+                            android:layout_width="@dimen/one_hundred_fifty"
                             android:layout_height="wrap_content"
-                            android:background="@color/transparent"
-                            android:hint="@string/search"
-                            android:imeOptions="actionDone|flagNoFullscreen"
-                            android:maxLines="1"
-                            android:padding="@dimen/three"
-                            android:singleLine="true"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/theme_qua"
-                            android:textSize="@dimen/ten"
-                            codePan:typeface="@string/helvetica_neue_mid"/>
+                            android:background="@drawable/bg_rect_theme_ter_rad_two_left"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:layout_width="@dimen/ten"
+                                android:layout_height="@dimen/ten"
+                                android:layout_marginStart="@dimen/four"
+                                android:layout_marginLeft="@dimen/four"
+                                android:layout_marginEnd="@dimen/two"
+                                android:layout_marginRight="@dimen/two"
+                                android:src="@drawable/ic_search"/>
+
+                            <com.codepan.widget.CodePanTextField
+                                android:id="@+id/etSearchMain"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/transparent"
+                                android:hint="@string/search"
+                                android:imeOptions="actionDone|flagNoFullscreen"
+                                android:maxLines="1"
+                                android:padding="@dimen/three"
+                                android:singleLine="true"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/theme_qua"
+                                android:textSize="@dimen/ten"
+                                codePan:typeface="@string/helvetica_neue_mid"/>
+
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:id="@+id/flClearSearchMain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/flSearchMain"
+                            android:layout_alignBottom="@+id/flSearchMain"
+                            android:layout_toEndOf="@+id/flSearchMain"
+                            android:layout_toRightOf="@+id/flSearchMain"
+                            android:paddingLeft="@dimen/five"
+                            android:paddingStart="@dimen/five"
+                            android:paddingRight="@dimen/five"
+                            android:paddingEnd="@dimen/five"
+                            android:background="@drawable/bg_rect_theme_ter_rad_two_right">
+
+                            <ImageView
+                                android:layout_width="@dimen/ten"
+                                android:layout_height="@dimen/ten"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_clear"/>
+
+                        </FrameLayout>
+
+                    </RelativeLayout>
 
                     <FrameLayout
                         android:id="@+id/flFilterMain"
@@ -145,8 +173,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/gray_pri"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/five"
-                    android:paddingTop="@dimen/five">
+                    android:paddingTop="@dimen/five"
+                    android:paddingBottom="@dimen/five">
 
                     <com.codepan.widget.CodePanLabel
                         android:layout_width="0dp"
@@ -270,8 +298,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/ten"
                             android:layout_marginStart="@dimen/ten"
+                            android:layout_marginLeft="@dimen/ten"
                             android:text="@string/select_customer"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/ten"
@@ -306,8 +334,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/ten"
                             android:layout_marginStart="@dimen/ten"
+                            android:layout_marginLeft="@dimen/ten"
                             android:text="@string/select_date"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/ten"
@@ -341,8 +369,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/ten"
                             android:layout_marginStart="@dimen/ten"
+                            android:layout_marginLeft="@dimen/ten"
                             android:text="@string/show_transfers"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/ten"
@@ -381,8 +409,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/ten"
                             android:layout_marginStart="@dimen/ten"
+                            android:layout_marginLeft="@dimen/ten"
                             android:text="@string/show_claimed"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/ten"
@@ -434,8 +462,8 @@
                             android:id="@+id/btnClearMain"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/p_one"
                             android:layout_marginStart="@dimen/p_one"
+                            android:layout_marginLeft="@dimen/p_one"
                             android:layout_weight="1"
                             android:background="@drawable/state_rect_gray_qui"
                             android:gravity="center"
@@ -504,8 +532,8 @@
                 <com.codepan.widget.CodePanLabel
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/seven"
                     android:layout_marginStart="@dimen/seven"
+                    android:layout_marginLeft="@dimen/seven"
                     android:text="@string/customers"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/ten"
@@ -544,8 +572,8 @@
                 <com.codepan.widget.CodePanLabel
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/seven"
                     android:layout_marginStart="@dimen/seven"
+                    android:layout_marginLeft="@dimen/seven"
                     android:text="@string/daily_report"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/ten"
@@ -584,8 +612,8 @@
                 <com.codepan.widget.CodePanLabel
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/seven"
                     android:layout_marginStart="@dimen/seven"
+                    android:layout_marginLeft="@dimen/seven"
                     android:text="@string/back_up_data"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/ten"

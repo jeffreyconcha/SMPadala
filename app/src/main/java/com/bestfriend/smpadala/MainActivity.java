@@ -23,6 +23,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -78,6 +79,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     private int type = RemittanceType.DEFAULT;
     private CheckBox cbTypeMain, cbStatusMain;
     private FragmentTransaction transaction;
+    private FrameLayout flClearSearchMain;
     private CodePanTextField etSearchMain;
     private boolean isInitialized, isEnd;
     private RelativeLayout rlFilterMain;
@@ -125,6 +127,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         llCustomersMain = findViewById(R.id.llCustomersMain);
         llBackUpMain = findViewById(R.id.llBackUpMain);
         llDailyReportMain = findViewById(R.id.llDailyReportMain);
+        flClearSearchMain = findViewById(R.id.flClearSearchMain);
         etSearchMain = findViewById(R.id.etSearchMain);
         btnStatusMain = findViewById(R.id.btnStatusMain);
         rlFilterMain = findViewById(R.id.rlFilterMain);
@@ -155,6 +158,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         llDailyReportMain.setOnClickListener(this);
         llCustomersMain.setOnClickListener(this);
         rlFilterMain.setOnClickListener(this);
+        flClearSearchMain.setOnClickListener(this);
         int color = getResources().getColor(R.color.black_trans_twenty);
         dlMain.setScrimColor(color);
         lvMain.setOnItemClickListener(new OnItemClickListener() {
@@ -670,6 +674,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 this.status = null;
                 this.search = null;
                 loadRemittance(db);
+                break;
+            case R.id.flClearSearchMain:
+                etSearchMain.setText(null);
                 break;
         }
     }

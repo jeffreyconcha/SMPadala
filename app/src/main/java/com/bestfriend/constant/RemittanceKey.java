@@ -3,6 +3,21 @@ package com.bestfriend.constant;
 public class RemittanceKey {
 
     /**
+     * 2019-12-12 10:14:33: You have received PHP2,000.00 on your PayMaya Negosyo
+     * Account from +639981888688. Also added PHP23.00 commission to your account.
+     * Your available balance is PHP2,023.00. Ref. No: 623b0122ff65
+     */
+    public static final String RECEIVE_PN_1 = "on your PayMaya Negosyo Account from";
+
+    /**
+     * 2019-12-13 12:57:55: You have transferred PHP35,000.00 from your PayMaya
+     * Negosyo Account to +639298549996. Also deducted PHP402.50 receiving agent
+     * commission and PHP245.00 transfer fee from your account. Your available
+     * balance is PHP29,877.50. Ref. No: 401179e89db9
+     */
+    public static final String TRANSFER_PN_1 = "from your PayMaya Negosyo Account to";
+
+    /**
      * Length = 15<br/>
      * 04Oct 1626: Received P800.00 with P11.50 <b>commission from</b> 09085299588 to
      * LOADING.LIBRE ang pag-claim! Ref:af6bddc37278 Bal:P56,186.12
