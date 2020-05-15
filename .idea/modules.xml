@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Projects-SMPadala.iml" filepath="$PROJECT_DIR$/Projects-SMPadala.iml" group="SMPadala" />
       <module fileurl="file://$PROJECT_DIR$/SMPadala.iml" filepath="$PROJECT_DIR$/SMPadala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/SMPadala-app.iml" filepath="$PROJECT_DIR$/app/SMPadala-app.iml" group="SMPadala/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/libs-module/app-libs-module.iml" filepath="$PROJECT_DIR$/app/libs-module/app-libs-module.iml" group="SMPadala/app/libs-module" />
       <module fileurl="file://$PROJECT_DIR$/app/libs-module/codepan/codepan.iml" filepath="$PROJECT_DIR$/app/libs-module/codepan/codepan.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/libs-module/libs-module.iml" filepath="$PROJECT_DIR$/app/libs-module/libs-module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/libs-module/codepan/libs-module-codepan.iml" filepath="$PROJECT_DIR$/app/libs-module/codepan/libs-module-codepan.iml" group="SMPadala/app/libs-module/codepan" />
     </modules>
   </component>
 </project>

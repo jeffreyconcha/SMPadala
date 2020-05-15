@@ -127,8 +127,8 @@
                             android:background="@drawable/bg_rect_theme_ter_rad_two_right">
 
                             <ImageView
-                                android:layout_width="@dimen/ten"
-                                android:layout_height="@dimen/ten"
+                                android:layout_width="@dimen/eight"
+                                android:layout_height="@dimen/eight"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_clear"/>
 

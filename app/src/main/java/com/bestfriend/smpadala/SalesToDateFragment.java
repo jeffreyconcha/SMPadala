@@ -89,8 +89,8 @@ public class SalesToDateFragment extends Fragment implements OnClickListener {
             public void run() {
                 try {
                     totalList = Data.loadSalesToDate(db, date, RemittanceType.DEFAULT);
-                    transferList = Data.loadSalesToDate(db, date, RemittanceType.TRANSFER);
-                    receiveList = Data.loadSalesToDate(db, date, RemittanceType.RECEIVE);
+                    transferList = Data.loadSalesToDate(db, date, RemittanceType.OUTGOING);
+                    receiveList = Data.loadSalesToDate(db, date, RemittanceType.INGOING);
                     Thread.sleep(250);
                     handler.obtainMessage().sendToTarget();
                 }

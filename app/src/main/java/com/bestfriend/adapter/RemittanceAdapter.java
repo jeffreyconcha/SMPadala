@@ -69,13 +69,13 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
             holder.tvTimeRemittance.setText(obj.smTime);
             CustomerObj customer = null;
             switch(obj.type) {
-                case RemittanceType.RECEIVE:
+                case RemittanceType.INGOING:
                     ReceiveObj receive = obj.receive;
                     if(receive != null) {
                         customer = receive.customer;
                     }
                     break;
-                case RemittanceType.TRANSFER:
+                case RemittanceType.OUTGOING:
                     TransferObj transfer = obj.transfer;
                     if(transfer != null) {
                         customer = transfer.customer;
@@ -98,7 +98,7 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
             }
             holder.tvReferenceNoRemittance.setText(obj.referenceNo);
             switch(obj.type) {
-                case RemittanceType.RECEIVE:
+                case RemittanceType.INGOING:
                     int status = obj.isClaimed ? R.string.claimed : R.string.pending;
                     holder.tvStatusRemittance.setText(status);
                     if(!obj.isMarked) {
@@ -122,7 +122,7 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
                         holder.tvStatusRemittance.setTextColor(theme);
                     }
                     break;
-                case RemittanceType.TRANSFER:
+                case RemittanceType.OUTGOING:
                     holder.tvStatusRemittance.setText(R.string.na);
                     holder.tvDateRemittance.setTextColor(red);
                     holder.tvTimeRemittance.setTextColor(red);

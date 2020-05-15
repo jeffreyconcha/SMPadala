@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -97,7 +96,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     @Override
     protected void onStart() {
         super.onStart();
-        if(isInitialized) {
+        if (isInitialized) {
             registerReceiver();
             loadRemittance(db);
         }
@@ -106,7 +105,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     @Override
     protected void onStop() {
         super.onStop();
-        if(isInitialized) {
+        if (isInitialized) {
             unregisterReceiver();
         }
     }
@@ -166,17 +165,17 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 CodePanUtils.hideKeyboard(view, MainActivity.this);
                 final RemittanceObj remittance = remittanceList.get(i);
-                switch(remittance.type) {
-                    case RemittanceType.RECEIVE:
-                        if(!remittance.isClaimed) {
-                            if(!remittance.isMarked) {
+                switch (remittance.type) {
+                    case RemittanceType.INGOING:
+                        if (!remittance.isClaimed) {
+                            if (!remittance.isMarked) {
                                 ReceiveFragment receive = new ReceiveFragment();
                                 receive.setRemittance(remittance);
                                 receive.setOnReceiveRemittanceCallback(new OnReceiveRemittanceCallback() {
                                     @Override
                                     public void onReceiveRemittance(RemittanceObj obj) {
                                         int index = getIndex(obj);
-                                        if(index != Result.FAILED) {
+                                        if (index != Result.FAILED) {
                                             remittanceList.set(index, obj);
                                             updateRemittance(true);
                                         }
@@ -195,9 +194,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                         }
                         else {
                             ReceiveObj receive = remittance.receive;
-                            if(receive != null) {
+                            if (receive != null) {
                                 CustomerObj customer = receive.customer;
-                                if(customer != null) {
+                                if (customer != null) {
                                     String receiveDate = CodePanUtils.getCalendarDate(receive.dDate, true, true);
                                     String time = CodePanUtils.getNormalTime(receive.dTime, false);
                                     String current = CodePanUtils.getDate();
@@ -209,9 +208,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                             }
                         }
                         break;
-                    case RemittanceType.TRANSFER:
+                    case RemittanceType.OUTGOING:
                         TransferObj transfer = remittance.transfer;
-                        if(transfer != null && transfer.customer != null) {
+                        if (transfer != null && transfer.customer != null) {
                             String transferDate = CodePanUtils.getCalendarDate(remittance.smDate, true, true);
                             String time = CodePanUtils.getNormalTime(remittance.smTime, false);
                             String current = CodePanUtils.getDate();
@@ -230,7 +229,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                                 @Override
                                 public void onTransferRemittance(RemittanceObj obj) {
                                     int index = getIndex(obj);
-                                    if(index != Result.FAILED) {
+                                    if (index != Result.FAILED) {
                                         remittanceList.set(index, obj);
                                         updateRemittance(true);
                                     }
@@ -251,9 +250,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int i, long id) {
                 final RemittanceObj remittance = remittanceList.get(i);
-                switch(remittance.type) {
-                    case RemittanceType.RECEIVE:
-                        if(remittance.isClaimed || remittance.isMarked) {
+                switch (remittance.type) {
+                    case RemittanceType.INGOING:
+                        if (remittance.isClaimed || remittance.isMarked) {
                             AlertDialogFragment alert = new AlertDialogFragment();
                             alert.setDialogTitle("Undo Transaction");
                             alert.setDialogMessage("Are you sure you want to undo this transaction?");
@@ -262,7 +261,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                                 public void onClick(View view) {
                                     manager.popBackStack();
                                     boolean result = SMPadalaLib.undoTransaction(db, remittance);
-                                    if(result) {
+                                    if (result) {
                                         CodePanUtils.alertToast(MainActivity.this,
                                                 "Undo Successful");
                                         remittance.isClaimed = false;
@@ -286,9 +285,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                             transaction.commit();
                         }
                         break;
-                    case RemittanceType.TRANSFER:
+                    case RemittanceType.OUTGOING:
                         final TransferObj transfer = remittance.transfer;
-                        if(transfer != null && transfer.customer != null) {
+                        if (transfer != null && transfer.customer != null) {
                             AlertDialogFragment alert = new AlertDialogFragment();
                             alert.setDialogTitle("Untag Customer");
                             alert.setDialogMessage("Are you sure you want to untag customer?");
@@ -297,7 +296,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                                 public void onClick(View view) {
                                     manager.popBackStack();
                                     boolean result = SMPadalaLib.untagCustomer(db, transfer);
-                                    if(result) {
+                                    if (result) {
                                         CodePanUtils.alertToast(MainActivity.this,
                                                 "Untag Successful");
                                         remittance.transfer = null;
@@ -326,13 +325,13 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         lvMain.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                switch(scrollState) {
+                switch (scrollState) {
                     case SCROLL_STATE_TOUCH_SCROLL:
                         etSearchMain.clearFocus();
                         CodePanUtils.hideKeyboard(etSearchMain, MainActivity.this);
                         break;
                     case SCROLL_STATE_IDLE:
-                        if(firstVisible == totalItem - visibleItem & !isEnd) {
+                        if (firstVisible == totalItem - visibleItem & !isEnd) {
                             loadMoreRemittance(db);
                         }
                         break;
@@ -341,7 +340,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
-                    int visibleItemCount, int totalItemCount) {
+                                 int visibleItemCount, int totalItemCount) {
                 firstVisible = firstVisibleItem;
                 visibleItem = visibleItemCount;
                 totalItem = totalItemCount;
@@ -382,7 +381,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 try {
                     remittanceList = Data.loadRemittance(db, receivedBy, search, smDate, status,
                             start, type, LIMIT);
-                    if(remittanceList.size() < LIMIT) {
+                    if (remittanceList.size() < LIMIT) {
                         isEnd = true;
                         start = null;
                     }
@@ -393,7 +392,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                     }
                     handler.obtainMessage().sendToTarget();
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -418,7 +417,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                     ArrayList<RemittanceObj> additionalList = Data.loadRemittance(db, receivedBy, search,
                             smDate, status, start, type, LIMIT);
                     remittanceList.addAll(additionalList);
-                    if(additionalList.size() < LIMIT) {
+                    if (additionalList.size() < LIMIT) {
                         isEnd = true;
                         start = null;
                     }
@@ -429,7 +428,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                     }
                     handler.obtainMessage().sendToTarget();
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -438,7 +437,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     }
 
     public void updateRemittance(boolean isUpdate) {
-        if(isUpdate) {
+        if (isUpdate) {
             adapter.notifyDataSetChanged();
             lvMain.invalidate();
         }
@@ -449,8 +448,8 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     }
 
     public void init(Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
-            if(isInitialized) {
+        if (savedInstanceState != null) {
+            if (isInitialized) {
                 checkRevokedPermissions();
             }
             else {
@@ -472,7 +471,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     }
 
     public void checkRevokedPermissions() {
-        if(!CodePanUtils.isPermissionGranted(this)) {
+        if (!CodePanUtils.isPermissionGranted(this)) {
             manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
             Intent intent = new Intent(this, getClass());
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -486,19 +485,19 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
-        switch(requestCode) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        switch (requestCode) {
             case RequestCode.PERMISSION:
-                if(grantResults.length > 0) {
+                if (grantResults.length > 0) {
                     boolean isPermissionGranted = true;
-                    for(int result : grantResults) {
-                        if(result == PackageManager.PERMISSION_DENIED) {
+                    for (int result : grantResults) {
+                        if (result == PackageManager.PERMISSION_DENIED) {
                             isPermissionGranted = false;
                             break;
                         }
                     }
-                    if(permissionGrantedCallback != null) {
+                    if (permissionGrantedCallback != null) {
                         permissionGrantedCallback.onPermissionGranted(isPermissionGranted);
                     }
                 }
@@ -533,9 +532,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(intent.hasExtra(Key.NOTIFICATION)) {
+                if (intent.hasExtra(Key.NOTIFICATION)) {
                     int code = intent.getIntExtra(Key.NOTIFICATION, 0);
-                    switch(code) {
+                    switch (code) {
                         case Notification.SMS_RECEIVE:
                             loadRemittance(db);
                             break;
@@ -547,9 +546,9 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.btnMenuMain:
-                if(dlMain.isDrawerOpen(llMenuMain)) {
+                if (dlMain.isDrawerOpen(llMenuMain)) {
                     dlMain.closeDrawer(llMenuMain);
                 }
                 else {
@@ -601,12 +600,12 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 transaction.commit();
                 break;
             case R.id.btnShowFilterMain:
-                if(rlFilterMain.getVisibility() == View.GONE) {
+                if (rlFilterMain.getVisibility() == View.GONE) {
                     CodePanUtils.fadeIn(rlFilterMain);
                 }
                 break;
             case R.id.rlFilterMain:
-                if(rlFilterMain.getVisibility() == View.VISIBLE) {
+                if (rlFilterMain.getVisibility() == View.VISIBLE) {
                     CodePanUtils.fadeOut(rlFilterMain);
                 }
                 break;
@@ -633,7 +632,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 search.setOnSelectCustomerCallback(new OnSelectCustomerCallback() {
                     @Override
                     public void onSelectCustomer(CustomerObj customer) {
-                        if(customer != null) {
+                        if (customer != null) {
                             tvCustomerMain.setText(customer.name);
                             receivedBy = customer;
                         }
@@ -656,7 +655,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 CodePanUtils.fadeOut(rlFilterMain);
                 ivFilterMain.setVisibility(View.VISIBLE);
                 this.status = !cbStatusMain.isChecked() ? RemittanceStatus.PENDING : null;
-                this.type = !cbTypeMain.isChecked() ? RemittanceType.RECEIVE :
+                this.type = !cbTypeMain.isChecked() ? RemittanceType.INGOING :
                         RemittanceType.DEFAULT;
                 loadRemittance(db);
                 break;
@@ -692,7 +691,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 String dDate = CodePanUtils.getDate();
                 String dTime = CodePanUtils.getTime();
                 boolean result = SMPadalaLib.claim(db, dDate, dTime, remittance.ID);
-                if(result) {
+                if (result) {
                     ReceiveObj receive = remittance.receive;
                     receive.dDate = dDate;
                     receive.dTime = dTime;
@@ -729,17 +728,17 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 return true;
             }
         });
-        if(!CodePanUtils.isThreadRunning(ProcessName.BACK_UP_DB)) {
+        if (!CodePanUtils.isThreadRunning(ProcessName.BACK_UP_DB)) {
             Thread bg = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         boolean result = SMPadalaLib.backUpData(MainActivity.this, external);
-                        if(external && result) {
+                        if (external && result) {
                             handler.obtainMessage().sendToTarget();
                         }
                     }
-                    catch(Exception e) {
+                    catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -752,23 +751,23 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     private Runnable inputFinishChecker = new Runnable() {
         @Override
         public void run() {
-            if(System.currentTimeMillis() > lastEdit + IDLE_TIME - 500) {
+            if (System.currentTimeMillis() > lastEdit + IDLE_TIME - 500) {
                 loadRemittance(db);
             }
         }
     };
 
     public SQLiteAdapter getDatabase() {
-        if(db == null) {
+        if (db == null) {
             db = SQLiteCache.getDatabase(this, App.DB);
         }
         return this.db;
     }
 
     public int getIndex(RemittanceObj remittance) {
-        if(remittanceList != null && remittance != null) {
-            for(RemittanceObj obj : remittanceList) {
-                if(remittance.ID != null && obj.ID != null &&
+        if (remittanceList != null && remittance != null) {
+            for (RemittanceObj obj : remittanceList) {
+                if (remittance.ID != null && obj.ID != null &&
                         remittance.ID.equals(obj.ID)) {
                     return remittanceList.indexOf(obj);
                 }

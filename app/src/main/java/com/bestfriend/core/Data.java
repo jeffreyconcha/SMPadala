@@ -62,7 +62,7 @@ public class Data {
                 "r.dTime, t.ID, t.dDate, t.dTime, t.receiver, c.ID, c.name, c.photo, c.address, " +
                 "c.mobileNo FROM " + h + " h LEFT JOIN " + r + " r ON r.remittanceID = h.ID AND " +
                 "r.isCancelled = 0 LEFT JOIN " + t + " t ON t.remittanceID = h.ID AND t.isCancelled = 0 " +
-                "LEFT JOIN " + c + " c ON c.ID = (CASE WHEN h.type = '" + RemittanceType.RECEIVE + "' " +
+                "LEFT JOIN " + c + " c ON c.ID = (CASE WHEN h.type = '" + RemittanceType.INGOING + "' " +
                 "THEN r.customerID ELSE t.customerID END) " + condition + "ORDER BY h.ID " +
                 "DESC LIMIT " + limit;
         Cursor cursor = db.read(sql);
@@ -142,7 +142,7 @@ public class Data {
         ArrayList<SalesToDateObj> stdList = new ArrayList<>();
         int maxDays = CodePanUtils.getNoOfDays(date);
         String table = Tables.getName(TB.REMITTANCE);
-        String split[] = date.split("-");
+        String[] split = date.split("-");
         String year = split[0];
         String month = split[1];
         int minDay = Integer.parseInt(split[2]);

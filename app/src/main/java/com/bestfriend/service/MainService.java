@@ -14,10 +14,10 @@ import com.bestfriend.constant.Key;
 import com.bestfriend.constant.Notification;
 import com.bestfriend.constant.Receiver;
 import com.bestfriend.constant.RemittanceKey;
-import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.constant.RequestCode;
 import com.bestfriend.constant.Result;
 import com.bestfriend.core.SMPadalaLib;
+import com.bestfriend.model.MessageObj;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 
@@ -29,7 +29,7 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if(CodePanUtils.isPermissionGranted(this)) {
+        if (CodePanUtils.isPermissionGranted(this)) {
             manager = LocalBroadcastManager.getInstance(this);
             db = SQLiteCache.getDatabase(this, App.DB);
             db.openConnection();
@@ -41,9 +41,9 @@ public class MainService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(CodePanUtils.isPermissionGranted(this)) {
+        if (CodePanUtils.isPermissionGranted(this)) {
             SQLiteAdapter db = getDatabase();
-            if(intent != null && intent.hasExtra(Key.RECEIVER)) {
+            if (intent != null && intent.hasExtra(Key.RECEIVER)) {
                 handleReceiver(intent, db);
             }
         }
@@ -52,7 +52,7 @@ public class MainService extends Service {
 
     private String removeCurrency(String amount) {
         String text = null;
-        if(amount != null) {
+        if (amount != null) {
             text = amount.replace("PHP", "")
                     .replace("P", "")
                     .replace(",", "");
@@ -62,192 +62,30 @@ public class MainService extends Service {
 
     public void handleReceiver(Intent intent, SQLiteAdapter db) {
         final int type = intent.getIntExtra(Key.RECEIVER, 0);
-        switch(type) {
+        switch (type) {
             case Receiver.SMS_RECEIVER:
                 try {
                     long timestamp = intent.getLongExtra(Key.TIMESTAMP, 0L);
                     String sender = intent.getStringExtra(Key.SENDER);
-                    String message = intent.getStringExtra(Key.MESSAGE);
+                    String text = intent.getStringExtra(Key.MESSAGE);
                     String smDate = CodePanUtils.getDate(timestamp);
                     String smTime = CodePanUtils.getTime(timestamp);
-                    if(sender != null && (sender.equalsIgnoreCase(RemittanceKey.SENDER_SP) ||
+                    if (sender != null && (sender.equalsIgnoreCase(RemittanceKey.SENDER_SP) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_SM) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_PM) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T1) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T2) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T3))) {
-                        if(message != null) {
-                            String[] fields = message.split(" ");
-                            if(message.contains(RemittanceKey.RECEIVE_PN_1)) {
-                                String amount = removeCurrency(fields[5]);
-                                String mobileNo = fields[12];
-                                String charge = removeCurrency(fields[15]);
-                                String balance = removeCurrency(fields[24]);
-                                String referenceNo = fields[27];
-                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                        charge, mobileNo, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.TRANSFER_PN_1)) {
-                                String amount = removeCurrency(fields[5]);
-                                String mobileNo = fields[12];
-                                String charge = removeCurrency(fields[15]);
-                                String balance = removeCurrency(fields[30]);
-                                String referenceNo = fields[33];
-                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                        charge, mobileNo, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.RECEIVE_SP_1)) {
-                                int length = fields.length;
-                                if(length == 15) {
-                                    String amount = removeCurrency(fields[3]);
-                                    String charge = removeCurrency(fields[5]);
-                                    String mobileNo = fields[8];
-                                    String referenceNo = fields[13]
-                                            .replace("Ref:", "");
-                                    String balance = removeCurrency(fields[14])
-                                            .replace("Bal:", "");
-                                    saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                            charge, mobileNo, balance, referenceNo);
-                                }
-                                else if(length == 14) {
-                                    String amount = removeCurrency(fields[3]);
-                                    String charge = removeCurrency(fields[5]);
-                                    String mobileNo = fields[8];
-                                    String balance = removeCurrency(fields[12])
-                                            .replace("Bal:", "");
-                                    String referenceNo = fields[13]
-                                            .replace("Ref:", "");
-                                    saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                            charge, mobileNo, balance, referenceNo);
-
-                                }
-                            }
-                            else if(message.contains(RemittanceKey.RECEIVE_SP_2)) {
-                                String amount = removeCurrency(fields[4]);
-                                String charge = removeCurrency(fields[8]);
-                                String mobileNo = fields[12].split("\\.")[0];
-                                String referenceNo = fields[17].split(":")[1];
-                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                        charge, mobileNo, null, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.RECEIVE_SP_3)) {
-                                String amount = removeCurrency(fields[3]);
-                                String referenceNo = fields[17]
-                                        .replace("Ref:", "");
-                                String balance = removeCurrency(fields[19]);
-                                if(balance.length() > 1) {
-                                    int lastIndex = balance.length() - 1;
-                                    char period = balance.charAt(lastIndex);
-                                    if(period == '.') {
-                                        balance = balance.substring(0, lastIndex - 1);
-                                    }
-                                }
-                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                        null, null, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.RECEIVE_SP_4)) {
-                                String amount = removeCurrency(fields[3]);
-                                String charge = removeCurrency(fields[7]);
-                                String field = removeCurrency(fields[13])
-                                        .replace("Bal:", "")
-                                        .replace(".Ref", "");
-                                String balance = field.split(":")[0];
-                                String referenceNo = field.split(":")[1];
-                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                        charge, null, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.RECEIVE_SP_5)) {
-                                String amount = removeCurrency(fields[4]);
-                                String mobileNo = removeCurrency(fields[8]);
-                                String balance = removeCurrency(fields[19]);
-                                String referenceNo = fields[20].split(":")[1];
-                                saveRemittance(db, RemittanceType.RECEIVE, smDate, smTime, amount,
-                                        null, mobileNo, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.TRANSFER_SP_1)) {
-                                String amount = removeCurrency(fields[2]);
-                                String mobileNo = fields[8].replace("\\.", "");
-                                String charge = removeCurrency(fields[11]);
-                                String text = removeCurrency(fields[14])
-                                        .replace("account.Bal:", "")
-                                        .replace(".Ref", "");
-                                String[] array = text.split(":");
-                                String balance = array[0];
-                                String referenceNo = array[1];
-                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                        charge, mobileNo, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.TRANSFER_SP_2)) {
-                                String amount = removeCurrency(fields[3]);
-                                String charge = removeCurrency(fields[7]);
-                                String field = removeCurrency(fields[13])
-                                        .replace("bal:", "")
-                                        .replace(".Ref", "");
-                                String balance = field.split(":")[0];
-                                String referenceNo = field.split(":")[1];
-                                saveText(referenceNo, message);
-                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                        charge, null, balance, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.TRANSFER_SP_3)) {
-                                String amount = removeCurrency(fields[3]);
-                                String field = fields[9]
-                                        .replace(".Ref", "")
-                                        .replace(".Sa", "");
-                                String mobileNo = field.split(":")[0]
-                                        .replace("\\.", "");
-                                String referenceNo = field.split(":")[1];
-                                saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                        null, mobileNo, null, referenceNo);
-                            }
-                            else if(message.contains(RemittanceKey.TRANSFER_SM)) {
-                                if(fields.length == 22) {
-                                    String amount = removeCurrency(fields[5]);
-                                    String balance = removeCurrency(fields[18]);
-                                    String mobileNo = fields[13];
-                                    if(mobileNo.length() > 1) {
-                                        int lastIndex = mobileNo.length() - 1;
-                                        char period = mobileNo.charAt(lastIndex);
-                                        if(period == '.') {
-                                            mobileNo = mobileNo.substring(0, lastIndex - 1);
-                                        }
-                                    }
-                                    if(balance.length() > 1) {
-                                        int lastIndex = balance.length() - 1;
-                                        char period = balance.charAt(lastIndex);
-                                        if(period == '.') {
-                                            balance = balance.substring(0, lastIndex - 1);
-                                        }
-                                    }
-                                    String referenceNo = fields[21];
-                                    if(referenceNo.length() > 1) {
-                                        int lastIndex = referenceNo.length() - 1;
-                                        char period = referenceNo.charAt(lastIndex);
-                                        if(period == '.') {
-                                            referenceNo = referenceNo.substring(0, lastIndex - 1);
-                                        }
-                                    }
-                                    saveText(referenceNo, message);
-                                    saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                            null, mobileNo, balance, referenceNo);
-                                }
-                                else if(fields.length == 20) {
-                                    String amount = removeCurrency(fields[5]);
-                                    String referenceNo = fields[19].replace("Ref:", "");
-                                    saveText(referenceNo, message);
-                                    saveRemittance(db, RemittanceType.TRANSFER, smDate, smTime, amount,
-                                            null, null, null, referenceNo);
-                                }
-                            }
-                            else if(message.contains(RemittanceKey.BALANCE)) {
-                                String balance = removeCurrency(fields[1])
-                                        .replace("Bal:", "");
-                                updateBalance(db, balance);
+                        if (text != null) {
+                            MessageObj message = SMPadalaLib.scanMessage(text);
+                            if (message != null) {
+                                saveRemittance(db, message.type, smDate, smTime, message.amount,
+                                        message.charge, null, message.balance, message.referenceNo);
                             }
                         }
                     }
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
@@ -255,8 +93,8 @@ public class MainService extends Service {
     }
 
     public void saveRemittance(final SQLiteAdapter db, final int type, final String smDate,
-            final String smTime, final String amount, final String charge, final String mobileNo,
-            final String balance, final String referenceNo) {
+                               final String smTime, final String amount, final String charge, final String mobileNo,
+                               final String balance, final String referenceNo) {
         Thread bg = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -266,7 +104,7 @@ public class MainService extends Service {
                     handler.obtainMessage(result ? Result.SUCCESS :
                             Result.FAILED).sendToTarget();
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -281,7 +119,7 @@ public class MainService extends Service {
                 try {
                     CodePanUtils.writeText(MainService.this, App.FOLDER, name, text);
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -298,7 +136,7 @@ public class MainService extends Service {
                     handler.obtainMessage(result ? Result.SUCCESS :
                             Result.FAILED).sendToTarget();
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -309,7 +147,7 @@ public class MainService extends Service {
     Handler handler = new Handler(new Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            switch(msg.what) {
+            switch (msg.what) {
                 case Result.SUCCESS:
                     sendBroadcast(Notification.SMS_RECEIVE);
                     break;
@@ -326,7 +164,7 @@ public class MainService extends Service {
     }
 
     public SQLiteAdapter getDatabase() {
-        if(db == null) {
+        if (db == null) {
             db = SQLiteCache.getDatabase(this, App.DB);
             db.openConnection();
         }
