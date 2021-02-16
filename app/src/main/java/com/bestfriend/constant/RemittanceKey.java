@@ -114,6 +114,7 @@ public class RemittanceKey {
     public static final String SENDER_SP = "SmartPadala";
     public static final String SENDER_SM = "SmartMoney";
     public static final String SENDER_PM = "PayMaya";
+    public static final String SENDER_PN = "PYMYNegosyo";
     public static final String SENDER_T1 = "+639998076414";
     public static final String SENDER_T2 = "+639206087750";
     public static final String SENDER_T3 = "+639084019072";

@@ -73,6 +73,7 @@ public class MainService extends Service {
                     if (sender != null && (sender.equalsIgnoreCase(RemittanceKey.SENDER_SP) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_SM) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_PM) ||
+                            sender.equalsIgnoreCase(RemittanceKey.SENDER_PN) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T1) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T2) ||
                             sender.equalsIgnoreCase(RemittanceKey.SENDER_T3))) {
