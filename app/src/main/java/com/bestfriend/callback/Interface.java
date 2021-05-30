@@ -1,21 +1,16 @@
 package com.bestfriend.callback;
 
-import com.bestfriend.model.CustomerObj;
-import com.bestfriend.model.RemittanceObj;
-import com.codepan.database.SQLiteAdapter;
+import com.bestfriend.model.CustomerData;
+import com.bestfriend.model.RemittanceData;
 
 public class Interface {
 
-	public interface OnInitializeCallback {
-		void onInitialize(SQLiteAdapter db);
-	}
-
 	public interface OnReceiveRemittanceCallback {
-		void onReceiveRemittance(RemittanceObj remittance);
+		void onReceiveRemittance(RemittanceData remittance);
 	}
 
 	public interface OnTransferRemittanceCallback {
-		void onTransferRemittance(RemittanceObj remittance);
+		void onTransferRemittance(RemittanceData remittance);
 	}
 
 	public interface OnRetakeCameraCallback {
@@ -27,10 +22,10 @@ public class Interface {
 	}
 
 	public interface OnSaveCustomerCallback {
-		void onSaveCustomer(CustomerObj customer);
+		void onSaveCustomer(CustomerData customer);
 	}
 
 	public interface OnSelectCustomerCallback {
-		void onSelectCustomer(CustomerObj customer);
+		void onSelectCustomer(CustomerData customer);
 	}
 }

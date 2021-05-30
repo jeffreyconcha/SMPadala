@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.bestfriend.constant.RemittanceType;
-import com.bestfriend.model.CustomerObj;
-import com.bestfriend.model.ReceiveObj;
-import com.bestfriend.model.RemittanceObj;
-import com.bestfriend.model.TransferObj;
+import com.bestfriend.model.CustomerData;
+import com.bestfriend.model.ReceiveData;
+import com.bestfriend.model.RemittanceData;
+import com.bestfriend.model.TransferData;
 import com.bestfriend.smpadala.R;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
@@ -19,14 +19,16 @@ import com.codepan.widget.CodePanLabel;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
+public class RemittanceAdapter extends ArrayAdapter<RemittanceData> {
 
-    private ArrayList<RemittanceObj> items;
-    private LayoutInflater inflater;
-    private int red, gray, theme;
-    private NumberFormat nf;
+    private final ArrayList<RemittanceData> items;
+    private final LayoutInflater inflater;
+    private final int red;
+    private final int gray;
+    private final int theme;
+    private final NumberFormat nf;
 
-    public RemittanceAdapter(Context context, ArrayList<RemittanceObj> items) {
+    public RemittanceAdapter(Context context, ArrayList<RemittanceData> items) {
         super(context, 0, items);
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.items = items;
@@ -44,9 +46,9 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
     public View getView(final int position, final View convertView, final ViewGroup parent) {
         View view = convertView;
         ViewHolder holder;
-        final RemittanceObj obj = items.get(position);
-        if(obj != null) {
-            if(view == null) {
+        final RemittanceData data = items.get(position);
+        if (data != null) {
+            if (view == null) {
                 view = inflater.inflate(R.layout.remittance_list_row, parent, false);
                 holder = new ViewHolder();
                 holder.tvDateRemittance = view.findViewById(R.id.tvDateRemittance);
@@ -62,46 +64,46 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceObj> {
             else {
                 holder = (ViewHolder) view.getTag();
             }
-            if(obj.smDate != null) {
-                String date = CodePanUtils.getCalendarDate(obj.smDate, true, true);
+            if (data.smDate != null) {
+                String date = CodePanUtils.getReadableDate(data.smDate, true, true);
                 holder.tvDateRemittance.setText(date);
             }
-            holder.tvTimeRemittance.setText(obj.smTime);
-            CustomerObj customer = null;
-            switch(obj.type) {
-                case RemittanceType.INGOING:
-                    ReceiveObj receive = obj.receive;
-                    if(receive != null) {
+            holder.tvTimeRemittance.setText(data.smTime);
+            CustomerData customer = null;
+            switch (data.type) {
+                case RemittanceType.INCOMING:
+                    ReceiveData receive = data.receive;
+                    if (receive != null) {
                         customer = receive.customer;
                     }
                     break;
                 case RemittanceType.OUTGOING:
-                    TransferObj transfer = obj.transfer;
-                    if(transfer != null) {
+                    TransferData transfer = data.transfer;
+                    if (transfer != null) {
                         customer = transfer.customer;
                     }
                     break;
             }
-            if(customer != null) {
+            if (customer != null) {
                 holder.tvNameRemittance.setText(customer.name);
             }
             else {
                 holder.tvNameRemittance.setText(null);
             }
-            holder.tvChargeRemittance.setText(nf.format(obj.charge));
-            holder.tvAmountRemittance.setText(nf.format(obj.amount));
-            if(obj.hasBalance) {
-                holder.tvBalanceRemittance.setText(nf.format(obj.balance));
+            holder.tvChargeRemittance.setText(nf.format(data.charge));
+            holder.tvAmountRemittance.setText(nf.format(data.amount));
+            if (data.hasBalance) {
+                holder.tvBalanceRemittance.setText(nf.format(data.balance));
             }
             else {
-                holder.tvBalanceRemittance.setText(R.string.pending);
+                holder.tvBalanceRemittance.setText(R.string.na);
             }
-            holder.tvReferenceNoRemittance.setText(obj.referenceNo);
-            switch(obj.type) {
-                case RemittanceType.INGOING:
-                    int status = obj.isClaimed ? R.string.claimed : R.string.pending;
+            holder.tvReferenceNoRemittance.setText(data.referenceNo);
+            switch (data.type) {
+                case RemittanceType.INCOMING:
+                    int status = data.isClaimed ? R.string.claimed : R.string.pending;
                     holder.tvStatusRemittance.setText(status);
-                    if(!obj.isMarked) {
+                    if (!data.isMarked) {
                         holder.tvDateRemittance.setTextColor(gray);
                         holder.tvTimeRemittance.setTextColor(gray);
                         holder.tvNameRemittance.setTextColor(gray);

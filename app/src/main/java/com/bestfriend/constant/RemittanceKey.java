@@ -131,17 +131,19 @@ public class RemittanceKey {
             "withdrawn",
             "was deducted from your",
             "you have paid",
-            "approval of"
+            "approval of",
+            "paid"
     };
 
-    public static final String[] AMOUNT = new String[] {
+    public static final String[] AMOUNT = new String[]{
             "remittance of",
             "received",
             "transferred",
             "withdrawn",
             "you have paid",
             "approval of",
-            "sent"
+            "sent",
+            "paid"
     };
 
     public static final String[] CHARGE = new String[] {

@@ -6,17 +6,17 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.bestfriend.constant.Key;
 import com.bestfriend.constant.Receiver;
 import com.bestfriend.service.MainService;
+import com.codepan.utils.Console;
 
 public class SMSReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Console.log("RECEIVE SMS");
         final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
         String action = intent.getAction();
         if(action != null && action.equals(SMS_RECEIVED)) {

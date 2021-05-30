@@ -9,14 +9,9 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,9 +31,10 @@ import com.bestfriend.constant.RequestCode;
 import com.bestfriend.constant.Result;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
-import com.bestfriend.model.CustomerObj;
-import com.bestfriend.model.TransferObj;
-import com.bestfriend.model.RemittanceObj;
+import com.bestfriend.model.CustomerData;
+import com.bestfriend.model.RemittanceData;
+import com.bestfriend.model.TransferData;
+import com.codepan.app.CPFragment;
 import com.codepan.cache.TypefaceCache;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
@@ -50,23 +46,21 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-public class TransferFragment extends Fragment implements OnClickListener, TextWatcher {
+public class TransferFragment extends CPFragment implements OnClickListener, TextWatcher {
 
     private CodePanLabel tvDateTransfer, tvTimeTransfer, tvAmountTransfer, tvRefNoTransfer,
-            tvNameTitleTransfer, tvViewPhotoTransfer;
+        tvNameTitleTransfer, tvViewPhotoTransfer;
     private CodePanTextField etMobileNoTransfer, etReceiverTransfer, etAddressTransfer;
     private CodePanButton btnCancelTransfer, btnTagTransfer, btnPhotoTransfer;
     private OnTransferRemittanceCallback transferRemittanceCallback;
-    private ArrayList<CustomerObj> customerList;
+    private ArrayList<CustomerData> customerList;
     private AutoCompleteTextView etNameTransfer;
-    private FragmentTransaction transaction;
     private BroadcastReceiver broadcast;
     private RelativeLayout rlTransfer;
     private ImageView ivPhotoTransfer;
-    private RemittanceObj remittance;
+    private RemittanceData remittance;
     private CustomerAdapter adapter;
-    private FragmentManager manager;
-    private CustomerObj customer;
+    private CustomerData customer;
     private boolean withChanges;
     private MainActivity main;
     private SQLiteAdapter db;
@@ -111,33 +105,30 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
         tvViewPhotoTransfer.setOnClickListener(this);
         rlTransfer.setOnClickListener(this);
         if(remittance != null) {
-            String date = CodePanUtils.getCalendarDate(remittance.smDate, true, true);
+            String date = CodePanUtils.getReadableDate(remittance.smDate, true, true);
             String amount = "P" + nf.format(remittance.amount);
             tvDateTransfer.setText(date);
             tvAmountTransfer.setText(amount);
             tvTimeTransfer.setText(remittance.smTime);
             tvRefNoTransfer.setText(remittance.referenceNo);
         }
-        CodePanUtils.requiredField(tvNameTitleTransfer);
+        tvNameTitleTransfer.setRequired(true);
         String font = getString(R.string.helvetica_neue_light);
         Typeface typeface = TypefaceCache.get(main.getAssets(), font);
         etNameTransfer.setTypeface(typeface);
-        etNameTransfer.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
-                if(customerList != null) {
-                    customer = (CustomerObj) parent.getItemAtPosition(i);
-                    etMobileNoTransfer.setText(customer.mobileNo);
-                    etAddressTransfer.setText(customer.address);
-                    photo = customer.photo;
-                    if(photo != null) {
-                        final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
-                                .getPath() + "/" + photo;
-                        CodePanUtils.displayImage(ivPhotoTransfer, uri, R.drawable.ic_camera);
-                    }
-                    else {
-                        ivPhotoTransfer.setImageResource(R.drawable.ic_camera);
-                    }
+        etNameTransfer.setOnItemClickListener((parent, view1, i, l) -> {
+            if(customerList != null) {
+                customer = (CustomerData) parent.getItemAtPosition(i);
+                etMobileNoTransfer.setText(customer.mobileNo);
+                etAddressTransfer.setText(customer.address);
+                photo = customer.photo;
+                if(photo != null) {
+                    final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
+                            .getPath() + "/" + photo;
+                    CodePanUtils.displayImage(ivPhotoTransfer, uri, R.drawable.ic_camera);
+                }
+                else {
+                    ivPhotoTransfer.setImageResource(R.drawable.ic_camera);
                 }
             }
         });
@@ -173,29 +164,23 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
         return view;
     }
 
-    public void setRemittance(RemittanceObj remittance) {
+    public void setRemittance(RemittanceData remittance) {
         this.remittance = remittance;
     }
 
     public void loadCustomers(final SQLiteAdapter db) {
-        final Handler handler = new Handler(new Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                adapter = new CustomerAdapter(main, customerList);
-                etNameTransfer.setAdapter(adapter);
-                return true;
-            }
+        final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+            adapter = new CustomerAdapter(main, customerList);
+            etNameTransfer.setAdapter(adapter);
+            return true;
         });
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    customerList = Data.loadCustomers(db);
-                    handler.obtainMessage().sendToTarget();
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
+        Thread bg = new Thread(() -> {
+            try {
+                customerList = Data.loadCustomers(db);
+                handler.obtainMessage().sendToTarget();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         });
         bg.start();
@@ -229,7 +214,7 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
                         }
                     }
                     if(!name.isEmpty()) {
-                        CustomerObj customer = SMPadalaLib.addCustomer(db, name, mobileNo, address, photo);
+                        CustomerData customer = SMPadalaLib.addCustomer(db, name, mobileNo, address, photo);
                         confirm(customer);
                     }
                     else {
@@ -239,16 +224,13 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
                 break;
             case R.id.btnPhotoTransfer:
                 CameraFragment camera = new CameraFragment();
-                camera.setOnUsePhotoCallback(new OnUsePhotoCallback() {
-                    @Override
-                    public void onUsePhoto(String fileName) {
-                        final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
-                                .getPath() + "/" + fileName;
-                        CodePanUtils.displayImage(ivPhotoTransfer, uri, R.drawable.ic_user);
-                        photo = fileName;
-                        if(customer != null) {
-                            withChanges = true;
-                        }
+                camera.setOnUsePhotoCallback(fileName -> {
+                    final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
+                            .getPath() + "/" + fileName;
+                    CodePanUtils.displayImage(ivPhotoTransfer, uri, R.drawable.ic_user);
+                    photo = fileName;
+                    if(customer != null) {
+                        withChanges = true;
                     }
                 });
                 transaction = manager.beginTransaction();
@@ -266,7 +248,7 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
                     transaction.commit();
                 }
                 else {
-                    CodePanUtils.alertToast(main, "No photo to be viewed");
+                    SMPadalaLib.alertToast(main, "No photo to be viewed");
                 }
                 break;
             case R.id.rlTransfer:
@@ -275,76 +257,64 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
         }
     }
 
-    public void confirm(final CustomerObj obj) {
+    public void confirm(final CustomerData data) {
         final AlertDialogFragment alert = new AlertDialogFragment();
         alert.setDialogTitle("Confirm Tagging");
-        alert.setDialogMessage("Are you sure you want to tag this transaction to " + obj.name);
+        alert.setDialogMessage("Are you sure you want to tag this transaction to " + data.name);
         alert.setPositiveButton("Yes", new OnClickListener() {
-            CustomerObj customer;
+            CustomerData customer;
 
             @Override
             public void onClick(View view) {
                 manager.popBackStack();
-                if(withChanges) {
+                if (withChanges) {
                     String name = etNameTransfer.getText().toString().trim();
                     String mobileNo = etMobileNoTransfer.getText().toString().trim();
                     String address = etAddressTransfer.getText().toString().trim();
-                    customer = SMPadalaLib.editCustomer(db, name, mobileNo, address, photo, obj.ID);
+                    customer = SMPadalaLib.editCustomer(db, name, mobileNo, address, photo, data.ID);
                 }
                 else {
-                    customer = obj;
+                    customer = data;
                 }
                 String receiver = etReceiverTransfer.getText().toString().trim();
                 tagTransfer(db, customer, receiver);
             }
         });
-        alert.setNegativeButton("No", new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                manager.popBackStack();
-            }
-        });
+        alert.setNegativeButton("No", view -> manager.popBackStack());
         transaction = manager.beginTransaction();
         transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.fade_out);
+            R.anim.fade_in, R.anim.fade_out);
         transaction.add(R.id.rlMain, alert);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
-    public void tagTransfer(final SQLiteAdapter db, final CustomerObj customer, final String receiver) {
-        final Handler handler = new Handler(new Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                switch(msg.what) {
-                    case Result.SUCCESS:
-                        remittance.transfer = (TransferObj) msg.obj;
-                        String message = "Tagged to " + customer.name;
-                        CodePanUtils.alertToast(main, message);
-                        if(transferRemittanceCallback != null) {
-                            transferRemittanceCallback.onTransferRemittance(remittance);
-                        }
-                        manager.popBackStack();
-                        break;
-                    case Result.FAILED:
-                        CodePanUtils.alertToast(main, "Failed to tag customer.");
-                        break;
-                }
-                return false;
+    public void tagTransfer(final SQLiteAdapter db, final CustomerData customer, final String receiver) {
+        final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+            switch (msg.what) {
+                case Result.SUCCESS:
+                    remittance.transfer = (TransferData) msg.obj;
+                    String message = "Tagged to " + customer.name;
+                    SMPadalaLib.alertToast(main, message);
+                    if (transferRemittanceCallback != null) {
+                        transferRemittanceCallback.onTransferRemittance(remittance);
+                    }
+                    manager.popBackStack();
+                    break;
+                case Result.FAILED:
+                    SMPadalaLib.alertToast(main, "Failed to tag customer.");
+                    break;
             }
+            return false;
         });
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    TransferObj transfer = SMPadalaLib.tagTransfer(db, customer, remittance.ID, receiver);
-                    sendSMS(remittance.referenceNo, customer.mobileNo, receiver);
-                    handler.obtainMessage(transfer != null ? Result.SUCCESS :
-                            Result.FAILED, transfer).sendToTarget();
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
+        Thread bg = new Thread(() -> {
+            try {
+                TransferData transfer = SMPadalaLib.tagTransfer(db, customer, remittance.ID, receiver);
+                sendSMS(remittance.referenceNo, customer.mobileNo, receiver);
+                handler.obtainMessage(Result.SUCCESS, transfer).sendToTarget();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         });
         bg.start();
@@ -408,13 +378,11 @@ public class TransferFragment extends Fragment implements OnClickListener, TextW
         broadcast = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                switch(getResultCode()) {
-                    case Activity.RESULT_OK:
-                        CodePanUtils.alertToast(main, "Message successfully sent.");
-                        break;
-                    default:
-                        CodePanUtils.alertToast(main, "Sending failed.");
-                        break;
+                if (getResultCode() == Activity.RESULT_OK) {
+                    SMPadalaLib.alertToast(main, "Message successfully sent.");
+                }
+                else {
+                    SMPadalaLib.alertToast(main, "Sending failed.");
                 }
                 main.unregisterReceiver(broadcast);
             }

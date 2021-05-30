@@ -3,9 +3,8 @@ package com.bestfriend.core;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
-import com.bestfriend.model.SalesToDateObj;
+import com.bestfriend.model.SalesToDateData;
 import com.codepan.utils.CodePanUtils;
 
 import org.achartengine.ChartFactory;
@@ -18,22 +17,25 @@ import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class LineGraph {
 
     private int axisTextSize, lblTextSize, legendTextSize;
     private int totalColor, receiveColor, transferColor;
-    private Context context;
+    private final Context context;
     private int x, y;
 
     public LineGraph(Context context) {
         this.context = context;
     }
 
-    public GraphicalView getGraph(String date, ArrayList<SalesToDateObj> totalList,
-            ArrayList<SalesToDateObj> receiveList,
-            ArrayList<SalesToDateObj> transferList) {
-        String month = CodePanUtils.getNameOfMonths(date, false);
+    public GraphicalView getGraph(String date, ArrayList<SalesToDateData> totalList,
+            ArrayList<SalesToDateData> receiveList,
+            ArrayList<SalesToDateData> transferList) {
+        Calendar calendar = CodePanUtils.getCalendar(date);
+        String month = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH);
         String year = CodePanUtils.getDisplayYear(date);
         String xTitle = month + " " + year;
         NumberFormat nf = NumberFormat.getInstance();
@@ -43,7 +45,7 @@ public class LineGraph {
         float maxAmount = 0;
         int minDay = 1;
         TimeSeries totalSeries = new TimeSeries("Total");
-        for(SalesToDateObj std : totalList) {
+        for(SalesToDateData std : totalList) {
             totalSeries.add(std.day, std.amount);
             if(std.amount > maxAmount) {
                 maxAmount = std.amount;
@@ -54,16 +56,16 @@ public class LineGraph {
         }
         float interval = maxAmount / y;
         TimeSeries receiveSeries = new TimeSeries("Receive");
-        for(SalesToDateObj std : receiveList) {
+        for(SalesToDateData std : receiveList) {
             receiveSeries.add(std.day, std.amount);
         }
         TimeSeries transferSeries = new TimeSeries("Transfer");
-        for(SalesToDateObj std : transferList) {
+        for(SalesToDateData std : transferList) {
             transferSeries.add(std.day, std.amount);
         }
         int maxDay = minDay + x;
         int size = totalList.size();
-        maxDay = maxDay > size ? size : maxDay;
+        maxDay = Math.min(maxDay, size);
         minDay = minDay > x ? size - x : maxDay - x;
         XYMultipleSeriesDataset dataSet = new XYMultipleSeriesDataset();
         dataSet.addSeries(transferSeries);
@@ -114,8 +116,8 @@ public class LineGraph {
         msRenderer.setAxisTitleTextSize(axisTextSize);
         msRenderer.setPanLimits(new double[]{0.0, (double)
                 size + 1, 0.0, (double) maxAmount});
-        for(SalesToDateObj obj : totalList) {
-            msRenderer.addXTextLabel(obj.day, String.valueOf(obj.day));
+        for(SalesToDateData data : totalList) {
+            msRenderer.addXTextLabel(data.day, String.valueOf(data.day));
         }
         float increment = 0;
         for(int i = 1; i <= y; i++) {

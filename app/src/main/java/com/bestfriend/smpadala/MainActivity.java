@@ -1,26 +1,20 @@
 package com.bestfriend.smpadala;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.DrawerLayout;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -30,11 +24,8 @@ import android.widget.RelativeLayout;
 
 import com.bestfriend.adapter.RemittanceAdapter;
 import com.bestfriend.cache.SQLiteCache;
-import com.bestfriend.callback.Interface.OnInitializeCallback;
-import com.bestfriend.callback.Interface.OnReceiveRemittanceCallback;
-import com.bestfriend.callback.Interface.OnSelectCustomerCallback;
-import com.bestfriend.callback.Interface.OnTransferRemittanceCallback;
 import com.bestfriend.constant.App;
+import com.bestfriend.constant.DialogTag;
 import com.bestfriend.constant.Key;
 import com.bestfriend.constant.Notification;
 import com.bestfriend.constant.ProcessName;
@@ -44,40 +35,48 @@ import com.bestfriend.constant.RequestCode;
 import com.bestfriend.constant.Result;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
-import com.bestfriend.model.CustomerObj;
-import com.bestfriend.model.ReceiveObj;
-import com.bestfriend.model.RemittanceObj;
-import com.bestfriend.model.TransferObj;
-import com.codepan.calendar.callback.Interface.OnPickDateCallback;
-import com.codepan.calendar.view.CalendarView;
-import com.codepan.callback.Interface.OnPermissionGrantedCallback;
+import com.bestfriend.model.CustomerData;
+import com.bestfriend.model.ReceiveData;
+import com.bestfriend.model.RemittanceData;
+import com.bestfriend.model.TransferData;
+import com.codepan.app.CPFragmentActivity;
+import com.codepan.callback.Interface.OnInitializeCallback;
 import com.codepan.database.SQLiteAdapter;
+import com.codepan.permission.PermissionEvents;
+import com.codepan.permission.PermissionHandler;
+import com.codepan.permission.PermissionType;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-public class MainActivity extends FragmentActivity implements OnInitializeCallback, OnClickListener {
+public class MainActivity extends CPFragmentActivity implements OnInitializeCallback,
+    OnClickListener, PermissionEvents {
 
     private final int LIMIT = 200;
     private final long IDLE_TIME = 500;
 
     private CodePanButton btnMenuMain, btnShowFilterMain, btnDateMain, btnTypeMain,
-            btnStatusMain, btnCustomerMain, btnFilterMain, btnClearMain;
-    private LinearLayout llMenuMain, llCustomersMain, llDailyReportMain, llBackUpMain;
-    private OnPermissionGrantedCallback permissionGrantedCallback;
+        btnStatusMain, btnCustomerMain, btnFilterMain, btnClearMain;
+    private LinearLayout llMenuMain, llCustomersMain, llDailyReportMain,
+        llBackUpMain, llRestoreBackupMain;
     private int visibleItem, totalItem, firstVisible;
-    private ArrayList<RemittanceObj> remittanceList;
+    private ArrayList<RemittanceData> remittanceList;
     private CodePanLabel tvDateMain, tvCustomerMain;
     private LocalBroadcastManager broadcastManager;
     private String search, smDate, start, status;
     private int type = RemittanceType.DEFAULT;
     private CheckBox cbTypeMain, cbStatusMain;
-    private FragmentTransaction transaction;
     private FrameLayout flClearSearchMain;
     private CodePanTextField etSearchMain;
     private boolean isInitialized, isEnd;
@@ -85,9 +84,8 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     private Handler inputFinishHandler;
     private BroadcastReceiver receiver;
     private RemittanceAdapter adapter;
-    private FragmentManager manager;
     private ImageView ivFilterMain;
-    private CustomerObj receivedBy;
+    private CustomerData receivedBy;
     private DrawerLayout dlMain;
     private SQLiteAdapter db;
     private ListView lvMain;
@@ -99,6 +97,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         if (isInitialized) {
             registerReceiver();
             loadRemittance(db);
+            getHandler().checkPermissions();
         }
     }
 
@@ -120,17 +119,16 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
-        this.manager = getSupportFragmentManager();
-        this.inputFinishHandler = new Handler();
+        this.inputFinishHandler = new Handler(Looper.getMainLooper());
         btnShowFilterMain = findViewById(R.id.btnShowFilterMain);
         llCustomersMain = findViewById(R.id.llCustomersMain);
         llBackUpMain = findViewById(R.id.llBackUpMain);
         llDailyReportMain = findViewById(R.id.llDailyReportMain);
+        llRestoreBackupMain = findViewById(R.id.llRestoreBackupMain);
         flClearSearchMain = findViewById(R.id.flClearSearchMain);
         etSearchMain = findViewById(R.id.etSearchMain);
         btnStatusMain = findViewById(R.id.btnStatusMain);
         rlFilterMain = findViewById(R.id.rlFilterMain);
-        llBackUpMain = findViewById(R.id.llBackUpMain);
         btnMenuMain = findViewById(R.id.btnMenuMain);
         btnDateMain = findViewById(R.id.btnDateMain);
         btnCustomerMain = findViewById(R.id.btnCustomerMain);
@@ -153,174 +151,147 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         btnCustomerMain.setOnClickListener(this);
         btnTypeMain.setOnClickListener(this);
         btnStatusMain.setOnClickListener(this);
-        llBackUpMain.setOnClickListener(this);
-        llDailyReportMain.setOnClickListener(this);
         llCustomersMain.setOnClickListener(this);
+        llDailyReportMain.setOnClickListener(this);
+        llBackUpMain.setOnClickListener(this);
+        llRestoreBackupMain.setOnClickListener(this);
         rlFilterMain.setOnClickListener(this);
         flClearSearchMain.setOnClickListener(this);
         int color = getResources().getColor(R.color.black_trans_twenty);
         dlMain.setScrimColor(color);
-        lvMain.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-                CodePanUtils.hideKeyboard(view, MainActivity.this);
-                final RemittanceObj remittance = remittanceList.get(i);
-                switch (remittance.type) {
-                    case RemittanceType.INGOING:
-                        if (!remittance.isClaimed) {
-                            if (!remittance.isMarked) {
-                                ReceiveFragment receive = new ReceiveFragment();
-                                receive.setRemittance(remittance);
-                                receive.setOnReceiveRemittanceCallback(new OnReceiveRemittanceCallback() {
-                                    @Override
-                                    public void onReceiveRemittance(RemittanceObj obj) {
-                                        int index = getIndex(obj);
-                                        if (index != Result.FAILED) {
-                                            remittanceList.set(index, obj);
-                                            updateRemittance(true);
-                                        }
-                                    }
-                                });
-                                transaction = manager.beginTransaction();
-                                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                                        R.anim.fade_in, R.anim.fade_out);
-                                transaction.add(R.id.rlMain, receive);
-                                transaction.addToBackStack(null);
-                                transaction.commit();
-                            }
-                            else {
-                                confirm(remittance);
-                            }
-                        }
-                        else {
-                            ReceiveObj receive = remittance.receive;
-                            if (receive != null) {
-                                CustomerObj customer = receive.customer;
-                                if (customer != null) {
-                                    String receiveDate = CodePanUtils.getCalendarDate(receive.dDate, true, true);
-                                    String time = CodePanUtils.getNormalTime(receive.dTime, false);
-                                    String current = CodePanUtils.getDate();
-                                    String date = current.equals(receive.dDate) ? "today" : "on " + receiveDate;
-                                    String message = "This transaction was claimed by " + customer.name + " " +
-                                            date + " at " + time + ".";
-                                    SMPadalaLib.alertDialog(MainActivity.this, "Transaction Details", message);
-                                }
-                            }
-                        }
-                        break;
-                    case RemittanceType.OUTGOING:
-                        TransferObj transfer = remittance.transfer;
-                        if (transfer != null && transfer.customer != null) {
-                            String transferDate = CodePanUtils.getCalendarDate(remittance.smDate, true, true);
-                            String time = CodePanUtils.getNormalTime(remittance.smTime, false);
-                            String current = CodePanUtils.getDate();
-                            String date = current.equals(remittance.dDate) ? "today" : "on " + transferDate;
-                            CustomerObj customer = transfer.customer;
-                            String receiver = transfer.receiver;
-                            String to = receiver != null && !receiver.isEmpty() ? " to " + receiver : "";
-                            String message = "This transaction was transferred by " + customer.name +
-                                    to + " " + date + " at " + time + ".";
-                            SMPadalaLib.alertDialog(MainActivity.this, "Transaction Details", message);
-                        }
-                        else {
-                            TransferFragment tag = new TransferFragment();
-                            tag.setRemittance(remittance);
-                            tag.setOnTransferRemittanceCallback(new OnTransferRemittanceCallback() {
-                                @Override
-                                public void onTransferRemittance(RemittanceObj obj) {
-                                    int index = getIndex(obj);
-                                    if (index != Result.FAILED) {
-                                        remittanceList.set(index, obj);
-                                        updateRemittance(true);
-                                    }
+        lvMain.setOnItemClickListener((adapterView, view, i, l) -> {
+            CodePanUtils.hideKeyboard(view, MainActivity.this);
+            final RemittanceData remittance = remittanceList.get(i);
+            switch (remittance.type) {
+                case RemittanceType.INCOMING:
+                    if (!remittance.isClaimed) {
+                        if (!remittance.isMarked) {
+                            ReceiveFragment receive = new ReceiveFragment();
+                            receive.setRemittance(remittance);
+                            receive.setOnReceiveRemittanceCallback(data -> {
+                                int index = getIndex(data);
+                                if (index != Result.FAILED) {
+                                    remittanceList.set(index, data);
+                                    updateRemittance(true);
                                 }
                             });
                             transaction = manager.beginTransaction();
                             transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                                    R.anim.fade_in, R.anim.fade_out);
-                            transaction.add(R.id.rlMain, tag);
+                                R.anim.fade_in, R.anim.fade_out);
+                            transaction.add(R.id.rlMain, receive);
                             transaction.addToBackStack(null);
                             transaction.commit();
                         }
-                        break;
-                }
+                        else {
+                            confirm(remittance);
+                        }
+                    }
+                    else {
+                        ReceiveData receive = remittance.receive;
+                        if (receive != null) {
+                            CustomerData customer = receive.customer;
+                            if (customer != null) {
+                                String receiveDate = CodePanUtils.getReadableDate(receive.dDate, true, true);
+                                String time = CodePanUtils.getReadableTime(receive.dTime, false);
+                                String current = CodePanUtils.getDate();
+                                String date = current.equals(receive.dDate) ? "today" : "on " + receiveDate;
+                                String message = "This transaction was claimed by " + customer.name + " " +
+                                    date + " at " + time + ".";
+                                SMPadalaLib.alertDialog(MainActivity.this, "Transaction Details", message);
+                            }
+                        }
+                    }
+                    break;
+                case RemittanceType.OUTGOING:
+                    TransferData transfer = remittance.transfer;
+                    if (transfer != null && transfer.customer != null) {
+                        String transferDate = CodePanUtils.getReadableDate(remittance.smDate, true, true);
+                        String time = CodePanUtils.getReadableTime(remittance.smTime, false);
+                        String current = CodePanUtils.getDate();
+                        String date = current.equals(remittance.dDate) ? "today" : "on " + transferDate;
+                        CustomerData customer = transfer.customer;
+                        String receiver = transfer.receiver;
+                        String to = receiver != null && !receiver.isEmpty() ? " to " + receiver : "";
+                        String message = "This transaction was transferred by " + customer.name +
+                            to + " " + date + " at " + time + ".";
+                        SMPadalaLib.alertDialog(MainActivity.this, "Transaction Details", message);
+                    }
+                    else {
+                        TransferFragment tag = new TransferFragment();
+                        tag.setRemittance(remittance);
+                        tag.setOnTransferRemittanceCallback(data -> {
+                            int index = getIndex(data);
+                            if (index != Result.FAILED) {
+                                remittanceList.set(index, data);
+                                updateRemittance(true);
+                            }
+                        });
+                        transaction = manager.beginTransaction();
+                        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.fade_out);
+                        transaction.add(R.id.rlMain, tag);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
+                    break;
             }
         });
-        lvMain.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int i, long id) {
-                final RemittanceObj remittance = remittanceList.get(i);
-                switch (remittance.type) {
-                    case RemittanceType.INGOING:
-                        if (remittance.isClaimed || remittance.isMarked) {
-                            AlertDialogFragment alert = new AlertDialogFragment();
-                            alert.setDialogTitle("Undo Transaction");
-                            alert.setDialogMessage("Are you sure you want to undo this transaction?");
-                            alert.setPositiveButton("Undo", new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    manager.popBackStack();
-                                    boolean result = SMPadalaLib.undoTransaction(db, remittance);
-                                    if (result) {
-                                        CodePanUtils.alertToast(MainActivity.this,
-                                                "Undo Successful");
-                                        remittance.isClaimed = false;
-                                        remittance.isMarked = false;
-                                        remittance.receive = null;
-                                        updateRemittance(true);
-                                    }
-                                }
-                            });
-                            alert.setNegativeButton("Cancel", new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    manager.popBackStack();
-                                }
-                            });
-                            transaction = manager.beginTransaction();
-                            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                                    R.anim.fade_in, R.anim.fade_out);
-                            transaction.add(R.id.rlMain, alert);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
-                        }
-                        break;
-                    case RemittanceType.OUTGOING:
-                        final TransferObj transfer = remittance.transfer;
-                        if (transfer != null && transfer.customer != null) {
-                            AlertDialogFragment alert = new AlertDialogFragment();
-                            alert.setDialogTitle("Untag Customer");
-                            alert.setDialogMessage("Are you sure you want to untag customer?");
-                            alert.setPositiveButton("Untag", new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    manager.popBackStack();
-                                    boolean result = SMPadalaLib.untagCustomer(db, transfer);
-                                    if (result) {
-                                        CodePanUtils.alertToast(MainActivity.this,
-                                                "Untag Successful");
-                                        remittance.transfer = null;
-                                        updateRemittance(true);
-                                    }
-                                }
-                            });
-                            alert.setNegativeButton("Cancel", new OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    manager.popBackStack();
-                                }
-                            });
-                            transaction = manager.beginTransaction();
-                            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                                    R.anim.fade_in, R.anim.fade_out);
-                            transaction.add(R.id.rlMain, alert);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
-                        }
-                        break;
-                }
-                return true;
+        lvMain.setOnItemLongClickListener((parent, view, i, id) -> {
+            final RemittanceData remittance = remittanceList.get(i);
+            switch (remittance.type) {
+                case RemittanceType.INCOMING:
+                    if (remittance.isClaimed || remittance.isMarked) {
+                        AlertDialogFragment alert = new AlertDialogFragment();
+                        alert.setDialogTitle("Undo Transaction");
+                        alert.setDialogMessage("Are you sure you want to undo this transaction?");
+                        alert.setPositiveButton("Undo", view14 -> {
+                            manager.popBackStack();
+                            boolean result = SMPadalaLib.undoTransaction(db, remittance);
+                            if (result) {
+                                SMPadalaLib.alertToast(MainActivity.this,
+                                    "Undo Successful");
+                                remittance.isClaimed = false;
+                                remittance.isMarked = false;
+                                remittance.receive = null;
+                                updateRemittance(true);
+                            }
+                        });
+                        alert.setNegativeButton("Cancel", view13 -> manager.popBackStack());
+                        transaction = manager.beginTransaction();
+                        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.fade_out);
+                        transaction.add(R.id.rlMain, alert);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
+                    break;
+                case RemittanceType.OUTGOING:
+                    final TransferData transfer = remittance.transfer;
+                    if (transfer != null && transfer.customer != null) {
+                        AlertDialogFragment alert = new AlertDialogFragment();
+                        alert.setDialogTitle("Untag Customer");
+                        alert.setDialogMessage("Are you sure you want to untag customer?");
+                        alert.setPositiveButton("Untag", view12 -> {
+                            manager.popBackStack();
+                            boolean result = SMPadalaLib.untagCustomer(db, transfer);
+                            if (result) {
+                                SMPadalaLib.alertToast(MainActivity.this,
+                                    "Untag Successful");
+                                remittance.transfer = null;
+                                updateRemittance(true);
+                            }
+                        });
+                        alert.setNegativeButton("Cancel", view1 -> manager.popBackStack());
+                        transaction = manager.beginTransaction();
+                        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.fade_out);
+                        transaction.add(R.id.rlMain, alert);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
+                    break;
             }
+            return true;
         });
         lvMain.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -363,74 +334,71 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
             public void afterTextChanged(Editable s) {
             }
         });
-        init(savedInstanceState);
+    }
+
+    @Override
+    public void onLoadSplash(OnInitializeCallback initializeCallback) {
+        SplashFragment splash = new SplashFragment();
+        splash.setOnInitializeCallback(initializeCallback);
+        transaction = manager.beginTransaction();
+        transaction.add(R.id.rlMain, splash);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     public void loadRemittance(final SQLiteAdapter db) {
         this.start = null;
-        final Handler handler = new Handler(new Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                updateRemittance(false);
-                return true;
-            }
+        final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+            updateRemittance(false);
+            return true;
         });
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    remittanceList = Data.loadRemittance(db, receivedBy, search, smDate, status,
-                            start, type, LIMIT);
-                    if (remittanceList.size() < LIMIT) {
-                        isEnd = true;
-                        start = null;
-                    }
-                    else {
-                        isEnd = false;
-                        int lastPosition = remittanceList.size() - 1;
-                        start = remittanceList.get(lastPosition).ID;
-                    }
-                    handler.obtainMessage().sendToTarget();
+        Thread bg = new Thread(() -> {
+            try {
+                remittanceList = Data.loadRemittance(db, receivedBy, search, smDate, status,
+                    start, type, LIMIT);
+                if (remittanceList.size() < LIMIT) {
+                    isEnd = true;
+                    start = null;
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
+                else {
+                    isEnd = false;
+                    int lastPosition = remittanceList.size() - 1;
+                    start = remittanceList.get(lastPosition).ID;
                 }
+                handler.obtainMessage().sendToTarget();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         });
         bg.start();
     }
 
     public void loadMoreRemittance(final SQLiteAdapter db) {
-        final Handler handler = new Handler(new Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                lvMain.setEnabled(true);
-                updateRemittance(true);
-                return true;
-            }
+        final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+            lvMain.setEnabled(true);
+            updateRemittance(true);
+            return true;
         });
         lvMain.setEnabled(false);
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ArrayList<RemittanceObj> additionalList = Data.loadRemittance(db, receivedBy, search,
-                            smDate, status, start, type, LIMIT);
-                    remittanceList.addAll(additionalList);
-                    if (additionalList.size() < LIMIT) {
-                        isEnd = true;
-                        start = null;
-                    }
-                    else {
-                        isEnd = false;
-                        int lastPosition = additionalList.size() - 1;
-                        start = additionalList.get(lastPosition).ID;
-                    }
-                    handler.obtainMessage().sendToTarget();
+        Thread bg = new Thread(() -> {
+            try {
+                ArrayList<RemittanceData> additionalList = Data.loadRemittance(db, receivedBy, search,
+                    smDate, status, start, type, LIMIT);
+                remittanceList.addAll(additionalList);
+                if (additionalList.size() < LIMIT) {
+                    isEnd = true;
+                    start = null;
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
+                else {
+                    isEnd = false;
+                    int lastPosition = additionalList.size() - 1;
+                    start = additionalList.get(lastPosition).ID;
                 }
+                handler.obtainMessage().sendToTarget();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         });
         bg.start();
@@ -447,74 +415,15 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         }
     }
 
-    public void init(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            if (isInitialized) {
-                checkRevokedPermissions();
-            }
-            else {
-                this.finish();
-                overridePendingTransition(0, 0);
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(intent);
-            }
-        }
-        else {
-            SplashFragment splash = new SplashFragment();
-            splash.setOnInitializeCallback(this);
-            transaction = manager.beginTransaction();
-            transaction.add(R.id.rlMain, splash);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
-    }
-
-    public void checkRevokedPermissions() {
-        if (!CodePanUtils.isPermissionGranted(this)) {
-            manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
-            Intent intent = new Intent(this, getClass());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            startActivity(intent);
-            this.finish();
-        }
-    }
-
-    public void setOnPermissionGrantedCallback(OnPermissionGrantedCallback permissionGrantedCallback) {
-        this.permissionGrantedCallback = permissionGrantedCallback;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        switch (requestCode) {
-            case RequestCode.PERMISSION:
-                if (grantResults.length > 0) {
-                    boolean isPermissionGranted = true;
-                    for (int result : grantResults) {
-                        if (result == PackageManager.PERMISSION_DENIED) {
-                            isPermissionGranted = false;
-                            break;
-                        }
-                    }
-                    if (permissionGrantedCallback != null) {
-                        permissionGrantedCallback.onPermissionGranted(isPermissionGranted);
-                    }
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-                break;
-        }
-    }
-
     @Override
     public void onInitialize(SQLiteAdapter db) {
+        super.onInitialize(db);
         this.isInitialized = true;
         this.db = db;
         setReceiver();
         registerReceiver();
         loadRemittance(db);
+        getHandler().checkPermissions();
     }
 
     public void registerReceiver() {
@@ -560,7 +469,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 final CustomerFragment customer = new CustomerFragment();
                 transaction = manager.beginTransaction();
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                        R.anim.fade_in, R.anim.fade_out);
+                    R.anim.fade_in, R.anim.fade_out);
                 transaction.add(R.id.rlMain, customer);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -575,27 +484,39 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 break;
             case R.id.llBackUpMain:
                 dlMain.closeDrawer(llMenuMain);
-                AlertDialogFragment alert = new AlertDialogFragment();
-                alert.setDialogTitle("Back-up Data");
-                alert.setDialogMessage("This will back-up your data to external storage. " +
-                        "Are you sure you want to back-up data?");
-                alert.setPositiveButton("Yes", new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        manager.popBackStack();
-                        backUpData(true);
-                    }
+                AlertDialogFragment backup = new AlertDialogFragment();
+                backup.setDialogTitle("Back-up Data");
+                backup.setDialogMessage("This will back-up your data to external storage. " +
+                    "Are you sure you want to back-up data?");
+                backup.setPositiveButton("Yes", v -> {
+                    manager.popBackStack();
+                    backUpData(true);
                 });
-                alert.setNegativeButton("No", new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        manager.popBackStack();
-                    }
-                });
+                backup.setNegativeButton("No", v -> manager.popBackStack());
                 transaction = manager.beginTransaction();
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                        R.anim.fade_in, R.anim.fade_out);
-                transaction.add(R.id.rlMain, alert);
+                    R.anim.fade_in, R.anim.fade_out);
+                transaction.add(R.id.rlMain, backup);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+            case R.id.llRestoreBackupMain:
+                dlMain.closeDrawer(llMenuMain);
+                AlertDialogFragment restore = new AlertDialogFragment();
+                restore.setDialogTitle("Restore Back-up");
+                restore.setDialogMessage("This option will restore your old back-up data. " +
+                    "Tap the continue button to browse your old data.");
+                restore.setPositiveButton("Continue", v -> {
+                    manager.popBackStack();
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, RequestCode.FILES);
+                });
+                restore.setNegativeButton("Cancel", v -> manager.popBackStack());
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                    R.anim.fade_in, R.anim.fade_out);
+                transaction.add(R.id.rlMain, restore);
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
@@ -610,37 +531,31 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 }
                 break;
             case R.id.btnDateMain:
-                CalendarView calendar = new CalendarView();
+                CalendarDialogFragment calendar = new CalendarDialogFragment();
                 calendar.setCurrentDate(smDate);
-                calendar.setOnPickDateCallback(new OnPickDateCallback() {
-                    @Override
-                    public void onPickDate(String date) {
-                        String cal = CodePanUtils.getCalendarDate(date, true, true);
-                        tvDateMain.setText(cal);
-                        smDate = date;
-                    }
+                calendar.setOnPickDateCallback(date -> {
+                    String cal = CodePanUtils.getReadableDate(date, true, true);
+                    tvDateMain.setText(cal);
+                    smDate = date;
                 });
                 transaction = manager.beginTransaction();
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                        R.anim.fade_in, R.anim.fade_out);
+                    R.anim.fade_in, R.anim.fade_out);
                 transaction.add(R.id.rlMain, calendar);
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
             case R.id.btnCustomerMain:
                 CustomerFragment search = new CustomerFragment();
-                search.setOnSelectCustomerCallback(new OnSelectCustomerCallback() {
-                    @Override
-                    public void onSelectCustomer(CustomerObj customer) {
-                        if (customer != null) {
-                            tvCustomerMain.setText(customer.name);
-                            receivedBy = customer;
-                        }
+                search.setOnSelectCustomerCallback(customer1 -> {
+                    if (customer1 != null) {
+                        tvCustomerMain.setText(customer1.name);
+                        receivedBy = customer1;
                     }
                 });
                 transaction = manager.beginTransaction();
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                        R.anim.fade_in, R.anim.fade_out);
+                    R.anim.fade_in, R.anim.fade_out);
                 transaction.add(R.id.rlMain, search);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -655,8 +570,8 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
                 CodePanUtils.fadeOut(rlFilterMain);
                 ivFilterMain.setVisibility(View.VISIBLE);
                 this.status = !cbStatusMain.isChecked() ? RemittanceStatus.PENDING : null;
-                this.type = !cbTypeMain.isChecked() ? RemittanceType.INGOING :
-                        RemittanceType.DEFAULT;
+                this.type = !cbTypeMain.isChecked() ? RemittanceType.INCOMING :
+                    RemittanceType.DEFAULT;
                 loadRemittance(db);
                 break;
             case R.id.btnClearMain:
@@ -680,67 +595,53 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         }
     }
 
-    public void confirm(final RemittanceObj remittance) {
+    public void confirm(final RemittanceData remittance) {
         final AlertDialogFragment alert = new AlertDialogFragment();
         alert.setDialogTitle("Confirm Receiving");
         alert.setDialogMessage("Are you sure you want to receive this transaction?");
-        alert.setPositiveButton("Yes", new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                manager.popBackStack();
-                String dDate = CodePanUtils.getDate();
-                String dTime = CodePanUtils.getTime();
-                boolean result = SMPadalaLib.claim(db, dDate, dTime, remittance.ID);
-                if (result) {
-                    ReceiveObj receive = remittance.receive;
-                    receive.dDate = dDate;
-                    receive.dTime = dTime;
-                    CustomerObj customer = receive.customer;
-                    remittance.isMarked = false;
-                    remittance.isClaimed = true;
-                    lvMain.invalidate();
-                    adapter.notifyDataSetChanged();
-                    CodePanUtils.alertToast(MainActivity.this,
-                            "Receive by " + customer.name);
-                }
+        alert.setPositiveButton("Yes", view -> {
+            manager.popBackStack();
+            String dDate = CodePanUtils.getDate();
+            String dTime = CodePanUtils.getTime();
+            boolean result = SMPadalaLib.claim(db, dDate, dTime, remittance.ID);
+            if (result) {
+                ReceiveData receive = remittance.receive;
+                receive.dDate = dDate;
+                receive.dTime = dTime;
+                CustomerData customer = receive.customer;
+                remittance.isMarked = false;
+                remittance.isClaimed = true;
+                lvMain.invalidate();
+                adapter.notifyDataSetChanged();
+                SMPadalaLib.alertToast(MainActivity.this,
+                    "Receive by " + customer.name);
             }
         });
-        alert.setNegativeButton("No", new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                manager.popBackStack();
-            }
-        });
+        alert.setNegativeButton("No", view -> manager.popBackStack());
         transaction = manager.beginTransaction();
         transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                R.anim.fade_in, R.anim.fade_out);
+            R.anim.fade_in, R.anim.fade_out);
         transaction.add(R.id.rlMain, alert);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     public void backUpData(final boolean external) {
-        final Handler handler = new Handler(new Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                CodePanUtils.alertToast(MainActivity.this, "Data has " +
-                        "been successfully backed-up.");
-                return true;
-            }
+        final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+            SMPadalaLib.alertToast(MainActivity.this, "Data has " +
+                "been successfully backed-up.");
+            return true;
         });
         if (!CodePanUtils.isThreadRunning(ProcessName.BACK_UP_DB)) {
-            Thread bg = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        boolean result = SMPadalaLib.backUpData(MainActivity.this, external);
-                        if (external && result) {
-                            handler.obtainMessage().sendToTarget();
-                        }
+            Thread bg = new Thread(() -> {
+                try {
+                    boolean result = SMPadalaLib.backUpData(MainActivity.this, external);
+                    if (external && result) {
+                        handler.obtainMessage().sendToTarget();
                     }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
             bg.setName(ProcessName.BACK_UP_DB);
@@ -748,7 +649,7 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         }
     }
 
-    private Runnable inputFinishChecker = new Runnable() {
+    private final Runnable inputFinishChecker = new Runnable() {
         @Override
         public void run() {
             if (System.currentTimeMillis() > lastEdit + IDLE_TIME - 500) {
@@ -764,15 +665,117 @@ public class MainActivity extends FragmentActivity implements OnInitializeCallba
         return this.db;
     }
 
-    public int getIndex(RemittanceObj remittance) {
+    public int getIndex(RemittanceData remittance) {
         if (remittanceList != null && remittance != null) {
-            for (RemittanceObj obj : remittanceList) {
-                if (remittance.ID != null && obj.ID != null &&
-                        remittance.ID.equals(obj.ID)) {
-                    return remittanceList.indexOf(obj);
+            for (RemittanceData data : remittanceList) {
+                if (remittance.ID != null && data.ID != null &&
+                    remittance.ID.equals(data.ID)) {
+                    return remittanceList.indexOf(data);
                 }
             }
         }
         return Result.FAILED;
+    }
+
+    @NotNull
+    @Override
+    public PermissionHandler getHandler() {
+        return new PermissionHandler(this, this,
+            PermissionType.SMS,
+            PermissionType.FILES_AND_MEDIA
+        );
+    }
+
+    @Override
+    public void onPermissionsResult(@NotNull PermissionHandler handler, boolean isGranted) {
+        if (isGranted) {
+            if (inBackStack(DialogTag.PERMISSION)) {
+                manager.popBackStack();
+            }
+        }
+        else {
+            getHandler().checkPermissions();
+        }
+    }
+
+    @Override
+    public void onShowPermissionRationale(@NotNull PermissionHandler handler, @NotNull PermissionType permission) {
+        if (notInBackStack(DialogTag.PERMISSION)) {
+            String message = null;
+            switch (permission) {
+                case SMS:
+                    message = getString(R.string.permission_sms);
+                    break;
+                case FILES_AND_MEDIA:
+                    message = getString(R.string.permission_files_and_media);
+                    break;
+            }
+            final AlertDialogFragment alert = new AlertDialogFragment();
+            alert.setDialogTitle(R.string.permission_title);
+            alert.setDialogMessage(message);
+            alert.setPositiveButton(getString(R.string.settings), v -> {
+                manager.popBackStack();
+                handler.goToSettings();
+            });
+            alert.setNegativeButton(getString(R.string.cancel), v -> {
+                manager.popBackStack();
+                manager.popBackStack();
+            });
+            transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                R.anim.fade_in, R.anim.fade_out);
+            transaction.add(R.id.rlMain, alert, DialogTag.PERMISSION);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RequestCode.FILES && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri uri = data.getData();
+                if (uri != null) {
+                    File root = getExternalFilesDir(null);
+                    if (root != null) {
+                        File dir = new File(root.getPath() + "/" + App.DB_BACKUP);
+                        if (!dir.exists()) {
+                            dir.mkdir();
+                        }
+                        File file = new File(dir, App.DB);
+                        Cursor cursor = getContentResolver().query(uri, null,
+                            null, null, null);
+                        if (cursor != null) {
+                            boolean result = CodePanUtils.contentUriToFile(this, uri, file);
+                            if (result) {
+                                restoreBackup(db, file);
+                            }
+                            cursor.close();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void restoreBackup(SQLiteAdapter db, File file) {
+        File dir = getExternalFilesDir(null);
+        if (dir != null) {
+            File destination = getDatabasePath(App.DB);
+            try {
+                db.close();
+                CodePanUtils.copyFile(file, destination);
+                this.db = SQLiteCache.getDatabase(this, App.DB);
+                this.db.openConnection();
+                loadRemittance(db);
+                SMPadalaLib.alertToast(this, "Back-up has been successfully restored.");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                SMPadalaLib.alertToast(this, "Failed to restore back-up file.");
+            }
+        }
     }
 }

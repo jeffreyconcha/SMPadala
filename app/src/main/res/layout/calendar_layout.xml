@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:CalendarView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_bg"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.codepan.widget.calendar.view.CalendarView
+        android:id="@+id/cvCalendar"
+        android:layout_width="@dimen/three_hundred"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        CalendarView:accentColor="@color/theme_pri"
+        CalendarView:arrowIconHeight="@dimen/ten"
+        CalendarView:arrowIconWidth="@dimen/seven"
+        CalendarView:arrowSize="@dimen/twenty_five"
+        CalendarView:buttonFont="@string/helvetica_neue_mid"
+        CalendarView:buttonPadding="@dimen/five"
+        CalendarView:buttonTextSize="@dimen/twelve"
+        CalendarView:buttonWidth="@dimen/seventy"
+        CalendarView:contentFont="@string/helvetica_neue_light"
+        CalendarView:contentPadding="@dimen/two"
+        CalendarView:contentTextSize="@dimen/twelve"
+        CalendarView:dateTextSize="@dimen/fifteen"
+        CalendarView:monthTextSize="@dimen/thirteen"
+        CalendarView:selectedColor="@color/theme_pri"
+        CalendarView:titleFont="@string/helvetica_neue_bold"
+        CalendarView:titlePadding="@dimen/five"
+        CalendarView:titleTextSize="@dimen/thirteen"
+        CalendarView:yearTextSize="@dimen/thirteen"/>
+
+</RelativeLayout>

@@ -1,22 +1,20 @@
 package com.bestfriend.core;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.bestfriend.constant.App;
 import com.bestfriend.constant.RemittanceKey;
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.constant.Result;
-import com.bestfriend.model.CustomerObj;
-import com.bestfriend.model.MessageObj;
-import com.bestfriend.model.ReceiveObj;
-import com.bestfriend.model.RemittanceObj;
-import com.bestfriend.model.TransferObj;
+import com.bestfriend.model.CustomerData;
+import com.bestfriend.model.MessageData;
+import com.bestfriend.model.ReceiveData;
+import com.bestfriend.model.RemittanceData;
+import com.bestfriend.model.TransferData;
 import com.bestfriend.schema.Tables;
 import com.bestfriend.smpadala.AlertDialogFragment;
 import com.bestfriend.smpadala.R;
@@ -26,6 +24,8 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
 import com.codepan.database.SQLiteQuery;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.utils.Console;
+import com.codepan.widget.CodePanLabel;
 
 import net.sqlcipher.Cursor;
 
@@ -34,23 +34,35 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import static com.bestfriend.schema.Tables.TB;
 import static com.bestfriend.schema.Tables.create;
 import static com.bestfriend.schema.Tables.getName;
 
 public class SMPadalaLib {
 
+    public static void alertToast(FragmentActivity activity, String message) {
+        int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.alert_toast_layout, activity.findViewById(R.id.rlAlertToast));
+        CodePanLabel text = layout.findViewById(R.id.tvMessageAlertToast);
+        text.setText(message);
+        Toast toast = new Toast(activity);
+        toast.setGravity(Gravity.BOTTOM, 0, offsetY);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
+
     public static void alertDialog(final FragmentActivity activity, String title, String message) {
         final FragmentManager manager = activity.getSupportFragmentManager();
         final AlertDialogFragment alert = new AlertDialogFragment();
         alert.setDialogTitle(title);
         alert.setDialogMessage(message);
-        alert.setPositiveButton("OK", new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                manager.popBackStack();
-            }
-        });
+        alert.setPositiveButton("OK", view -> manager.popBackStack());
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
                 R.anim.fade_in, R.anim.fade_out);
@@ -104,7 +116,7 @@ public class SMPadalaLib {
         SQLiteBinder binder = new SQLiteBinder(db);
         String table = Tables.getName(TB.REMITTANCE);
         String sql = "SELECT ID FROM " + table + " WHERE balance IS NULL AND type = '" +
-                RemittanceType.INGOING + "' ORDER BY ID LIMIT 1";
+                RemittanceType.INCOMING + "' ORDER BY ID LIMIT 1";
         if (db.isRecordExists(sql)) {
             String remittanceID = db.getString(sql);
             SQLiteQuery query = new SQLiteQuery();
@@ -114,7 +126,7 @@ public class SMPadalaLib {
         return binder.finish();
     }
 
-    public static boolean undoTransaction(SQLiteAdapter db, RemittanceObj remittance) {
+    public static boolean undoTransaction(SQLiteAdapter db, RemittanceData remittance) {
         SQLiteBinder binder = new SQLiteBinder(db);
         String h = Tables.getName(TB.REMITTANCE);
         String d = Tables.getName(TB.RECEIVE);
@@ -122,13 +134,13 @@ public class SMPadalaLib {
         query.add(new FieldValue("isClaimed", false));
         binder.update(h, query, remittance.ID);
         query.clearAll();
-        ReceiveObj receive = remittance.receive;
+        ReceiveData receive = remittance.receive;
         query.add(new FieldValue("isCancelled", true));
         binder.update(d, query, receive.ID);
         return binder.finish();
     }
 
-    public static boolean untagCustomer(SQLiteAdapter db, TransferObj transfer) {
+    public static boolean untagCustomer(SQLiteAdapter db, TransferData transfer) {
         SQLiteBinder binder = new SQLiteBinder(db);
         String table = Tables.getName(TB.TRANSFER);
         SQLiteQuery query = new SQLiteQuery();
@@ -141,9 +153,9 @@ public class SMPadalaLib {
         return CodePanUtils.extractDatabase(context, App.DB_BACKUP, App.DB, external);
     }
 
-    public static CustomerObj addCustomer(SQLiteAdapter db, String name, String mobileNo,
-                                          String address, String photo) {
-        CustomerObj customer = new CustomerObj();
+    public static CustomerData addCustomer(SQLiteAdapter db, String name, String mobileNo,
+                                           String address, String photo) {
+        CustomerData customer = new CustomerData();
         SQLiteBinder binder = new SQLiteBinder(db);
         String table = Tables.getName(TB.CUSTOMER);
         SQLiteQuery query = new SQLiteQuery();
@@ -169,9 +181,9 @@ public class SMPadalaLib {
         return customer;
     }
 
-    public static CustomerObj editCustomer(SQLiteAdapter db, String name, String mobileNo,
-                                           String address, String photo, String customerID) {
-        CustomerObj customer = new CustomerObj();
+    public static CustomerData editCustomer(SQLiteAdapter db, String name, String mobileNo,
+                                            String address, String photo, String customerID) {
+        CustomerData customer = new CustomerData();
         SQLiteBinder binder = new SQLiteBinder(db);
         String table = Tables.getName(TB.CUSTOMER);
         SQLiteQuery query = new SQLiteQuery();
@@ -213,9 +225,9 @@ public class SMPadalaLib {
         return binder.finish();
     }
 
-    public static ReceiveObj receive(SQLiteAdapter db, CustomerObj customer, String remittanceID,
-                                     boolean isClaimed) {
-        ReceiveObj receive = new ReceiveObj();
+    public static ReceiveData receive(SQLiteAdapter db, CustomerData customer, String remittanceID,
+                                      boolean isClaimed) {
+        ReceiveData receive = new ReceiveData();
         SQLiteBinder binder = new SQLiteBinder(db);
         String dDate = CodePanUtils.getDate();
         String dTime = CodePanUtils.getTime();
@@ -252,9 +264,9 @@ public class SMPadalaLib {
         return receive;
     }
 
-    public static TransferObj tagTransfer(SQLiteAdapter db, CustomerObj customer,
-                                          String remittanceID, String receiver) {
-        TransferObj transfer = new TransferObj();
+    public static TransferData tagTransfer(SQLiteAdapter db, CustomerData customer,
+                                           String remittanceID, String receiver) {
+        TransferData transfer = new TransferData();
         SQLiteBinder binder = new SQLiteBinder(db);
         String dDate = CodePanUtils.getDate();
         String dTime = CodePanUtils.getTime();
@@ -300,7 +312,7 @@ public class SMPadalaLib {
         if (text != null) {
             for (String key : RemittanceKey.INGOING) {
                 if (StringUtils.containsIgnoreCase(text, key)) {
-                    return RemittanceType.INGOING;
+                    return RemittanceType.INCOMING;
                 }
             }
             for (String key : RemittanceKey.OUTGOING) {
@@ -316,9 +328,6 @@ public class SMPadalaLib {
         StringBuilder builder = new StringBuilder();
         int index = text.toLowerCase().lastIndexOf(key.toLowerCase());
         String substring = text.substring(index + key.length());
-
-       // Log.e("DEPANOT CHECK", key+" "+index+" "+substring);
-
         char period = '.';
         int maxDecimal = 2;
         int decimalCount = 0;
@@ -368,12 +377,12 @@ public class SMPadalaLib {
         return builder.toString();
     }
 
-    public static MessageObj scanMessage(String text) {
-        MessageObj message = null;
+    public static MessageData scanMessage(String text) {
+        MessageData message = null;
         if (text != null) {
             int type = getMessageType(text);
             if (type != Result.FAILED) {
-                message = new MessageObj(type);
+                message = new MessageData(type);
                 for (String key : RemittanceKey.AMOUNT) {
                     if (StringUtils.containsIgnoreCase(text, key)) {
                         message.amount = getNextAmountFromKey(text, key);
@@ -398,12 +407,12 @@ public class SMPadalaLib {
                         break;
                     }
                 }
-                String t = type == RemittanceType.OUTGOING ? "OUT" : "IN";
-                Log.e("DEPANOT TYPE", "" + t);
-                Log.e("DEPANOT AMOUNT", "" + message.amount);
-                Log.e("DEPANOT CHARGE", "" + message.charge);
-                Log.e("DEPANOT BALANCE", "" + message.balance);
-                Log.e("DEPANOT REF NO", "" + message.referenceNo);
+                String t = type == RemittanceType.OUTGOING ? "outgoing" : "incoming";
+                Console.log("TYPE: " + t);
+                Console.log("AMOUNT: " + message.amount);
+                Console.log("CHARGE: " + message.charge);
+                Console.log("BALANCE: " + message.balance);
+                Console.log("REF NO: " + message.referenceNo);
             }
         }
         return message;

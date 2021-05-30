@@ -3,38 +3,32 @@ package com.bestfriend.smpadala;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bestfriend.callback.Interface.OnSaveCustomerCallback;
-import com.bestfriend.callback.Interface.OnUsePhotoCallback;
 import com.bestfriend.constant.App;
 import com.bestfriend.constant.Result;
 import com.bestfriend.core.SMPadalaLib;
-import com.bestfriend.model.CustomerObj;
+import com.bestfriend.model.CustomerData;
+import com.codepan.app.CPFragment;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 
-public class AddCustomerFragment extends Fragment implements View.OnClickListener {
+public class AddCustomerFragment extends CPFragment implements View.OnClickListener {
 
     private CodePanTextField etNameAddCustomer, etMobileNoAddCustomer, etAddressAddCustomer;
     private CodePanLabel tvTitleAddCustomer, tvNameTitleAddCustomer, tvViewPhotoAddCustomer;
     private CodePanButton btnPhotoAddCustomer, btnCancelAddCustomer, btnSaveAddCustomer;
     private OnSaveCustomerCallback saveCustomerCallback;
-    private FragmentTransaction transaction;
     private ImageView ivPhotoAddCustomer;
-    private FragmentManager manager;
-    private CustomerObj customer;
+    private CustomerData customer;
     private MainActivity main;
     private SQLiteAdapter db;
     private String photo;
@@ -65,7 +59,7 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
         btnCancelAddCustomer.setOnClickListener(this);
         btnPhotoAddCustomer.setOnClickListener(this);
         btnSaveAddCustomer.setOnClickListener(this);
-        CodePanUtils.requiredField(tvNameTitleAddCustomer);
+        tvNameTitleAddCustomer.setRequired(true);
         if(customer != null) {
             etNameAddCustomer.setText(customer.name);
             etMobileNoAddCustomer.setText(customer.mobileNo);
@@ -93,15 +87,12 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
         switch(v.getId()) {
             case R.id.btnPhotoAddCustomer:
                 CameraFragment camera = new CameraFragment();
-                camera.setOnUsePhotoCallback(new OnUsePhotoCallback() {
-                    @Override
-                    public void onUsePhoto(String fileName) {
-                        final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
-                                .getPath() + "/" + fileName;
-                        CodePanUtils.displayImage(ivPhotoAddCustomer, uri, R.drawable.ic_camera);
-                        tvViewPhotoAddCustomer.setVisibility(View.VISIBLE);
-                        photo = fileName;
-                    }
+                camera.setOnUsePhotoCallback(fileName -> {
+                    final String uri = "file://" + main.getDir(App.FOLDER, Context.MODE_PRIVATE)
+                            .getPath() + "/" + fileName;
+                    CodePanUtils.displayImage(ivPhotoAddCustomer, uri, R.drawable.ic_camera);
+                    tvViewPhotoAddCustomer.setVisibility(View.VISIBLE);
+                    photo = fileName;
                 });
                 transaction = manager.beginTransaction();
                 transaction.add(R.id.rlMain, camera);
@@ -121,7 +112,7 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
                     transaction.commit();
                 }
                 else {
-                    CodePanUtils.alertToast(main, "No photo to be viewed");
+                    SMPadalaLib.alertToast(main, "No photo to be viewed");
                 }
                 break;
             case R.id.btnSaveAddCustomer:
@@ -139,46 +130,40 @@ public class AddCustomerFragment extends Fragment implements View.OnClickListene
     }
 
     public void saveCustomer(final SQLiteAdapter db, final String name, final String mobileNo, final String address) {
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(customer != null) {
-                        customer = SMPadalaLib.editCustomer(db, name, mobileNo, address, photo, customer.ID);
-                    }
-                    else {
-                        customer = SMPadalaLib.addCustomer(db, name, mobileNo, address, photo);
-                    }
-                    handler.obtainMessage(customer != null ? Result.SUCCESS : Result.FAILED).sendToTarget();
+        Thread bg = new Thread(() -> {
+            try {
+                if (customer != null) {
+                    customer = SMPadalaLib.editCustomer(db, name, mobileNo, address, photo, customer.ID);
                 }
-                catch(Exception e) {
-                    e.printStackTrace();
+                else {
+                    customer = SMPadalaLib.addCustomer(db, name, mobileNo, address, photo);
                 }
+                handler.obtainMessage(customer.ID != null ? Result.SUCCESS : Result.FAILED).sendToTarget();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         });
         bg.start();
     }
 
-    Handler handler = new Handler(new Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch(msg.what) {
-                case Result.SUCCESS:
-                    CodePanUtils.alertToast(main, "Customer has been successfully saved.");
-                    break;
-                case Result.FAILED:
-                    CodePanUtils.alertToast(main, "Failed to save customer.");
-                    break;
-            }
-            manager.popBackStack();
-            if(saveCustomerCallback != null) {
-                saveCustomerCallback.onSaveCustomer(customer);
-            }
-            return true;
+    private final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+        switch (msg.what) {
+            case Result.SUCCESS:
+                SMPadalaLib.alertToast(main, "Customer has been successfully saved.");
+                break;
+            case Result.FAILED:
+                SMPadalaLib.alertToast(main, "Failed to save customer.");
+                break;
         }
+        manager.popBackStack();
+        if (saveCustomerCallback != null) {
+            saveCustomerCallback.onSaveCustomer(customer);
+        }
+        return true;
     });
 
-    public void setCustomer(CustomerObj customer) {
+    public void setCustomer(CustomerData customer) {
         this.customer = customer;
     }
 

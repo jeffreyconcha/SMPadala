@@ -1,14 +1,21 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
+    ndkVersion '21.0.6113669'
     defaultConfig {
         applicationId "com.bestfriend.smpadala"
-        minSdkVersion 15
-        targetSdkVersion 26
-        versionCode 18
-        versionName "1.1.8"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 19
+        versionName "1.1.9"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
     buildTypes {
         release {
@@ -23,6 +30,12 @@ android {
             }
         }
     }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
@@ -31,9 +44,18 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/DEPENDENCIES.txt'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':app:libs-module:codepan')
+    implementation 'com.github.jeffreyconcha:codepan-android:v1.0.9'
 }

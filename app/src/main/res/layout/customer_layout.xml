@@ -83,7 +83,7 @@
             android:layout_above="@+id/vDividerCustomer"
             android:layout_below="@+id/llHeaderCustomer"
             android:divider="@color/divider"
-            android:dividerHeight="@dimen/p_one"
+            android:dividerHeight="@dimen/one"
             android:listSelector="@drawable/state_rect_trans_dark"
             android:scrollbarSize="@dimen/scrollbar"
             android:scrollbarThumbVertical="@color/scrollbar"/>

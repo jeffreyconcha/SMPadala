@@ -1,7 +1,9 @@
 package com.bestfriend.schema;
 
+import com.codepan.database.Convention;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.database.SQLiteQuery.Constraint;
 import com.codepan.database.SQLiteQuery.DataType;
 
 public class Tables {
@@ -17,7 +19,7 @@ public class Tables {
         SQLiteQuery query = new SQLiteQuery();
         switch(tb) {
             case CUSTOMER:
-                query.add(new Field("ID", true));
+                query.add(new Field("ID", Constraint.PRIMARY_KEY));
                 query.add(new Field("name", DataType.TEXT));
                 query.add(new Field("photo", DataType.TEXT));
                 query.add(new Field("address", DataType.TEXT));
@@ -25,7 +27,7 @@ public class Tables {
                 query.add(new Field("isActive", 1));
                 break;
             case REMITTANCE:
-                query.add(new Field("ID", true));
+                query.add(new Field("ID", Constraint.PRIMARY_KEY));
                 query.add(new Field("dDate", DataType.TEXT));
                 query.add(new Field("dTime", DataType.TEXT));
                 query.add(new Field("smDate", DataType.TEXT));
@@ -39,7 +41,7 @@ public class Tables {
                 query.add(new Field("isClaimed", 0));
                 break;
             case RECEIVE:
-                query.add(new Field("ID", true));
+                query.add(new Field("ID", Constraint.PRIMARY_KEY));
                 query.add(new Field("dDate", DataType.TEXT));
                 query.add(new Field("dTime", DataType.TEXT));
                 query.add(new Field("customerID", DataType.INTEGER));
@@ -47,7 +49,7 @@ public class Tables {
                 query.add(new Field("isCancelled", 0));
                 break;
             case TRANSFER:
-                query.add(new Field("ID", true));
+                query.add(new Field("ID", Constraint.PRIMARY_KEY));
                 query.add(new Field("dDate", DataType.TEXT));
                 query.add(new Field("dTime", DataType.TEXT));
                 query.add(new Field("customerID", DataType.INTEGER));
@@ -60,21 +62,12 @@ public class Tables {
     }
 
     public static String getName(TB tb) {
-        String name = null;
-        switch(tb) {
-            case CUSTOMER:
-                name = "customer_tb";
-                break;
-            case REMITTANCE:
-                name = "remittance_tb";
-                break;
-            case RECEIVE:
-                name = "receive_tb";
-                break;
-            case TRANSFER:
-                name = "transfer_tb";
-                break;
+        if(tb != null) {
+            String suffix = Convention.TABLE_SUFFIX;
+            return tb.toString()
+                    .toLowerCase()
+                    .concat(suffix);
         }
-        return name;
+        return null;
     }
 }

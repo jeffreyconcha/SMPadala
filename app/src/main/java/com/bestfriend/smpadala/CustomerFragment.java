@@ -2,28 +2,21 @@ package com.bestfriend.smpadala;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.bestfriend.adapter.CustomerAdapter;
-import com.bestfriend.callback.Interface.OnSaveCustomerCallback;
 import com.bestfriend.callback.Interface.OnSelectCustomerCallback;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.SMPadalaLib;
-import com.bestfriend.model.CustomerObj;
+import com.bestfriend.model.CustomerData;
+import com.codepan.app.CPFragment;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
@@ -32,15 +25,13 @@ import com.codepan.widget.CodePanTextField;
 
 import java.util.ArrayList;
 
-public class CustomerFragment extends Fragment implements OnClickListener {
+public class CustomerFragment extends CPFragment implements OnClickListener {
 
 	private CodePanButton btnCancelCustomer, btnAddCustomer;
 	private OnSelectCustomerCallback selectCustomerCallback;
-	private ArrayList<CustomerObj> customerList;
+	private ArrayList<CustomerData> customerList;
 	private CodePanTextField etSearchCustomer;
-	private FragmentTransaction transaction;
 	private CodePanLabel tvTitleCustomer;
-	private FragmentManager manager;
 	private CustomerAdapter adapter;
 	private ListView lvCustomer;
 	private MainActivity main;
@@ -49,6 +40,7 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		super.disableBackPressed();
 		main = (MainActivity) getActivity();
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
@@ -83,71 +75,55 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 			public void afterTextChanged(Editable e) {
 			}
 		});
-		lvCustomer.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(final AdapterView<?> adapterView, View view, final int i, long l) {
-				CodePanUtils.hideKeyboard(view, main);
-				CustomerObj customer = customerList.get(i);
-				if(selectCustomerCallback != null) {
-					selectCustomerCallback.onSelectCustomer(customer);
-					manager.popBackStack();
-				}
-				else {
-					AddCustomerFragment add = new AddCustomerFragment();
-					add.setCustomer(customer);
-					add.setOnSaveCustomerCallback(new OnSaveCustomerCallback() {
-						@Override
-						public void onSaveCustomer(CustomerObj customer) {
-							customerList.set(i, customer);
-							lvCustomer.invalidate();
-							adapter.notifyDataSetChanged();
-						}
-					});
-					transaction = manager.beginTransaction();
-					transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-							R.anim.fade_in, R.anim.fade_out);
-					transaction.add(R.id.rlMain, add);
-					transaction.addToBackStack(null);
-					transaction.commit();
-				}
+		lvCustomer.setOnItemClickListener((adapterView, view12, i, l) -> {
+			CodePanUtils.hideKeyboard(view12, main);
+			CustomerData customer = customerList.get(i);
+			if (selectCustomerCallback != null) {
+				selectCustomerCallback.onSelectCustomer(customer);
+				manager.popBackStack();
+			}
+			else {
+				AddCustomerFragment add = new AddCustomerFragment();
+				add.setCustomer(customer);
+				add.setOnSaveCustomerCallback(customer1 -> {
+					customerList.set(i, customer1);
+					lvCustomer.invalidate();
+					adapter.notifyDataSetChanged();
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, add);
+				transaction.addToBackStack(null);
+				transaction.commit();
 			}
 		});
-		lvCustomer.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int i, long id) {
-				CustomerObj customer = customerList.get(i);
-				confirmDelete(customer);
-				return true;
-			}
+		lvCustomer.setOnItemLongClickListener((parent, view1, i, id) -> {
+			CustomerData customer = customerList.get(i);
+			confirmDelete(customer);
+			return true;
 		});
 		loadCustomers(db);
 		return view;
 	}
 
 	public void loadCustomers(final SQLiteAdapter db) {
-		Thread bg = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					customerList = Data.loadCustomers(db);
-					handler.obtainMessage().sendToTarget();
-				}
-				catch(Exception e) {
-					e.printStackTrace();
-				}
+		final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+			adapter = new CustomerAdapter(main, customerList);
+			lvCustomer.setAdapter(adapter);
+			return true;
+		});
+		Thread bg = new Thread(() -> {
+			try {
+				customerList = Data.loadCustomers(db);
+				handler.obtainMessage().sendToTarget();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 		bg.start();
 	}
-
-	Handler handler = new Handler(new Callback() {
-		@Override
-		public boolean handleMessage(Message msg) {
-			adapter = new CustomerAdapter(main, customerList);
-			lvCustomer.setAdapter(adapter);
-			return true;
-		}
-	});
 
 	@Override
 	public void onClick(View v) {
@@ -157,15 +133,10 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 				break;
 			case R.id.btnAddCustomer:
 				AddCustomerFragment add = new AddCustomerFragment();
-				add.setOnSaveCustomerCallback(new OnSaveCustomerCallback() {
-					@Override
-					public void onSaveCustomer(CustomerObj customer) {
-						loadCustomers(db);
-					}
-				});
+				add.setOnSaveCustomerCallback(customer -> loadCustomers(db));
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-						R.anim.fade_in, R.anim.fade_out);
+					R.anim.fade_in, R.anim.fade_out);
 				transaction.add(R.id.rlMain, add);
 				transaction.addToBackStack(null);
 				transaction.commit();
@@ -173,29 +144,21 @@ public class CustomerFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	public void confirmDelete(final CustomerObj customer) {
+	public void confirmDelete(final CustomerData customer) {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setDialogTitle("Delete Customer");
 		alert.setDialogMessage("Are you sure you want to delete this customer?");
-		alert.setPositiveButton("Yes", new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				manager.popBackStack();
-				boolean result = SMPadalaLib.deleteCustomer(db, customer.ID);
-				if(result) {
-					customerList.remove(customer);
-					lvCustomer.invalidate();
-					adapter.notifyDataSetChanged();
-					CodePanUtils.alertToast(main, "Customer has been successfully deleted.");
-				}
+		alert.setPositiveButton("Yes", view -> {
+			manager.popBackStack();
+			boolean result = SMPadalaLib.deleteCustomer(db, customer.ID);
+			if (result) {
+				customerList.remove(customer);
+				lvCustomer.invalidate();
+				adapter.notifyDataSetChanged();
+				SMPadalaLib.alertToast(main, "Customer has been successfully deleted.");
 			}
 		});
-		alert.setNegativeButton("No", new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				manager.popBackStack();
-			}
-		});
+		alert.setNegativeButton("No", view -> manager.popBackStack());
 		transaction = manager.beginTransaction();
 		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
 				R.anim.fade_in, R.anim.fade_out);

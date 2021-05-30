@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_camera">
+        Please allow this app to access the camera.
+    </string>
+    <string name="permission_files_and_media">
+        Please allow this app to access files and media.
+    </string>
+    <string name="permission_sms">
+        Please allow this app to read, receive and send sms.
+    </string>
+</resources>

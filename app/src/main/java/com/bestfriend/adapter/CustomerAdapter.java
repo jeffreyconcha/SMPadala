@@ -1,7 +1,6 @@
 package com.bestfriend.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 
 import com.bestfriend.constant.App;
-import com.bestfriend.model.CustomerObj;
+import com.bestfriend.model.CustomerData;
 import com.bestfriend.smpadala.R;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.AdapterFilter;
@@ -18,14 +17,16 @@ import com.codepan.widget.CodePanLabel;
 
 import java.util.ArrayList;
 
-public class CustomerAdapter extends ArrayAdapter<CustomerObj> {
+import androidx.annotation.NonNull;
 
-	private AdapterFilter<CustomerObj> filter;
-	private ArrayList<CustomerObj> items;
-	private LayoutInflater inflater;
-	private String path;
+public class CustomerAdapter extends ArrayAdapter<CustomerData> {
 
-	public CustomerAdapter(Context context, ArrayList<CustomerObj> items) {
+	private AdapterFilter<CustomerData> filter;
+	private final ArrayList<CustomerData> items;
+	private final LayoutInflater inflater;
+	private final String path;
+
+	public CustomerAdapter(Context context, ArrayList<CustomerData> items) {
 		super(context, 0, items);
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.items = items;
@@ -36,9 +37,9 @@ public class CustomerAdapter extends ArrayAdapter<CustomerObj> {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		View view = convertView;
 		ViewHolder holder;
-		final CustomerObj obj = items.get(position);
-		if(obj != null) {
-			if(view == null) {
+		final CustomerData data = items.get(position);
+		if (data != null) {
+			if (view == null) {
 				view = inflater.inflate(R.layout.customer_list_row, parent, false);
 				holder = new ViewHolder();
 				holder.tvNameCustomer = view.findViewById(R.id.tvNameCustomer);
@@ -48,8 +49,8 @@ public class CustomerAdapter extends ArrayAdapter<CustomerObj> {
 			else {
 				holder = (ViewHolder) view.getTag();
 			}
-			holder.tvNameCustomer.setText(obj.name);
-			String uri = path + obj.photo;
+			holder.tvNameCustomer.setText(data.name);
+			String uri = path + data.photo;
 			CodePanUtils.displayImage(holder.ivPhotoCustomer, uri, R.drawable.ic_user);
 		}
 		return view;

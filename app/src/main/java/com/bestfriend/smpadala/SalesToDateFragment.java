@@ -3,11 +3,7 @@ package com.bestfriend.smpadala;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,9 +16,8 @@ import android.widget.ImageView;
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.LineGraph;
-import com.bestfriend.model.SalesToDateObj;
-import com.codepan.calendar.callback.Interface;
-import com.codepan.calendar.view.CalendarView;
+import com.bestfriend.model.SalesToDateData;
+import com.codepan.app.CPFragment;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
@@ -31,16 +26,14 @@ import org.achartengine.GraphicalView;
 
 import java.util.ArrayList;
 
-public class SalesToDateFragment extends Fragment implements OnClickListener {
+public class SalesToDateFragment extends CPFragment implements OnClickListener {
 
     private CodePanButton btnCalendarSalesToDate, btnBackSalesToDate;
-    private ArrayList<SalesToDateObj> transferList;
-    private ArrayList<SalesToDateObj> receiveList;
-    private ArrayList<SalesToDateObj> totalList;
-    private FragmentTransaction transaction;
+    private ArrayList<SalesToDateData> transferList;
+    private ArrayList<SalesToDateData> receiveList;
+    private ArrayList<SalesToDateData> totalList;
     private FrameLayout flGraphSalesToDate;
     private ImageView ivLoadingSalesToDate;
-    private FragmentManager manager;
     private String selectedDate;
     private MainActivity main;
     private Animation anim;
@@ -77,66 +70,60 @@ public class SalesToDateFragment extends Fragment implements OnClickListener {
         ivLoadingSalesToDate = view.findViewById(R.id.ivLoadingSalesToDate);
         btnCalendarSalesToDate.setOnClickListener(this);
         btnBackSalesToDate.setOnClickListener(this);
-        loadSalesToDate(db, selectedDate);
+        showCalendar();
         return view;
     }
 
     public void loadSalesToDate(final SQLiteAdapter db, final String date) {
         ivLoadingSalesToDate.setVisibility(View.VISIBLE);
         ivLoadingSalesToDate.startAnimation(anim);
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    totalList = Data.loadSalesToDate(db, date, RemittanceType.DEFAULT);
-                    transferList = Data.loadSalesToDate(db, date, RemittanceType.OUTGOING);
-                    receiveList = Data.loadSalesToDate(db, date, RemittanceType.INGOING);
-                    Thread.sleep(250);
-                    handler.obtainMessage().sendToTarget();
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
+        Thread bg = new Thread(() -> {
+            try {
+                totalList = Data.loadSalesToDate(db, date, RemittanceType.DEFAULT);
+                transferList = Data.loadSalesToDate(db, date, RemittanceType.OUTGOING);
+                receiveList = Data.loadSalesToDate(db, date, RemittanceType.INCOMING);
+                handler.obtainMessage().sendToTarget();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         });
         bg.start();
     }
 
-    Handler handler = new Handler(new Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            ivLoadingSalesToDate.setVisibility(View.GONE);
-            ivLoadingSalesToDate.clearAnimation();
-            GraphicalView graph = line.getGraph(selectedDate, totalList, receiveList, transferList);
-            flGraphSalesToDate.removeAllViews();
-            flGraphSalesToDate.addView(graph);
-            return true;
-        }
+    private final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+        ivLoadingSalesToDate.setVisibility(View.GONE);
+        ivLoadingSalesToDate.clearAnimation();
+        GraphicalView graph = line.getGraph(selectedDate, totalList, receiveList, transferList);
+        flGraphSalesToDate.removeAllViews();
+        flGraphSalesToDate.addView(graph);
+        return true;
     });
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.btnBackSalesToDate:
                 manager.popBackStack();
                 break;
             case R.id.btnCalendarSalesToDate:
-                CalendarView calendar = new CalendarView();
-                calendar.setCurrentDate(selectedDate);
-                calendar.setOnPickDateCallback(new Interface.OnPickDateCallback() {
-                    @Override
-                    public void onPickDate(String date) {
-                        loadSalesToDate(db, date);
-                        selectedDate = date;
-                    }
-                });
-                transaction = manager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-                        R.anim.fade_in, R.anim.fade_out);
-                transaction.add(R.id.rlMain, calendar);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                showCalendar();
                 break;
         }
+    }
+
+    private void showCalendar() {
+        CalendarDialogFragment calendar = new CalendarDialogFragment();
+        calendar.setCurrentDate(selectedDate);
+        calendar.setOnPickDateCallback(date -> {
+            loadSalesToDate(db, date);
+            selectedDate = date;
+        });
+        transaction = manager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+            R.anim.fade_in, R.anim.fade_out);
+        transaction.add(R.id.rlMain, calendar);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.bestfriend.smpadala.MainActivity">
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/dlMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -56,7 +56,7 @@
                                 android:text="@string/menu"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/ten"
-                                codePan:typeface="@string/proxima_nova_light"/>
+                                codePan:typeface="@string/calibri_regular"/>
 
                         </LinearLayout>
 
@@ -264,7 +264,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/white"
                     android:divider="@color/divider"
-                    android:dividerHeight="@dimen/p_one"
+                    android:dividerHeight="@dimen/one"
                     android:listSelector="@drawable/state_rect_trans_dark"
                     android:scrollbarSize="@dimen/scrollbar"
                     android:scrollbarThumbVertical="@color/scrollbar"/>
@@ -286,7 +286,7 @@
                     android:background="@color/gray_sen"
                     android:elevation="@dimen/four"
                     android:orientation="vertical"
-                    android:padding="@dimen/p_one">
+                    android:padding="@dimen/one">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -326,7 +326,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/twenty_five"
-                        android:layout_marginTop="@dimen/p_one"
+                        android:layout_marginTop="@dimen/one"
                         android:background="@color/gray_qui">
 
                         <com.codepan.widget.CodePanLabel
@@ -362,7 +362,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/twenty_five"
-                        android:layout_marginTop="@dimen/p_one"
+                        android:layout_marginTop="@dimen/one"
                         android:background="@color/gray_qui">
 
                         <com.codepan.widget.CodePanLabel
@@ -402,7 +402,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/twenty_five"
-                        android:layout_marginTop="@dimen/p_one"
+                        android:layout_marginTop="@dimen/one"
                         android:background="@color/gray_qui">
 
                         <com.codepan.widget.CodePanLabel
@@ -442,7 +442,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/twenty_five"
-                        android:layout_marginTop="@dimen/p_one"
+                        android:layout_marginTop="@dimen/one"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -462,8 +462,8 @@
                             android:id="@+id/btnClearMain"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/p_one"
-                            android:layout_marginLeft="@dimen/p_one"
+                            android:layout_marginStart="@dimen/one"
+                            android:layout_marginLeft="@dimen/one"
                             android:layout_weight="1"
                             android:background="@drawable/state_rect_gray_qui"
                             android:gravity="center"
@@ -543,7 +543,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/p_one"
+                android:layout_height="@dimen/one"
                 android:background="@color/divider"/>
 
             <LinearLayout
@@ -583,7 +583,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/p_one"
+                android:layout_height="@dimen/one"
                 android:background="@color/divider"/>
 
             <LinearLayout
@@ -623,11 +623,51 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/p_one"
+                android:layout_height="@dimen/one"
+                android:background="@color/divider"/>
+
+            <LinearLayout
+                android:id="@+id/llRestoreBackupMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/seven">
+
+                <FrameLayout
+                    android:layout_width="@dimen/twelve"
+                    android:layout_height="@dimen/twelve">
+
+                    <ImageView
+                        android:layout_width="@dimen/twelve"
+                        android:layout_height="@dimen/nine"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_restore"/>
+
+                </FrameLayout>
+
+                <com.codepan.widget.CodePanLabel
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/seven"
+                    android:layout_marginLeft="@dimen/seven"
+                    android:text="@string/restore_backup"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/ten"
+                    codePan:typeface="@string/helvetica_neue_light"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
                 android:background="@color/divider"/>
 
         </LinearLayout>
 
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </RelativeLayout>
