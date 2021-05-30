@@ -15,6 +15,7 @@
         CalendarView:accentColor="@color/theme_pri"
         CalendarView:arrowIconHeight="@dimen/ten"
         CalendarView:arrowIconWidth="@dimen/seven"
+        CalendarView:title="@string/select_date"
         CalendarView:arrowSize="@dimen/twenty_five"
         CalendarView:buttonFont="@string/helvetica_neue_mid"
         CalendarView:buttonPadding="@dimen/five"

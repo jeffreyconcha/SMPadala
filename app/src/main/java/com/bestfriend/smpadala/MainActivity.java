@@ -112,7 +112,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
     @Override
     protected void onPause() {
         super.onPause();
-        backUpData(false);
+        backupData(false);
     }
 
     @Override
@@ -490,7 +490,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
                     "Are you sure you want to back-up data?");
                 backup.setPositiveButton("Yes", v -> {
                     manager.popBackStack();
-                    backUpData(true);
+                    backupData(true);
                 });
                 backup.setNegativeButton("No", v -> manager.popBackStack());
                 transaction = manager.beginTransaction();
@@ -503,10 +503,9 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
             case R.id.llRestoreBackupMain:
                 dlMain.closeDrawer(llMenuMain);
                 AlertDialogFragment restore = new AlertDialogFragment();
-                restore.setDialogTitle("Restore Back-up");
-                restore.setDialogMessage("This option will restore your old back-up data. " +
-                    "Tap the continue button to browse your old data.");
-                restore.setPositiveButton("Continue", v -> {
+                restore.setDialogTitle(R.string.restore_backup);
+                restore.setDialogMessage(text(R.string.restore_message_r, App.DB));
+                restore.setPositiveButton("Browse", v -> {
                     manager.popBackStack();
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("*/*");
@@ -626,7 +625,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         transaction.commit();
     }
 
-    public void backUpData(final boolean external) {
+    public void backupData(final boolean external) {
         final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
             SMPadalaLib.alertToast(MainActivity.this, "Data has " +
                 "been successfully backed-up.");
@@ -728,7 +727,6 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
             transaction.addToBackStack(null);
             transaction.commit();
         }
-
     }
 
     @Override

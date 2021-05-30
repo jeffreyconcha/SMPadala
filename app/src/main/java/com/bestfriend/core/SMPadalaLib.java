@@ -47,7 +47,7 @@ public class SMPadalaLib {
     public static void alertToast(FragmentActivity activity, String message) {
         int offsetY = activity.getResources().getDimensionPixelSize(R.dimen.one_hundred);
         LayoutInflater inflater = activity.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.alert_toast_layout, activity.findViewById(R.id.rlAlertToast));
+        View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.rlAlertToast));
         CodePanLabel text = layout.findViewById(R.id.tvMessageAlertToast);
         text.setText(message);
         Toast toast = new Toast(activity);
