@@ -759,6 +759,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
     }
 
     private void restoreBackup(SQLiteAdapter db, File file) {
+         boolean result = false;
         File dir = getExternalFilesDir(null);
         if (dir != null) {
             File destination = getDatabasePath(App.DB);
@@ -768,12 +769,24 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
                 this.db = SQLiteCache.getDatabase(this, App.DB);
                 this.db.openConnection();
                 loadRemittance(db);
-                SMPadalaLib.alertToast(this, "Back-up has been successfully restored.");
+                result = true;
             }
             catch (IOException e) {
                 e.printStackTrace();
-                SMPadalaLib.alertToast(this, "Failed to restore back-up file.");
             }
         }
+        showRestorationResult(result);
+    }
+
+    private void showRestorationResult(final boolean result) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (result) {
+                SMPadalaLib.alertToast(this, "Back-up has been successfully restored.");
+            }
+            else {
+                SMPadalaLib.alertToast(this, "Failed to restore back-up file.");
+            }
+
+        }, 500L);
     }
 }

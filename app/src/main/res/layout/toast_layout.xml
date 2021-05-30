@@ -4,8 +4,8 @@
     android:id="@+id/rlAlertToast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/one_hundred"
-    android:paddingRight="@dimen/one_hundred">
+    android:paddingLeft="@dimen/ten"
+    android:paddingRight="@dimen/ten">
 
     <com.codepan.widget.CodePanLabel
         android:id="@+id/tvMessageAlertToast"
