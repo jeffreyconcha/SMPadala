@@ -70,13 +70,8 @@ public class AnalyticsFragment extends CPFragment implements OnClickListener {
         ivLoadingAnalytics = view.findViewById(R.id.ivLoadingAnalytics);
         btnCalendarAnalytics.setOnClickListener(this);
         btnBackAnalytics.setOnClickListener(this);
+        loadSalesToDate(db, date);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        showCalendar();
     }
 
     public void loadSalesToDate(final SQLiteAdapter db, final String date) {
@@ -112,23 +107,19 @@ public class AnalyticsFragment extends CPFragment implements OnClickListener {
                 manager.popBackStack();
                 break;
             case R.id.btnCalendarAnalytics:
-                showCalendar();
+                CalendarDialogFragment calendar = new CalendarDialogFragment();
+                calendar.setCurrentDate(date);
+                calendar.setOnPickDateCallback(date -> {
+                    loadSalesToDate(db, date);
+                    this.date = date;
+                });
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                    R.anim.fade_in, R.anim.fade_out);
+                transaction.add(R.id.rlMain, calendar);
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
         }
-    }
-
-    private void showCalendar() {
-        CalendarDialogFragment calendar = new CalendarDialogFragment();
-        calendar.setCurrentDate(date);
-        calendar.setOnPickDateCallback(date -> {
-            loadSalesToDate(db, date);
-            this.date = date;
-        });
-        transaction = manager.beginTransaction();
-        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-            R.anim.fade_in, R.anim.fade_out);
-        transaction.add(R.id.rlMain, calendar);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }

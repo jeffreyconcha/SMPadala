@@ -45,11 +45,11 @@
     <string name="total_amount">Total Amount</string>
     <string name="total_charge">Total Charge</string>
     <string name="total_count">Total Transactions</string>
-    <string name="transfer_amount">Transfer Amount</string>
+    <string name="transfer_amount">Transferred Amount</string>
     <string name="transfer_charge">Transfer Fee</string>
-    <string name="transfer_count">Total Transfer Transactions</string>
-    <string name="receive_amount">Receive Amount</string>
+    <string name="transfer_count">Total Transferred Transactions</string>
+    <string name="receive_amount">Received Amount</string>
     <string name="receive_charge">Commission</string>
-    <string name="receive_count">Total Receive Transactions</string>
+    <string name="receive_count">Total Received Transactions</string>
     <string name="receive_unclaimed">Unclaimed</string>
 </resources>
