@@ -3,10 +3,11 @@ package com.bestfriend.core;
 
 import com.bestfriend.constant.RemittanceStatus;
 import com.bestfriend.constant.RemittanceType;
+import com.bestfriend.model.AnalyticsData;
 import com.bestfriend.model.CustomerData;
+import com.bestfriend.model.DailySummaryData;
 import com.bestfriend.model.ReceiveData;
 import com.bestfriend.model.RemittanceData;
-import com.bestfriend.model.SalesToDateData;
 import com.bestfriend.model.TransferData;
 import com.bestfriend.schema.Tables;
 import com.bestfriend.schema.Tables.TB;
@@ -139,8 +140,8 @@ public class Data {
         return customerList;
     }
 
-    public static ArrayList<SalesToDateData> loadSalesToDate(SQLiteAdapter db, String date, int type) {
-        ArrayList<SalesToDateData> stdList = new ArrayList<>();
+    public static ArrayList<AnalyticsData> loadDataAnalytics(SQLiteAdapter db, String date, int type) {
+        ArrayList<AnalyticsData> stdList = new ArrayList<>();
         Calendar cal = CodePanUtils.getCalendar(date);
         int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         String table = Tables.getName(TB.REMITTANCE);
@@ -149,13 +150,13 @@ public class Data {
         String month = split[1];
         int minDay = Integer.parseInt(split[2]);
         SQLiteQuery query = new SQLiteQuery();
-        for (int d = 1; d <= maxDays; d++) {
-            SalesToDateData std = new SalesToDateData();
+        for(int d = 1; d <= maxDays; d++) {
+            AnalyticsData std = new AnalyticsData();
             String day = String.format(Locale.ENGLISH, "%02d", d);
             String smDate = year + "-" + month + "-" + day;
             query.clearAll();
             query.add(new Condition("smDate", smDate));
-            if (type != RemittanceType.DEFAULT) {
+            if(type != RemittanceType.DEFAULT) {
                 query.add(new Condition("type", type));
             }
             String sql = "SELECT SUM(amount) FROM " + table + " WHERE " +
@@ -166,5 +167,53 @@ public class Data {
             stdList.add(std);
         }
         return stdList;
+    }
+
+    public static ArrayList<DailySummaryData> loadDailySummary(SQLiteAdapter db, String date) {
+        ArrayList<DailySummaryData> summaryList = new ArrayList<>();
+        String table = Tables.getName(TB.REMITTANCE);
+        for(int i = 0; i < 30; i++) {
+            String rolled = CodePanUtils.rollDate(date, -i);
+            DailySummaryData data = new DailySummaryData();
+            data.date = rolled;
+            {
+                String sql = "SELECT SUM(amount), SUM(charge), COUNT(ID) " +
+                    "FROM " + table + " WHERE smDate = '" + rolled + "'";
+                Cursor cursor = db.read(sql);
+                while(cursor.moveToNext()) {
+                    data.totalAmount = cursor.getFloat(0);
+                    data.totalCharge = cursor.getFloat(1);
+                    data.totalCount = cursor.getInt(2);
+                }
+                cursor.close();
+            }
+            {
+                String sql = "SELECT SUM(amount), SUM(charge), COUNT(ID) " +
+                    "FROM " + table + " WHERE type = " + RemittanceType.OUTGOING + " " +
+                    "AND smDate = '" + rolled + "'";
+                Cursor cursor = db.read(sql);
+                while(cursor.moveToNext()) {
+                    data.transferAmount = cursor.getFloat(0);
+                    data.transferCharge = cursor.getFloat(1);
+                    data.transferCount = cursor.getInt(2);
+                }
+                cursor.close();
+            }
+            {
+                String sql = "SELECT SUM(amount), SUM(charge), COUNT(ID), SUM(isClaimed) " +
+                    "FROM " + table + " WHERE type = " + RemittanceType.INCOMING + " " +
+                    "AND smDate = '" + rolled + "'";
+                Cursor cursor = db.read(sql);
+                while(cursor.moveToNext()) {
+                    data.receiveAmount = cursor.getFloat(0);
+                    data.receiveCharge = cursor.getFloat(1);
+                    data.receiveCount = cursor.getInt(2);
+                    data.receiveClaimed = cursor.getInt(3);
+                }
+                cursor.close();
+            }
+            summaryList.add(data);
+        }
+        return summaryList;
     }
 }

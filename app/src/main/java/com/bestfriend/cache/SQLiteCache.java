@@ -21,10 +21,18 @@ public class SQLiteCache {
     public static SQLiteAdapter getDatabase(Context context, String name) {
         synchronized(CACHE) {
             if(!CACHE.containsKey(name)) {
-                SQLiteAdapter db = new SQLiteAdapter(context, name, key(), App.DB_PWD, App.DB_VERSION);
-                db.setOnCreateDatabaseCallback(SMPadalaLib::createTables);
-                db.setOnUpgradeDatabaseCallback((db1, ov, nv) -> SMPadalaLib.createTables(db1));
-                CACHE.put(name, db);
+                SQLiteAdapter database = new SQLiteAdapter(context, name, key(), App.DB_PWD, App.DB_VERSION);
+                database.setOnCreateDatabaseCallback(db -> {
+                    SMPadalaLib.createTables(db);
+                    SMPadalaLib.createIndexes(db);
+                });
+                database.setOnUpgradeDatabaseCallback((db, ov, nv) -> {
+                    SMPadalaLib.createTables(db);
+                    SMPadalaLib.updateTables(db, ov, nv);
+                    SMPadalaLib.createIndexes(db);
+                    SMPadalaLib.fixData(db);
+                });
+                CACHE.put(name, database);
             }
         }
         return CACHE.get(name);

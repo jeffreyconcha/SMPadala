@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import com.bestfriend.constant.RemittanceType;
 import com.bestfriend.core.Data;
 import com.bestfriend.core.LineGraph;
-import com.bestfriend.model.SalesToDateData;
+import com.bestfriend.model.AnalyticsData;
 import com.codepan.app.CPFragment;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
@@ -26,15 +26,15 @@ import org.achartengine.GraphicalView;
 
 import java.util.ArrayList;
 
-public class SalesToDateFragment extends CPFragment implements OnClickListener {
+public class AnalyticsFragment extends CPFragment implements OnClickListener {
 
-    private CodePanButton btnCalendarSalesToDate, btnBackSalesToDate;
-    private ArrayList<SalesToDateData> transferList;
-    private ArrayList<SalesToDateData> receiveList;
-    private ArrayList<SalesToDateData> totalList;
-    private FrameLayout flGraphSalesToDate;
-    private ImageView ivLoadingSalesToDate;
-    private String selectedDate;
+    private CodePanButton btnCalendarAnalytics, btnBackAnalytics;
+    private ArrayList<AnalyticsData> transferList;
+    private ArrayList<AnalyticsData> receiveList;
+    private ArrayList<AnalyticsData> totalList;
+    private FrameLayout flGraphAnalytics;
+    private ImageView ivLoadingAnalytics;
+    private String date;
     private MainActivity main;
     private Animation anim;
     private SQLiteAdapter db;
@@ -48,12 +48,12 @@ public class SalesToDateFragment extends CPFragment implements OnClickListener {
         db = main.getDatabase();
         db.openConnection();
         Resources res = main.getResources();
-        int theme = res.getColor(R.color.theme_ter);
+        int theme = res.getColor(R.color.theme_sec);
         int gray = res.getColor(R.color.gray_pri);
         int red = res.getColor(R.color.red_pri);
         int six = res.getDimensionPixelSize(R.dimen.six);
         int seven = res.getDimensionPixelSize(R.dimen.seven);
-        selectedDate = CodePanUtils.getDate();
+        date = CodePanUtils.getDate();
         line = new LineGraph(main);
         line.setColor(theme, gray, red);
         line.setTextSize(seven, six, seven);
@@ -63,28 +63,33 @@ public class SalesToDateFragment extends CPFragment implements OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.sales_to_date_layout, container, false);
-        btnCalendarSalesToDate = view.findViewById(R.id.btnCalendarSalesToDate);
-        btnBackSalesToDate = view.findViewById(R.id.btnBackSalesToDate);
-        flGraphSalesToDate = view.findViewById(R.id.flGraphSalesToDate);
-        ivLoadingSalesToDate = view.findViewById(R.id.ivLoadingSalesToDate);
-        btnCalendarSalesToDate.setOnClickListener(this);
-        btnBackSalesToDate.setOnClickListener(this);
-        showCalendar();
+        View view = inflater.inflate(R.layout.analytics_layout, container, false);
+        btnCalendarAnalytics = view.findViewById(R.id.btnCalendarAnalytics);
+        btnBackAnalytics = view.findViewById(R.id.btnBackAnalytics);
+        flGraphAnalytics = view.findViewById(R.id.flGraphAnalytics);
+        ivLoadingAnalytics = view.findViewById(R.id.ivLoadingAnalytics);
+        btnCalendarAnalytics.setOnClickListener(this);
+        btnBackAnalytics.setOnClickListener(this);
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showCalendar();
+    }
+
     public void loadSalesToDate(final SQLiteAdapter db, final String date) {
-        ivLoadingSalesToDate.setVisibility(View.VISIBLE);
-        ivLoadingSalesToDate.startAnimation(anim);
+        ivLoadingAnalytics.setVisibility(View.VISIBLE);
+        ivLoadingAnalytics.startAnimation(anim);
         Thread bg = new Thread(() -> {
             try {
-                totalList = Data.loadSalesToDate(db, date, RemittanceType.DEFAULT);
-                transferList = Data.loadSalesToDate(db, date, RemittanceType.OUTGOING);
-                receiveList = Data.loadSalesToDate(db, date, RemittanceType.INCOMING);
+                totalList = Data.loadDataAnalytics(db, date, RemittanceType.DEFAULT);
+                transferList = Data.loadDataAnalytics(db, date, RemittanceType.OUTGOING);
+                receiveList = Data.loadDataAnalytics(db, date, RemittanceType.INCOMING);
                 handler.obtainMessage().sendToTarget();
             }
-            catch (Exception e) {
+            catch(Exception e) {
                 e.printStackTrace();
             }
         });
@@ -92,21 +97,21 @@ public class SalesToDateFragment extends CPFragment implements OnClickListener {
     }
 
     private final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
-        ivLoadingSalesToDate.setVisibility(View.GONE);
-        ivLoadingSalesToDate.clearAnimation();
-        GraphicalView graph = line.getGraph(selectedDate, totalList, receiveList, transferList);
-        flGraphSalesToDate.removeAllViews();
-        flGraphSalesToDate.addView(graph);
+        ivLoadingAnalytics.setVisibility(View.GONE);
+        ivLoadingAnalytics.clearAnimation();
+        GraphicalView graph = line.getGraph(date, totalList, receiveList, transferList);
+        flGraphAnalytics.removeAllViews();
+        flGraphAnalytics.addView(graph);
         return true;
     });
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnBackSalesToDate:
+            case R.id.btnBackAnalytics:
                 manager.popBackStack();
                 break;
-            case R.id.btnCalendarSalesToDate:
+            case R.id.btnCalendarAnalytics:
                 showCalendar();
                 break;
         }
@@ -114,10 +119,10 @@ public class SalesToDateFragment extends CPFragment implements OnClickListener {
 
     private void showCalendar() {
         CalendarDialogFragment calendar = new CalendarDialogFragment();
-        calendar.setCurrentDate(selectedDate);
+        calendar.setCurrentDate(date);
         calendar.setOnPickDateCallback(date -> {
             loadSalesToDate(db, date);
-            selectedDate = date;
+            this.date = date;
         });
         transaction = manager.beginTransaction();
         transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,

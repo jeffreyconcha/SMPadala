@@ -61,15 +61,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class MainActivity extends CPFragmentActivity implements OnInitializeCallback,
-    OnClickListener, PermissionEvents {
+    OnClickListener, AbsListView.OnScrollListener, PermissionEvents {
 
     private final int LIMIT = 200;
     private final long IDLE_TIME = 500;
 
     private CodePanButton btnMenuMain, btnShowFilterMain, btnDateMain, btnTypeMain,
         btnStatusMain, btnCustomerMain, btnFilterMain, btnClearMain;
-    private LinearLayout llMenuMain, llCustomersMain, llDailyReportMain,
-        llBackUpMain, llRestoreBackupMain;
+    private LinearLayout llMenuMain, llCustomersMain, llDataAnalyticsMain,
+        llBackUpMain, llRestoreBackupMain, llDailySummaryMain;
     private int visibleItem, totalItem, firstVisible;
     private ArrayList<RemittanceData> remittanceList;
     private CodePanLabel tvDateMain, tvCustomerMain;
@@ -123,7 +123,8 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         btnShowFilterMain = findViewById(R.id.btnShowFilterMain);
         llCustomersMain = findViewById(R.id.llCustomersMain);
         llBackUpMain = findViewById(R.id.llBackUpMain);
-        llDailyReportMain = findViewById(R.id.llDailyReportMain);
+        llDailySummaryMain = findViewById(R.id.llDailySummaryMain);
+        llDataAnalyticsMain = findViewById(R.id.llDataAnalyticsMain);
         llRestoreBackupMain = findViewById(R.id.llRestoreBackupMain);
         flClearSearchMain = findViewById(R.id.flClearSearchMain);
         etSearchMain = findViewById(R.id.etSearchMain);
@@ -152,25 +153,27 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         btnTypeMain.setOnClickListener(this);
         btnStatusMain.setOnClickListener(this);
         llCustomersMain.setOnClickListener(this);
-        llDailyReportMain.setOnClickListener(this);
+        llDailySummaryMain.setOnClickListener(this);
+        llDataAnalyticsMain.setOnClickListener(this);
         llBackUpMain.setOnClickListener(this);
         llRestoreBackupMain.setOnClickListener(this);
         rlFilterMain.setOnClickListener(this);
         flClearSearchMain.setOnClickListener(this);
         int color = getResources().getColor(R.color.black_trans_twenty);
         dlMain.setScrimColor(color);
+        lvMain.setOnScrollListener(this);
         lvMain.setOnItemClickListener((adapterView, view, i, l) -> {
             CodePanUtils.hideKeyboard(view, MainActivity.this);
             final RemittanceData remittance = remittanceList.get(i);
-            switch (remittance.type) {
+            switch(remittance.type) {
                 case RemittanceType.INCOMING:
-                    if (!remittance.isClaimed) {
-                        if (!remittance.isMarked) {
+                    if(!remittance.isClaimed) {
+                        if(!remittance.isMarked) {
                             ReceiveFragment receive = new ReceiveFragment();
                             receive.setRemittance(remittance);
                             receive.setOnReceiveRemittanceCallback(data -> {
                                 int index = getIndex(data);
-                                if (index != Result.FAILED) {
+                                if(index != Result.FAILED) {
                                     remittanceList.set(index, data);
                                     updateRemittance(true);
                                 }
@@ -292,30 +295,6 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
                     break;
             }
             return true;
-        });
-        lvMain.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                switch (scrollState) {
-                    case SCROLL_STATE_TOUCH_SCROLL:
-                        etSearchMain.clearFocus();
-                        CodePanUtils.hideKeyboard(etSearchMain, MainActivity.this);
-                        break;
-                    case SCROLL_STATE_IDLE:
-                        if (firstVisible == totalItem - visibleItem & !isEnd) {
-                            loadMoreRemittance(db);
-                        }
-                        break;
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                firstVisible = firstVisibleItem;
-                visibleItem = visibleItemCount;
-                totalItem = totalItemCount;
-            }
         });
         etSearchMain.addTextChangedListener(new TextWatcher() {
             @Override
@@ -443,10 +422,8 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
             public void onReceive(Context context, Intent intent) {
                 if (intent.hasExtra(Key.NOTIFICATION)) {
                     int code = intent.getIntExtra(Key.NOTIFICATION, 0);
-                    switch (code) {
-                        case Notification.SMS_RECEIVE:
-                            loadRemittance(db);
-                            break;
+                    if(code == Notification.SMS_RECEIVE) {
+                        loadRemittance(db);
                     }
                 }
             }
@@ -474,9 +451,20 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
-            case R.id.llDailyReportMain:
+            case R.id.llDailySummaryMain:
                 dlMain.closeDrawer(llMenuMain);
-                SalesToDateFragment std = new SalesToDateFragment();
+                dlMain.closeDrawer(llMenuMain);
+                final DailySummaryFragment summary = new DailySummaryFragment();
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                    R.anim.fade_in, R.anim.fade_out);
+                transaction.add(R.id.rlMain, summary);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                break;
+            case R.id.llDataAnalyticsMain:
+                dlMain.closeDrawer(llMenuMain);
+                final AnalyticsFragment std = new AnalyticsFragment();
                 transaction = manager.beginTransaction();
                 transaction.add(R.id.rlMain, std);
                 transaction.addToBackStack(null);
@@ -710,7 +698,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
                     break;
             }
             final AlertDialogFragment alert = new AlertDialogFragment();
-            alert.setDialogTitle(R.string.permission_title);
+            alert.setDialogTitle(R.string.permission_required);
             alert.setDialogMessage(message);
             alert.setPositiveButton(getString(R.string.settings), v -> {
                 manager.popBackStack();
@@ -780,13 +768,35 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
 
     private void showRestorationResult(final boolean result) {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (result) {
+            if(result) {
                 SMPadalaLib.alertToast(this, "Back-up has been successfully restored.");
             }
             else {
                 SMPadalaLib.alertToast(this, "Failed to restore back-up file.");
             }
-
         }, 500L);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        switch(scrollState) {
+            case SCROLL_STATE_TOUCH_SCROLL:
+                etSearchMain.clearFocus();
+                CodePanUtils.hideKeyboard(etSearchMain, MainActivity.this);
+                break;
+            case SCROLL_STATE_IDLE:
+                if(firstVisible == totalItem - visibleItem & !isEnd) {
+                    loadMoreRemittance(db);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisible,
+        int visibleItem, int totalItem) {
+        this.firstVisible = firstVisible;
+        this.visibleItem = visibleItem;
+        this.totalItem = totalItem;
     }
 }

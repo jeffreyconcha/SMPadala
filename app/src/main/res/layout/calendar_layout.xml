@@ -10,6 +10,8 @@
     <com.codepan.widget.calendar.view.CalendarView
         android:id="@+id/cvCalendar"
         android:layout_width="@dimen/three_hundred"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         CalendarView:accentColor="@color/theme_pri"

@@ -10,13 +10,11 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/rlHeaderSalesToDate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header"
         android:background="@color/header">
 
         <FrameLayout
-            android:id="@+id/flBackSalesToDate"
             android:layout_width="@dimen/header"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -29,7 +27,7 @@
                 android:src="@drawable/ic_back"/>
 
             <com.codepan.widget.CodePanButton
-                android:id="@+id/btnBackSalesToDate"
+                android:id="@+id/btnBackAnalytics"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/state_rect_trans_dark"/>
@@ -40,13 +38,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/daily_report"
+            android:text="@string/data_analytics"
             android:textColor="@color/white"
             android:textSize="@dimen/ten"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <FrameLayout
-            android:id="@+id/flCalendarSalesToDate"
             android:layout_width="@dimen/header"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
@@ -59,7 +56,7 @@
                 android:src="@drawable/ic_calendar"/>
 
             <com.codepan.widget.CodePanButton
-                android:id="@+id/btnCalendarSalesToDate"
+                android:id="@+id/btnCalendarAnalytics"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/state_rect_trans_dark"/>
@@ -73,13 +70,13 @@
         android:layout_height="wrap_content">
 
         <FrameLayout
-            android:id="@+id/flGraphSalesToDate"
+            android:id="@+id/flGraphAnalytics"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/five"/>
 
         <ImageView
-            android:id="@+id/ivLoadingSalesToDate"
+            android:id="@+id/ivLoadingAnalytics"
             android:layout_width="@dimen/thirty_five"
             android:layout_height="@dimen/thirty_five"
             android:layout_centerInParent="true"

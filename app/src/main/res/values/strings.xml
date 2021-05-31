@@ -33,13 +33,23 @@
     <string name="filter">Filter</string>
     <string name="customers">Customers</string>
     <string name="save">Save</string>
-    <string name="daily_report">Daily Report</string>
+    <string name="data_analytics">Data Analytics</string>
+    <string name="daily_summary_report">Daily Summary Report</string>
     <string name="restore_backup">Restore Back-up</string>
     <string name="edit_customer">Edit Customer</string>
     <string name="add_customer">Add Customer</string>
     <string name="view_photo"><u>View Photo</u></string>
     <string name="money_claimed">The money was claimed by the customer.</string>
     <string name="back_up_data">Back-up Data</string>
-    <string name="permission_title">Permissions Required</string>
-    <string name="permission_message">Please enable the required permissions to continue.</string>
+    <string name="permission_required">Permissions Required</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="total_charge">Total Charge</string>
+    <string name="total_count">Total Transactions</string>
+    <string name="transfer_amount">Transfer Amount</string>
+    <string name="transfer_charge">Transfer Fee</string>
+    <string name="transfer_count">Total Transfer Transactions</string>
+    <string name="receive_amount">Receive Amount</string>
+    <string name="receive_charge">Commission</string>
+    <string name="receive_count">Total Receive Transactions</string>
+    <string name="receive_unclaimed">Unclaimed</string>
 </resources>

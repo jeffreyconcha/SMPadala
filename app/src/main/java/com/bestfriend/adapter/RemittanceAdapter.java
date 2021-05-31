@@ -19,18 +19,21 @@ import com.codepan.widget.CodePanLabel;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class RemittanceAdapter extends ArrayAdapter<RemittanceData> {
 
     private final ArrayList<RemittanceData> items;
     private final LayoutInflater inflater;
+    private final NumberFormat nf;
     private final int red;
     private final int gray;
     private final int theme;
-    private final NumberFormat nf;
 
-    public RemittanceAdapter(Context context, ArrayList<RemittanceData> items) {
+    public RemittanceAdapter(@NonNull  Context context, ArrayList<RemittanceData> items) {
         super(context, 0, items);
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = LayoutInflater.from(context);
         this.items = items;
         this.nf = NumberFormat.getInstance();
         this.nf.setMaximumFractionDigits(2);
@@ -42,8 +45,9 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceData> {
         this.theme = res.getColor(R.color.theme_ter);
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, final View convertView, final ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
         ViewHolder holder;
         final RemittanceData data = items.get(position);
@@ -84,26 +88,31 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceData> {
                     }
                     break;
             }
-            if (customer != null) {
+            if(customer != null) {
                 holder.tvNameRemittance.setText(customer.name);
             }
             else {
                 holder.tvNameRemittance.setText(null);
             }
             holder.tvChargeRemittance.setText(nf.format(data.charge));
-            holder.tvAmountRemittance.setText(nf.format(data.amount));
-            if (data.hasBalance) {
+            if(data.amount != 0) {
+                holder.tvAmountRemittance.setText(nf.format(data.amount));
+            }
+            else {
+                holder.tvAmountRemittance.setText(R.string.na);
+            }
+            if(data.hasBalance) {
                 holder.tvBalanceRemittance.setText(nf.format(data.balance));
             }
             else {
                 holder.tvBalanceRemittance.setText(R.string.na);
             }
             holder.tvReferenceNoRemittance.setText(data.referenceNo);
-            switch (data.type) {
+            switch(data.type) {
                 case RemittanceType.INCOMING:
                     int status = data.isClaimed ? R.string.claimed : R.string.pending;
                     holder.tvStatusRemittance.setText(status);
-                    if (!data.isMarked) {
+                    if(!data.isMarked) {
                         holder.tvDateRemittance.setTextColor(gray);
                         holder.tvTimeRemittance.setTextColor(gray);
                         holder.tvNameRemittance.setTextColor(gray);
@@ -140,7 +149,7 @@ public class RemittanceAdapter extends ArrayAdapter<RemittanceData> {
         return view;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         private CodePanLabel tvDateRemittance;
         private CodePanLabel tvTimeRemittance;
         private CodePanLabel tvNameRemittance;

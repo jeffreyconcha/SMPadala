@@ -8,8 +8,8 @@ android {
         applicationId "com.bestfriend.smpadala"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 19
-        versionName "1.1.9"
+        versionCode 20
+        versionName "1.2.0"
         externalNativeBuild {
             cmake {
                 cppFlags ""
@@ -57,5 +57,5 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.github.jeffreyconcha:codepan-android:v1.0.9'
+    implementation 'com.github.jeffreyconcha:codepan-android:v1.0.13'
 }

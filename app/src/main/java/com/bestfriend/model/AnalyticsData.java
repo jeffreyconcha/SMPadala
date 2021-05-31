@@ -1,6 +1,6 @@
 package com.bestfriend.model;
 
-public class SalesToDateData {
+public class AnalyticsData {
 
 	public int day;
 	public float amount;

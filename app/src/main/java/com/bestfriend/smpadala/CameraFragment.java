@@ -214,7 +214,7 @@ public class CameraFragment extends CPFragment implements OnClickListener, OnCap
                     break;
             }
             final AlertDialogFragment alert = new AlertDialogFragment();
-            alert.setDialogTitle(R.string.permission_title);
+            alert.setDialogTitle(R.string.permission_required);
             alert.setDialogMessage(message);
             alert.setPositiveButton(getString(R.string.settings), v -> {
                 manager.popBackStack();

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.bestfriend.model.SalesToDateData;
+import com.bestfriend.model.AnalyticsData;
 import com.codepan.utils.CodePanUtils;
 
 import org.achartengine.ChartFactory;
@@ -31,9 +31,9 @@ public class LineGraph {
         this.context = context;
     }
 
-    public GraphicalView getGraph(String date, ArrayList<SalesToDateData> totalList,
-            ArrayList<SalesToDateData> receiveList,
-            ArrayList<SalesToDateData> transferList) {
+    public GraphicalView getGraph(String date, ArrayList<AnalyticsData> totalList,
+            ArrayList<AnalyticsData> receiveList,
+            ArrayList<AnalyticsData> transferList) {
         Calendar calendar = CodePanUtils.getCalendar(date);
         String month = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH);
         String year = CodePanUtils.getDisplayYear(date);
@@ -45,7 +45,7 @@ public class LineGraph {
         float maxAmount = 0;
         int minDay = 1;
         TimeSeries totalSeries = new TimeSeries("Total");
-        for(SalesToDateData std : totalList) {
+        for(AnalyticsData std : totalList) {
             totalSeries.add(std.day, std.amount);
             if(std.amount > maxAmount) {
                 maxAmount = std.amount;
@@ -56,11 +56,11 @@ public class LineGraph {
         }
         float interval = maxAmount / y;
         TimeSeries receiveSeries = new TimeSeries("Receive");
-        for(SalesToDateData std : receiveList) {
+        for(AnalyticsData std : receiveList) {
             receiveSeries.add(std.day, std.amount);
         }
         TimeSeries transferSeries = new TimeSeries("Transfer");
-        for(SalesToDateData std : transferList) {
+        for(AnalyticsData std : transferList) {
             transferSeries.add(std.day, std.amount);
         }
         int maxDay = minDay + x;
@@ -116,7 +116,7 @@ public class LineGraph {
         msRenderer.setAxisTitleTextSize(axisTextSize);
         msRenderer.setPanLimits(new double[]{0.0, (double)
                 size + 1, 0.0, (double) maxAmount});
-        for(SalesToDateData data : totalList) {
+        for(AnalyticsData data : totalList) {
             msRenderer.addXTextLabel(data.day, String.valueOf(data.day));
         }
         float increment = 0;

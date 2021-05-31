@@ -5,6 +5,6 @@
         This option will restore and load your old back-up data.
         \n\nWarning!!! All current transactions/records will be gone upon restoration
         \nIf you have current transactions/records, it is recommended that you back-up your data first.
-        \n\nTap the browse button to select your old data, look for \"$file\" file.
+        \n\nTap the browse button to select your old data and look for \"$file\" file.
     </string>
 </resources>

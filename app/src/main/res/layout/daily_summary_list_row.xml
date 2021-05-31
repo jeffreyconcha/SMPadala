@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/five"
+    android:paddingBottom="@dimen/five">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvDateDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTotalAmountDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/theme_sec"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTotalChargeDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/theme_sec"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTotalCountDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/theme_sec"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTransferAmountDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/red_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTransferChargeDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/red_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvTransferCountDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/red_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvReceiveAmountDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvReceiveChargeDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvReceiveCountDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvReceiveUnclaimedDailySummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/nine"
+        codePan:typeface="@string/helvetica_neue_light"/>
+
+</LinearLayout>

@@ -521,11 +521,11 @@
                     android:layout_width="@dimen/twelve"
                     android:layout_height="@dimen/twelve">
 
-                    <ImageView
+                    <View
                         android:layout_width="@dimen/twelve"
                         android:layout_height="@dimen/nine"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_clients"/>
+                        android:background="@drawable/ic_clients"/>
 
                 </FrameLayout>
 
@@ -547,7 +547,7 @@
                 android:background="@color/divider"/>
 
             <LinearLayout
-                android:id="@+id/llDailyReportMain"
+                android:id="@+id/llDailySummaryMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/state_rect_trans_dark"
@@ -561,11 +561,11 @@
                     android:layout_width="@dimen/twelve"
                     android:layout_height="@dimen/twelve">
 
-                    <ImageView
-                        android:layout_width="@dimen/twelve"
-                        android:layout_height="@dimen/nine"
+                    <View
+                        android:layout_width="@dimen/ten"
+                        android:layout_height="@dimen/ten"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_report"/>
+                        android:background="@drawable/ic_summary"/>
 
                 </FrameLayout>
 
@@ -574,7 +574,47 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/seven"
                     android:layout_marginLeft="@dimen/seven"
-                    android:text="@string/daily_report"
+                    android:text="@string/daily_summary_report"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/ten"
+                    codePan:typeface="@string/helvetica_neue_light"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
+                android:background="@color/divider"/>
+
+            <LinearLayout
+                android:id="@+id/llDataAnalyticsMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/seven">
+
+                <FrameLayout
+                    android:layout_width="@dimen/twelve"
+                    android:layout_height="@dimen/twelve">
+
+                    <View
+                        android:layout_width="@dimen/eleven"
+                        android:layout_height="@dimen/nine"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ic_graph"/>
+
+                </FrameLayout>
+
+                <com.codepan.widget.CodePanLabel
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/seven"
+                    android:layout_marginLeft="@dimen/seven"
+                    android:text="@string/data_analytics"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/ten"
                     codePan:typeface="@string/helvetica_neue_light"/>
@@ -601,11 +641,11 @@
                     android:layout_width="@dimen/twelve"
                     android:layout_height="@dimen/twelve">
 
-                    <ImageView
-                        android:layout_width="@dimen/twelve"
-                        android:layout_height="@dimen/ten"
+                    <View
+                        android:layout_width="@dimen/eleven"
+                        android:layout_height="@dimen/nine"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_back_up"/>
+                        android:background="@drawable/ic_back_up"/>
 
                 </FrameLayout>
 
@@ -641,11 +681,11 @@
                     android:layout_width="@dimen/twelve"
                     android:layout_height="@dimen/twelve">
 
-                    <ImageView
-                        android:layout_width="@dimen/twelve"
+                    <View
+                        android:layout_width="@dimen/eleven"
                         android:layout_height="@dimen/nine"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_restore"/>
+                        android:background="@drawable/ic_restore"/>
 
                 </FrameLayout>
 

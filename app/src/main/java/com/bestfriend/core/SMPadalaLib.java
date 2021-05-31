@@ -19,10 +19,12 @@ import com.bestfriend.schema.Tables;
 import com.bestfriend.smpadala.AlertDialogFragment;
 import com.bestfriend.smpadala.R;
 import com.codepan.database.Condition;
+import com.codepan.database.Field;
 import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.database.TableIndices;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.Console;
 import com.codepan.widget.CodePanLabel;
@@ -31,6 +33,7 @@ import net.sqlcipher.Cursor;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,8 +42,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import static com.bestfriend.schema.Tables.TB;
-import static com.bestfriend.schema.Tables.create;
-import static com.bestfriend.schema.Tables.getName;
 
 public class SMPadalaLib {
 
@@ -74,11 +75,46 @@ public class SMPadalaLib {
     public static void createTables(SQLiteAdapter db) {
         SQLiteBinder binder = new SQLiteBinder(db);
         List<Tables.TB> tableList = Arrays.asList(TB.values());
-        for (TB tb : tableList) {
-            String table = getName(tb);
-            binder.createTable(table, create(tb));
+        for(TB tb : tableList) {
+            String table = Tables.getName(tb);
+            binder.createTable(table, Tables.fields(tb));
         }
         binder.finish();
+    }
+
+    public static void createIndexes(SQLiteAdapter db) {
+        for(TB tb : TB.values()) {
+            TableIndices indices = Tables.indexes(tb);
+            if(indices != null) {
+                indices.create(db);
+            }
+        }
+    }
+
+    public static void updateTables(SQLiteAdapter db, int o, int n) {
+        SQLiteBinder binder = new SQLiteBinder(db);
+        TB[] tableList = TB.values();
+        for(TB tb : tableList) {
+            String table = Tables.getName(tb);
+            SQLiteQuery create = Tables.fields(tb);
+            if(create.hasFields()) {
+                ArrayList<Field> fieldList = create.getFieldList();
+                ArrayList<String> columnList = db.getColumnList(table);
+                if(fieldList.size() > columnList.size()) {
+                    for(Field field : fieldList) {
+                        if(!columnList.contains(field.field)) {
+                            binder.addColumn(table, field);
+                        }
+                    }
+                }
+            }
+        }
+        binder.finish();
+    }
+
+    public static void fixData(SQLiteAdapter db) {
+        String table = Tables.getName(TB.REMITTANCE);
+        db.execQuery("UPDATE " + table + " SET amount = 0 WHERE length(amount) > 10");
     }
 
     public static boolean hasRemittance(SQLiteAdapter db) {
@@ -88,7 +124,7 @@ public class SMPadalaLib {
     }
 
     public static boolean saveRemittance(SQLiteAdapter db, int type, String smDate, String smTime,
-                                         String amount, String charge, String mobileNo, String balance, String referenceNo) {
+        String amount, String charge, String mobileNo, String balance, String referenceNo) {
         String dDate = CodePanUtils.getDate();
         String dTime = CodePanUtils.getTime();
         SQLiteBinder binder = new SQLiteBinder(db);
@@ -154,7 +190,7 @@ public class SMPadalaLib {
     }
 
     public static CustomerData addCustomer(SQLiteAdapter db, String name, String mobileNo,
-                                           String address, String photo) {
+        String address, String photo) {
         CustomerData customer = new CustomerData();
         SQLiteBinder binder = new SQLiteBinder(db);
         String table = Tables.getName(TB.CUSTOMER);
@@ -164,7 +200,7 @@ public class SMPadalaLib {
         query.add(new FieldValue("address", address));
         query.add(new FieldValue("photo", photo));
         String sql = "SELECT ID FROM " + table + " WHERE name = '" + name + "' AND isActive = 1";
-        if (!db.isRecordExists(sql)) {
+        if(!db.isRecordExists(sql)) {
             customer.ID = binder.insert(table, query);
         }
         else {

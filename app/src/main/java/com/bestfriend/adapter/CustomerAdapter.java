@@ -18,6 +18,7 @@ import com.codepan.widget.CodePanLabel;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class CustomerAdapter extends ArrayAdapter<CustomerData> {
 
@@ -26,15 +27,16 @@ public class CustomerAdapter extends ArrayAdapter<CustomerData> {
 	private final LayoutInflater inflater;
 	private final String path;
 
-	public CustomerAdapter(Context context, ArrayList<CustomerData> items) {
+	public CustomerAdapter(@NonNull Context context, ArrayList<CustomerData> items) {
 		super(context, 0, items);
-		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.inflater = LayoutInflater.from(context);
 		this.items = items;
 		this.path = "file://" + context.getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() + "/";
 	}
 
+	@NonNull
 	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
+	public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 		View view = convertView;
 		ViewHolder holder;
 		final CustomerData data = items.get(position);
