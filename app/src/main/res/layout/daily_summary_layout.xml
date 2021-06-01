@@ -80,7 +80,7 @@
             android:gravity="center"
             android:text="@string/date"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -90,7 +90,7 @@
             android:gravity="center"
             android:text="@string/total_amount"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -100,7 +100,7 @@
             android:gravity="center"
             android:text="@string/total_charge"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -110,7 +110,7 @@
             android:gravity="center"
             android:text="@string/total_count"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -120,7 +120,7 @@
             android:gravity="center"
             android:text="@string/transfer_amount"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -130,7 +130,7 @@
             android:gravity="center"
             android:text="@string/transfer_charge"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -140,7 +140,7 @@
             android:gravity="center"
             android:text="@string/transfer_count"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -150,7 +150,7 @@
             android:gravity="center"
             android:text="@string/receive_amount"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -160,7 +160,7 @@
             android:gravity="center"
             android:text="@string/receive_charge"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -170,7 +170,7 @@
             android:gravity="center"
             android:text="@string/receive_count"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -180,7 +180,7 @@
             android:gravity="center"
             android:text="@string/receive_unclaimed"
             android:textColor="@color/white"
-            android:textSize="@dimen/nine"
+            android:textSize="@dimen/eight"
             codePan:typeface="@string/helvetica_neue_light"/>
 
     </LinearLayout>

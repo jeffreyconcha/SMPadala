@@ -16,7 +16,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/gray_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -26,7 +26,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/theme_sec"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -36,7 +36,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/theme_sec"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -46,7 +46,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/theme_sec"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -56,7 +56,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/red_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -66,7 +66,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/red_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -76,7 +76,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/red_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -86,7 +86,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/gray_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -96,7 +96,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/gray_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -106,7 +106,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/gray_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -116,7 +116,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/gray_pri"
-        android:textSize="@dimen/nine"
+        android:textSize="@dimen/eight"
         codePan:typeface="@string/helvetica_neue_light"/>
 
 </LinearLayout>

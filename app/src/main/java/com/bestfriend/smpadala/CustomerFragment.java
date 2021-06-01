@@ -68,7 +68,9 @@ public class CustomerFragment extends CPFragment implements OnClickListener {
 
 			@Override
 			public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
-				adapter.getFilter().filter(cs);
+				if(adapter != null) {
+					adapter.getFilter().filter(cs);
+				}
 			}
 
 			@Override
@@ -111,6 +113,10 @@ public class CustomerFragment extends CPFragment implements OnClickListener {
 		final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
 			adapter = new CustomerAdapter(main, customerList);
 			lvCustomer.setAdapter(adapter);
+			String search = etSearchCustomer.getText().toString();
+			if(!search.isEmpty()) {
+				adapter.getFilter().filter(search);
+			}
 			return true;
 		});
 		Thread bg = new Thread(() -> {
