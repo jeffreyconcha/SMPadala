@@ -627,7 +627,7 @@
                 android:background="@color/divider"/>
 
             <LinearLayout
-                android:id="@+id/llBackUpMain"
+                android:id="@+id/llBackupMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/state_rect_trans_dark"

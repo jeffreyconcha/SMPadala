@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -69,7 +70,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
     private CodePanButton btnMenuMain, btnShowFilterMain, btnDateMain, btnTypeMain,
         btnStatusMain, btnCustomerMain, btnFilterMain, btnClearMain;
     private LinearLayout llMenuMain, llCustomersMain, llDataAnalyticsMain,
-        llBackUpMain, llRestoreBackupMain, llDailySummaryMain;
+        llBackupMain, llRestoreBackupMain, llDailySummaryMain;
     private int visibleItem, totalItem, firstVisible;
     private ArrayList<RemittanceData> remittanceList;
     private CodePanLabel tvDateMain, tvCustomerMain;
@@ -122,7 +123,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         this.inputFinishHandler = new Handler(Looper.getMainLooper());
         btnShowFilterMain = findViewById(R.id.btnShowFilterMain);
         llCustomersMain = findViewById(R.id.llCustomersMain);
-        llBackUpMain = findViewById(R.id.llBackUpMain);
+        llBackupMain = findViewById(R.id.llBackupMain);
         llDailySummaryMain = findViewById(R.id.llDailySummaryMain);
         llDataAnalyticsMain = findViewById(R.id.llDataAnalyticsMain);
         llRestoreBackupMain = findViewById(R.id.llRestoreBackupMain);
@@ -155,7 +156,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         llCustomersMain.setOnClickListener(this);
         llDailySummaryMain.setOnClickListener(this);
         llDataAnalyticsMain.setOnClickListener(this);
-        llBackUpMain.setOnClickListener(this);
+        llBackupMain.setOnClickListener(this);
         llRestoreBackupMain.setOnClickListener(this);
         rlFilterMain.setOnClickListener(this);
         flClearSearchMain.setOnClickListener(this);
@@ -470,7 +471,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
-            case R.id.llBackUpMain:
+            case R.id.llBackupMain:
                 dlMain.closeDrawer(llMenuMain);
                 AlertDialogFragment backup = new AlertDialogFragment();
                 backup.setDialogTitle("Back-up Data");
@@ -615,8 +616,41 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
 
     public void backupData(final boolean external) {
         final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
-            SMPadalaLib.alertToast(MainActivity.this, "Data has " +
-                "been successfully backed-up.");
+            final AlertDialogFragment alert = new AlertDialogFragment();
+            alert.setDialogTitle("Back-up Data Successful");
+            alert.setDialogMessage("Data has been successfully backed-up. Do " +
+                "you want to upload it to Google Drive?");
+            alert.setPositiveButton("Yes", view -> {
+                manager.popBackStack();
+                if(CodePanUtils.hasInternet(MainActivity.this)) {
+                    File dir = getExternalFilesDir(null);
+                    if(dir != null) {
+                        String path = dir.getPath() + "/" + App.DB_BACKUP + "/" + App.DB;
+                        final File file = new File(path);
+                        String authority = BuildConfig.APPLICATION_ID + ".provider";
+                        Uri uri = FileProvider.getUriForFile(MainActivity.this, authority, file);
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.putExtra(Intent.EXTRA_STREAM, uri);
+                        intent.setDataAndType(uri, "*/*");
+                        intent.setPackage("com.google.android.apps.docs");
+                        startActivity(intent);
+                    }
+                    else {
+                        SMPadalaLib.alertToast(MainActivity.this, "Failed to open file");
+                    }
+                }
+                else {
+                    SMPadalaLib.alertToast(MainActivity.this, "Internet connection is required.");
+                }
+            });
+            alert.setNegativeButton("No", view -> manager.popBackStack());
+            transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                R.anim.fade_in, R.anim.fade_out);
+            transaction.add(R.id.rlMain, alert);
+            transaction.addToBackStack(null);
+            transaction.commit();
             return true;
         });
         if (!CodePanUtils.isThreadRunning(ProcessName.BACK_UP_DB)) {
