@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:CalenderView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_bg"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="@dimen/five">
+
+    <com.codepan.widget.calendar.view.CalendarView
+        android:id="@+id/cvCalendar"
+        android:layout_width="@dimen/two_hundred_fifty"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        android:focusable="true"
+        CalenderView:cal_accentColor="@color/theme_pri"
+        CalenderView:cal_arrowIconHeight="@dimen/seven"
+        CalenderView:cal_arrowIconWidth="@dimen/five"
+        CalenderView:cal_arrowSize="@dimen/seventeen"
+        CalenderView:cal_buttonFont="@string/helvetica_neue_mid"
+        CalenderView:cal_buttonHeight="@dimen/eighteen"
+        CalenderView:cal_buttonPadding="@dimen/five"
+        CalenderView:cal_buttonTextSize="@dimen/nine"
+        CalenderView:cal_buttonWidth="@dimen/fifty"
+        CalenderView:cal_contentFont="@string/helvetica_neue_light"
+        CalenderView:cal_contentPadding="@dimen/two"
+        CalenderView:cal_contentTextSize="@dimen/nine"
+        CalenderView:cal_dateTextSize="@dimen/twelve"
+        CalenderView:cal_monthTextSize="@dimen/nine"
+        CalenderView:cal_selectedColor="@color/theme_pri"
+        CalenderView:cal_title="@string/select_date"
+        CalenderView:cal_titleFont="@string/helvetica_neue_bold"
+        CalenderView:cal_titlePadding="@dimen/three"
+        CalenderView:cal_titleTextSize="@dimen/nine"
+        CalenderView:cal_yearTextSize="@dimen/nine"/>
+
+</RelativeLayout>

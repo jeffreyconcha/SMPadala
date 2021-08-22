@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.codepan.app.CPFragment;
-import com.codepan.widget.calendar.callback.Interface.OnCancelCallback;
+import com.codepan.callback.Interface.OnCancelCallback;
 import com.codepan.widget.calendar.callback.Interface.OnPickDateCallback;
 import com.codepan.widget.calendar.view.CalendarView;
 
@@ -28,7 +28,7 @@ public class CalendarDialogFragment extends CPFragment implements OnPickDateCall
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.calendar_layout, container, false);
+		View view = inflater.inflate(R.layout.calendar_dialog_layout, container, false);
 		cvCalendar = view.findViewById(R.id.cvCalendar);
 		cvCalendar.setOnPickDateCallback(this);
 		cvCalendar.setOnCancelCallback(this);

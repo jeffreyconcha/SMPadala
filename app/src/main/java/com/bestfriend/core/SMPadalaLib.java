@@ -360,7 +360,7 @@ public class SMPadalaLib {
         return Result.FAILED;
     }
 
-    public static String getNextAmountFromKey(String text, String key) {
+    public static String getAmountAfterKey(String text, String key) {
         StringBuilder builder = new StringBuilder();
         int index = text.toLowerCase().lastIndexOf(key.toLowerCase());
         String substring = text.substring(index + key.length());
@@ -368,17 +368,17 @@ public class SMPadalaLib {
         int maxDecimal = 2;
         int decimalCount = 0;
         boolean isDecimal = false;
-        for (int i = 0; i < substring.length(); i++) {
-            if (decimalCount < maxDecimal) {
+        for(int i = 0; i < substring.length(); i++) {
+            if(decimalCount < maxDecimal) {
                 char c = substring.charAt(i);
-                if (Character.isDigit(c)) {
-                    if (isDecimal) {
+                if(Character.isDigit(c)) {
+                    if(isDecimal) {
                         decimalCount++;
                     }
                     builder.append(c);
                 }
                 else {
-                    if (c == period) {
+                    if(c == period) {
                         isDecimal = true;
                         builder.append(c);
                     }
@@ -388,23 +388,51 @@ public class SMPadalaLib {
         return builder.toString();
     }
 
+    public static String getAmountBeforeKey(String text, String key) {
+        StringBuilder builder = new StringBuilder();
+        int index = text.toLowerCase().indexOf(key.toLowerCase());
+        String substring = text.substring(0, index);
+        boolean inDigits = false;
+        boolean isFinish = false;
+        for(int i = substring.length() - 1; i > 0; i--) {
+            if(!isFinish) {
+                char c = substring.charAt(i);
+                if(Character.isDigit(c)) {
+                    inDigits = true;
+                    builder.append(c);
+                }
+                else {
+                    if(inDigits) {
+                        if(c == '.' || c == ',') {
+                            builder.append(c);
+                        }
+                        else {
+                            isFinish = true;
+                        }
+                    }
+                }
+            }
+        }
+        return builder.reverse().toString();
+    }
+
     public static String getReferenceAfterKey(String text, String key) {
         StringBuilder builder = new StringBuilder();
         int index = text.toLowerCase().lastIndexOf(key.toLowerCase());
         String substring = text.substring(index + key.length());
         boolean hasStarted = false;
         boolean isFinish = false;
-        for (int i = 0; i < substring.length(); i++) {
-            if (!isFinish) {
+        for(int i = 0; i < substring.length(); i++) {
+            if(!isFinish) {
                 char c = substring.charAt(i);
-                if (Character.isDigit(c) || Character.isLetter(c)) {
+                if(Character.isDigit(c) || Character.isLetter(c)) {
                     builder.append(c);
-                    if (!hasStarted) {
+                    if(!hasStarted) {
                         hasStarted = true;
                     }
                 }
                 else {
-                    if (hasStarted) {
+                    if(hasStarted) {
                         isFinish = true;
                     }
                 }
@@ -419,26 +447,34 @@ public class SMPadalaLib {
             int type = getMessageType(text);
             if (type != Result.FAILED) {
                 message = new MessageData(type);
-                for (String key : RemittanceKey.AMOUNT) {
-                    if (StringUtils.containsIgnoreCase(text, key)) {
-                        message.amount = getNextAmountFromKey(text, key);
+                for(String key : RemittanceKey.KEYS_AMOUNT_AFTER) {
+                    if(StringUtils.containsIgnoreCase(text, key)) {
+                        message.amount = getAmountAfterKey(text, key);
                         break;
                     }
                 }
-                for (String key : RemittanceKey.CHARGE) {
-                    if (StringUtils.containsIgnoreCase(text, key)) {
-                        message.charge = getNextAmountFromKey(text, key);
+                if(message.amount == null || message.amount.isEmpty()) {
+                    for(String key : RemittanceKey.KEYS_AMOUNT_BEFORE) {
+                        if(StringUtils.containsIgnoreCase(text, key)) {
+                            message.amount = getAmountBeforeKey(text, key);
+                            break;
+                        }
+                    }
+                }
+                for(String key : RemittanceKey.KEYS_CHARGE_AFTER) {
+                    if(StringUtils.containsIgnoreCase(text, key)) {
+                        message.charge = getAmountAfterKey(text, key);
                         break;
                     }
                 }
-                for (String key : RemittanceKey.BALANCE) {
-                    if (StringUtils.containsIgnoreCase(text, key)) {
-                        message.balance = getNextAmountFromKey(text, key);
+                for(String key : RemittanceKey.KEYS_BALANCE_AFTER) {
+                    if(StringUtils.containsIgnoreCase(text, key)) {
+                        message.balance = getAmountAfterKey(text, key);
                         break;
                     }
                 }
-                for (String key : RemittanceKey.REFERENCE) {
-                    if (StringUtils.containsIgnoreCase(text, key)) {
+                for(String key : RemittanceKey.KEYS_REFERENCE_AFTER) {
+                    if(StringUtils.containsIgnoreCase(text, key)) {
                         message.referenceNo = getReferenceAfterKey(text, key);
                         break;
                     }

@@ -110,6 +110,8 @@ public class RemittanceKey {
      */
     public static final String TRANSFER_SM = "have transferred";
 
+    public static final String TRANSFER_PM = "to account ending in";
+
     public static final String BALANCE_EXT = "2/2 Bal:";
     public static final String SENDER_SP = "SmartPadala";
     public static final String SENDER_SM = "SmartMoney";
@@ -126,27 +128,33 @@ public class RemittanceKey {
     };
 
     public static final String[] OUTGOING = new String[]{
-            "transferred",
-            "sent",
-            "withdrawn",
-            "was deducted from your",
-            "you have paid",
-            "approval of",
-            "paid"
+        "transferred",
+        "sent",
+        "withdrawn",
+        "was deducted from your",
+        "you have paid",
+        "approval of",
+        "paid",
+        "to account ending in",
+        "to the account ending in"
     };
 
-    public static final String[] AMOUNT = new String[]{
-            "remittance of",
-            "received",
-            "transferred",
-            "withdrawn",
-            "you have paid",
-            "approval of",
-            "sent",
-            "paid"
+    public static final String[] KEYS_AMOUNT_AFTER = new String[]{
+        "remittance of",
+        "received",
+        "transferred",
+        "withdrawn",
+        "you have paid",
+        "approval of",
+        "sent",
+        "paid",
     };
 
-    public static final String[] CHARGE = new String[] {
+    public static final String[] KEYS_AMOUNT_BEFORE = new String[] {
+      "deposit to"
+    };
+
+    public static final String[] KEYS_CHARGE_AFTER = new String[] {
             "commission of",
             "fee of",
             "also deducted",
@@ -155,13 +163,13 @@ public class RemittanceKey {
             "with p"
     };
 
-    public static final String[] BALANCE = new String[] {
+    public static final String[] KEYS_BALANCE_AFTER = new String[] {
             "bal.",
             "bal:",
             "balance",
     };
 
-    public static final String[] REFERENCE = new String[] {
+    public static final String[] KEYS_REFERENCE_AFTER = new String[] {
             "reference number",
             "reference no",
             "reference #",

@@ -18,8 +18,6 @@ import com.bestfriend.callback.Interface.OnUsePhotoCallback;
 import com.bestfriend.constant.App;
 import com.bestfriend.constant.DialogTag;
 import com.codepan.app.CPFragment;
-import com.codepan.callback.Interface.OnCameraErrorCallback;
-import com.codepan.callback.Interface.OnCaptureCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.StampData;
 import com.codepan.permission.PermissionEvents;
@@ -29,6 +27,8 @@ import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.DateTime;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.FocusIndicatorView;
+import com.codepan.widget.camera.Callback.OnCameraErrorCallback;
+import com.codepan.widget.camera.Callback.OnCaptureCallback;
 import com.codepan.widget.camera.CameraSurfaceView;
 
 import org.jetbrains.annotations.NotNull;

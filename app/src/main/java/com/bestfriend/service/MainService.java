@@ -68,23 +68,31 @@ public class MainService extends Service {
                     }
                 }
             }
-            catch (Exception e) {
+            catch(Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void saveRemittance(final SQLiteAdapter db, final int type, final String smDate,
-                               final String smTime, final String amount, final String charge, final String mobileNo,
-                               final String balance, final String referenceNo) {
+    public void saveRemittance(
+        final SQLiteAdapter db,
+        final int type,
+        final String smDate,
+        final String smTime,
+        final String amount,
+        final String charge,
+        final String mobileNo,
+        final String balance,
+        final String referenceNo
+    ) {
         Thread bg = new Thread(() -> {
             try {
                 boolean result = SMPadalaLib.saveRemittance(db, type, smDate, smTime, amount,
-                        charge, mobileNo, balance, referenceNo);
+                    charge, mobileNo, balance, referenceNo);
                 handler.obtainMessage(result ? Result.SUCCESS :
-                        Result.FAILED).sendToTarget();
+                    Result.FAILED).sendToTarget();
             }
-            catch (Exception e) {
+            catch(Exception e) {
                 e.printStackTrace();
             }
         });
