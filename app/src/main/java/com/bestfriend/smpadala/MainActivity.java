@@ -46,7 +46,6 @@ import com.codepan.permission.PermissionEvents;
 import com.codepan.permission.PermissionHandler;
 import com.codepan.permission.PermissionType;
 import com.codepan.utils.CodePanUtils;
-import com.codepan.utils.Console;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
@@ -405,8 +404,6 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         registerReceiver();
         loadRemittance(db);
         getHandler().checkPermissions();
-        String amount = SMPadalaLib.getAmountBeforeKey("PHP100,000.00 depanot account", "depanot account");
-        Console.log("DEPANOT "+amount);
     }
 
     public void registerReceiver() {

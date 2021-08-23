@@ -151,7 +151,9 @@ public class RemittanceKey {
     };
 
     public static final String[] KEYS_AMOUNT_BEFORE = new String[] {
-      "deposit to"
+        "deposit to",
+        "deposited",
+        "transferred"
     };
 
     public static final String[] KEYS_CHARGE_AFTER = new String[] {
