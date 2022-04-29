@@ -18,6 +18,7 @@ import com.bestfriend.core.SMPadalaLib;
 import com.bestfriend.model.MessageData;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.utils.Console;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -52,18 +53,30 @@ public class MainService extends Service {
                 String text = intent.getStringExtra(Key.MESSAGE);
                 String smDate = CodePanUtils.getDate(timestamp);
                 String smTime = CodePanUtils.getTime(timestamp);
+                Console.log("sender: " + sender);
                 if (sender != null && (sender.equalsIgnoreCase(RemittanceKey.SENDER_SP) ||
                     sender.equalsIgnoreCase(RemittanceKey.SENDER_SM) ||
                     sender.equalsIgnoreCase(RemittanceKey.SENDER_PM) ||
                     sender.equalsIgnoreCase(RemittanceKey.SENDER_PN) ||
+                    sender.equalsIgnoreCase(RemittanceKey.SENDER_PM1) ||
+                    sender.equalsIgnoreCase(RemittanceKey.SENDER_PM2) ||
                     sender.equalsIgnoreCase(RemittanceKey.SENDER_T1) ||
                     sender.equalsIgnoreCase(RemittanceKey.SENDER_T2) ||
                     sender.equalsIgnoreCase(RemittanceKey.SENDER_T3))) {
                     if (text != null) {
                         MessageData message = SMPadalaLib.scanMessage(text);
-                        if (message != null) {
+                        Console.log("message: " + message);
+                        if(message != null) {
                             saveRemittance(db, message.type, smDate, smTime, message.amount,
                                 message.charge, null, message.balance, message.referenceNo);
+                            Console.log("type: " + message.type);
+                            Console.log("amount: " + message.amount);
+                            Console.log("charge: " + message.charge);
+                            Console.log("balance: " + message.balance);
+                            Console.log("reference: " + message.referenceNo);
+                        }
+                        else {
+                            Console.log("error scanning");
                         }
                     }
                 }

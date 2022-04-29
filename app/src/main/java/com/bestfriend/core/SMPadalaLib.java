@@ -428,7 +428,7 @@ public class SMPadalaLib {
         for(int i = 0; i < substring.length(); i++) {
             if(!isFinish) {
                 char c = substring.charAt(i);
-                if(Character.isDigit(c) || Character.isLetter(c)) {
+                if(Character.isDigit(c) || Character.isLetter(c) || c == '-') {
                     builder.append(c);
                     if(!hasStarted) {
                         hasStarted = true;
