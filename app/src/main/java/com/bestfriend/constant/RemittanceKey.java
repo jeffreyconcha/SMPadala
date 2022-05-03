@@ -138,7 +138,9 @@ public class RemittanceKey {
 		"approval of",
 		"paid",
 		"to account ending in",
-		"to the account ending in"
+		"to the account ending in",
+		"deducted",
+		"from your account"
 	};
 
 	public static final String[] KEYS_AMOUNT_AFTER = new String[]{

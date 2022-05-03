@@ -404,6 +404,7 @@ public class MainActivity extends CPFragmentActivity implements OnInitializeCall
         registerReceiver();
         loadRemittance(db);
         getHandler().checkPermissions();
+        Test.run(db);
     }
 
     public void registerReceiver() {

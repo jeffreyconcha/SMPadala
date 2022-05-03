@@ -8,8 +8,8 @@ android {
         applicationId "com.bestfriend.smpadala"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 25
-        versionName "1.2.5"
+        versionCode 27
+        versionName "1.2.7"
         externalNativeBuild {
             cmake {
                 cppFlags ""
