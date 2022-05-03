@@ -114,8 +114,11 @@ public class SMPadalaLib {
 
     public static void fixData(SQLiteAdapter db) {
         String table = Tables.getName(TB.REMITTANCE);
-        db.execQuery("UPDATE " + table + " SET amount = 0 WHERE length(amount) > 10");
-        db.execQuery("UPDATE " + table + " SET amount = REPLACE(amount, ',', '') WHERE amount LIKE '%,%'");
+        db.execQuery("UPDATE " + table + " SET AMOUNT = '50000' WHERE referenceNo = '3a3a486399d2'");
+        db.execQuery("UPDATE " + table + " SET AMOUNT = '1' WHERE referenceNo = '3ed5b1ccb4b1'");
+        db.execQuery("UPDATE " + table + " SET AMOUNT = '50000' WHERE referenceNo = '5eb295c67d11'");
+        db.execQuery("UPDATE " + table + " SET AMOUNT = '49999' WHERE referenceNo = '936ddc46d5ae'");
+        db.execQuery("UPDATE " + table + " SET AMOUNT = '50000' WHERE referenceNo = '3a3a486399d2'");
     }
 
     public static boolean hasRemittance(SQLiteAdapter db) {

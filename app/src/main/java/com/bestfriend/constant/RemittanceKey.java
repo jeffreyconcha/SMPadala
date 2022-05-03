@@ -150,12 +150,19 @@ public class RemittanceKey {
 		"approval of",
 		"sent",
 		"paid",
+		"deducted"
 	};
 
 	public static final String[] KEYS_AMOUNT_BEFORE = new String[]{
 		"deposit to",
 		"deposited",
-		"transferred"
+		"transferred",
+		"received",
+		"transferred",
+		"withdrawn",
+		"paid",
+		"sent",
+		"deducted"
 	};
 
 	public static final String[] KEYS_CHARGE_AFTER = new String[]{
