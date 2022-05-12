@@ -114,11 +114,7 @@ public class SMPadalaLib {
 
     public static void fixData(SQLiteAdapter db) {
         String table = Tables.getName(TB.REMITTANCE);
-        db.execQuery("UPDATE " + table + " SET AMOUNT = '50000' WHERE referenceNo = '3a3a486399d2'");
-        db.execQuery("UPDATE " + table + " SET AMOUNT = '1' WHERE referenceNo = '3ed5b1ccb4b1'");
-        db.execQuery("UPDATE " + table + " SET AMOUNT = '50000' WHERE referenceNo = '5eb295c67d11'");
-        db.execQuery("UPDATE " + table + " SET AMOUNT = '49999' WHERE referenceNo = '936ddc46d5ae'");
-        db.execQuery("UPDATE " + table + " SET AMOUNT = '50000' WHERE referenceNo = '3a3a486399d2'");
+        db.execQuery("UPDATE " + table + " SET AMOUNT = '771' WHERE referenceNo = '213109628728'");
     }
 
     public static boolean hasRemittance(SQLiteAdapter db) {
@@ -364,9 +360,10 @@ public class SMPadalaLib {
         return Result.FAILED;
     }
 
-    public static String getAmountAfterKey(String text, String key) {
+    public static String getAmountAfterKey(String text, String code) {
         StringBuilder builder = new StringBuilder();
-        int index = text.toLowerCase().lastIndexOf(key.toLowerCase());
+        final String key = code + " ";
+        int index = text.toLowerCase().indexOf(key.toLowerCase());
         String substring = text.substring(index + key.length());
         char period = '.';
         int maxDecimal = 2;
@@ -392,8 +389,9 @@ public class SMPadalaLib {
         return builder.toString();
     }
 
-    public static String getAmountBeforeKey(String text, String key) {
+    public static String getAmountBeforeKey(String text, String code) {
         StringBuilder builder = new StringBuilder();
+        final String key = code + " ";
         int index = text.toLowerCase().indexOf(key.toLowerCase());
         String substring = text.substring(0, index);
         boolean inDigits = false;
